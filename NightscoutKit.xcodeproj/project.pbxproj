@@ -1,0 +1,579 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 48;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		896FF5862048C7510054198A /* NightscoutKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896FF57C2048C7510054198A /* NightscoutKit.framework */; };
+		896FF58B2048C7510054198A /* NightscoutKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF58A2048C7510054198A /* NightscoutKitTests.swift */; };
+		896FF58D2048C7510054198A /* NightscoutKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 896FF57F2048C7510054198A /* NightscoutKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		896FF5A82048C77B0054198A /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5982048C77A0054198A /* Array.swift */; };
+		896FF5A92048C77B0054198A /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5992048C77A0054198A /* Dictionary.swift */; };
+		896FF5AA2048C77B0054198A /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59A2048C77A0054198A /* URL.swift */; };
+		896FF5AB2048C77B0054198A /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59B2048C77A0054198A /* String.swift */; };
+		896FF5AC2048C77B0054198A /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59C2048C77A0054198A /* TimeInterval.swift */; };
+		896FF5AD2048C77B0054198A /* Treatment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59E2048C77B0054198A /* Treatment.swift */; };
+		896FF5AE2048C77B0054198A /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59F2048C77B0054198A /* TimeFormatter.swift */; };
+		896FF5AF2048C77B0054198A /* BloodGlucoseUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */; };
+		896FF5B02048C77B0054198A /* BloodGlucoseEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A12048C77B0054198A /* BloodGlucoseEntry.swift */; };
+		896FF5B12048C77B0054198A /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A22048C77B0054198A /* Result.swift */; };
+		896FF5B22048C77B0054198A /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A32048C77B0054198A /* Profile.swift */; };
+		896FF5B32048C77B0054198A /* ProfileStoreSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A42048C77B0054198A /* ProfileStoreSnapshot.swift */; };
+		896FF5B42048C77B0054198A /* BloodGlucoseTrend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */; };
+		896FF5B52048C77B0054198A /* Nightscout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A62048C77B0054198A /* Nightscout.swift */; };
+		896FF5B62048C77B0054198A /* NightscoutSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A72048C77B0054198A /* NightscoutSettings.swift */; };
+		896FF5BC2048C7A30054198A /* JSONConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5B82048C7A30054198A /* JSONConvertible.swift */; };
+		896FF5BD2048C7A30054198A /* StringParseable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5B92048C7A30054198A /* StringParseable.swift */; };
+		896FF5BE2048C7A30054198A /* UniquelyIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */; };
+		896FF5BF2048C7A30054198A /* PartiallyRawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */; };
+		896FF5C62048C7FC0054198A /* treatments.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5C12048C7FC0054198A /* treatments.json */; };
+		896FF5C72048C7FC0054198A /* entries.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5C22048C7FC0054198A /* entries.json */; };
+		896FF5C82048C7FC0054198A /* profile.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5C32048C7FC0054198A /* profile.json */; };
+		896FF5C92048C7FC0054198A /* XCTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5C52048C7FC0054198A /* XCTestCase.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		896FF5872048C7510054198A /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 896FF5732048C7510054198A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 896FF57B2048C7510054198A;
+			remoteInfo = NightscoutKit;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		896FF57C2048C7510054198A /* NightscoutKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		896FF57F2048C7510054198A /* NightscoutKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscoutKit.h; sourceTree = "<group>"; };
+		896FF5802048C7510054198A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		896FF5852048C7510054198A /* NightscoutKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NightscoutKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		896FF58A2048C7510054198A /* NightscoutKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutKitTests.swift; sourceTree = "<group>"; };
+		896FF58C2048C7510054198A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		896FF5982048C77A0054198A /* Array.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Array.swift; sourceTree = "<group>"; };
+		896FF5992048C77A0054198A /* Dictionary.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dictionary.swift; sourceTree = "<group>"; };
+		896FF59A2048C77A0054198A /* URL.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = URL.swift; sourceTree = "<group>"; };
+		896FF59B2048C77A0054198A /* String.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		896FF59C2048C77A0054198A /* TimeInterval.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeInterval.swift; sourceTree = "<group>"; };
+		896FF59E2048C77B0054198A /* Treatment.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Treatment.swift; sourceTree = "<group>"; };
+		896FF59F2048C77B0054198A /* TimeFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeFormatter.swift; sourceTree = "<group>"; };
+		896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BloodGlucoseUnit.swift; sourceTree = "<group>"; };
+		896FF5A12048C77B0054198A /* BloodGlucoseEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BloodGlucoseEntry.swift; sourceTree = "<group>"; };
+		896FF5A22048C77B0054198A /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
+		896FF5A32048C77B0054198A /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
+		896FF5A42048C77B0054198A /* ProfileStoreSnapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileStoreSnapshot.swift; sourceTree = "<group>"; };
+		896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BloodGlucoseTrend.swift; sourceTree = "<group>"; };
+		896FF5A62048C77B0054198A /* Nightscout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nightscout.swift; sourceTree = "<group>"; };
+		896FF5A72048C77B0054198A /* NightscoutSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NightscoutSettings.swift; sourceTree = "<group>"; };
+		896FF5B82048C7A30054198A /* JSONConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONConvertible.swift; sourceTree = "<group>"; };
+		896FF5B92048C7A30054198A /* StringParseable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringParseable.swift; sourceTree = "<group>"; };
+		896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UniquelyIdentifiable.swift; sourceTree = "<group>"; };
+		896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartiallyRawRepresentable.swift; sourceTree = "<group>"; };
+		896FF5C12048C7FC0054198A /* treatments.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = treatments.json; sourceTree = "<group>"; };
+		896FF5C22048C7FC0054198A /* entries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = entries.json; sourceTree = "<group>"; };
+		896FF5C32048C7FC0054198A /* profile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = profile.json; sourceTree = "<group>"; };
+		896FF5C52048C7FC0054198A /* XCTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestCase.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		896FF5782048C7510054198A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		896FF5822048C7510054198A /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				896FF5862048C7510054198A /* NightscoutKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		896FF5722048C7510054198A = {
+			isa = PBXGroup;
+			children = (
+				896FF57E2048C7510054198A /* NightscoutKit */,
+				896FF5892048C7510054198A /* NightscoutKitTests */,
+				896FF57D2048C7510054198A /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		896FF57D2048C7510054198A /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				896FF57C2048C7510054198A /* NightscoutKit.framework */,
+				896FF5852048C7510054198A /* NightscoutKitTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		896FF57E2048C7510054198A /* NightscoutKit */ = {
+			isa = PBXGroup;
+			children = (
+				896FF5962048C7640054198A /* Sources */,
+				896FF57F2048C7510054198A /* NightscoutKit.h */,
+				896FF5802048C7510054198A /* Info.plist */,
+			);
+			path = NightscoutKit;
+			sourceTree = "<group>";
+		};
+		896FF5892048C7510054198A /* NightscoutKitTests */ = {
+			isa = PBXGroup;
+			children = (
+				896FF5C42048C7FC0054198A /* Extensions */,
+				896FF5C02048C7FC0054198A /* Fixtures */,
+				896FF58A2048C7510054198A /* NightscoutKitTests.swift */,
+				896FF58C2048C7510054198A /* Info.plist */,
+			);
+			path = NightscoutKitTests;
+			sourceTree = "<group>";
+		};
+		896FF5962048C7640054198A /* Sources */ = {
+			isa = PBXGroup;
+			children = (
+				896FF5B72048C7A30054198A /* Protocols */,
+				896FF5972048C77A0054198A /* Extensions */,
+				896FF59D2048C77B0054198A /* Models */,
+			);
+			path = Sources;
+			sourceTree = "<group>";
+		};
+		896FF5972048C77A0054198A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				896FF5982048C77A0054198A /* Array.swift */,
+				896FF5992048C77A0054198A /* Dictionary.swift */,
+				896FF59A2048C77A0054198A /* URL.swift */,
+				896FF59B2048C77A0054198A /* String.swift */,
+				896FF59C2048C77A0054198A /* TimeInterval.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+		896FF59D2048C77B0054198A /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				896FF59E2048C77B0054198A /* Treatment.swift */,
+				896FF59F2048C77B0054198A /* TimeFormatter.swift */,
+				896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */,
+				896FF5A12048C77B0054198A /* BloodGlucoseEntry.swift */,
+				896FF5A22048C77B0054198A /* Result.swift */,
+				896FF5A32048C77B0054198A /* Profile.swift */,
+				896FF5A42048C77B0054198A /* ProfileStoreSnapshot.swift */,
+				896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */,
+				896FF5A62048C77B0054198A /* Nightscout.swift */,
+				896FF5A72048C77B0054198A /* NightscoutSettings.swift */,
+			);
+			path = Models;
+			sourceTree = "<group>";
+		};
+		896FF5B72048C7A30054198A /* Protocols */ = {
+			isa = PBXGroup;
+			children = (
+				896FF5B82048C7A30054198A /* JSONConvertible.swift */,
+				896FF5B92048C7A30054198A /* StringParseable.swift */,
+				896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */,
+				896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */,
+			);
+			path = Protocols;
+			sourceTree = "<group>";
+		};
+		896FF5C02048C7FC0054198A /* Fixtures */ = {
+			isa = PBXGroup;
+			children = (
+				896FF5C12048C7FC0054198A /* treatments.json */,
+				896FF5C22048C7FC0054198A /* entries.json */,
+				896FF5C32048C7FC0054198A /* profile.json */,
+			);
+			path = Fixtures;
+			sourceTree = "<group>";
+		};
+		896FF5C42048C7FC0054198A /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				896FF5C52048C7FC0054198A /* XCTestCase.swift */,
+			);
+			path = Extensions;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		896FF5792048C7510054198A /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				896FF58D2048C7510054198A /* NightscoutKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		896FF57B2048C7510054198A /* NightscoutKit */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 896FF5902048C7510054198A /* Build configuration list for PBXNativeTarget "NightscoutKit" */;
+			buildPhases = (
+				896FF5772048C7510054198A /* Sources */,
+				896FF5782048C7510054198A /* Frameworks */,
+				896FF5792048C7510054198A /* Headers */,
+				896FF57A2048C7510054198A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = NightscoutKit;
+			productName = NightscoutKit;
+			productReference = 896FF57C2048C7510054198A /* NightscoutKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		896FF5842048C7510054198A /* NightscoutKitTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 896FF5932048C7510054198A /* Build configuration list for PBXNativeTarget "NightscoutKitTests" */;
+			buildPhases = (
+				896FF5812048C7510054198A /* Sources */,
+				896FF5822048C7510054198A /* Frameworks */,
+				896FF5832048C7510054198A /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				896FF5882048C7510054198A /* PBXTargetDependency */,
+			);
+			name = NightscoutKitTests;
+			productName = NightscoutKitTests;
+			productReference = 896FF5852048C7510054198A /* NightscoutKitTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		896FF5732048C7510054198A /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 0920;
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = "Michael Pangburn";
+				TargetAttributes = {
+					896FF57B2048C7510054198A = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					896FF5842048C7510054198A = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = 896FF5762048C7510054198A /* Build configuration list for PBXProject "NightscoutKit" */;
+			compatibilityVersion = "Xcode 8.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+			);
+			mainGroup = 896FF5722048C7510054198A;
+			productRefGroup = 896FF57D2048C7510054198A /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				896FF57B2048C7510054198A /* NightscoutKit */,
+				896FF5842048C7510054198A /* NightscoutKitTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		896FF57A2048C7510054198A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		896FF5832048C7510054198A /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				896FF5C82048C7FC0054198A /* profile.json in Resources */,
+				896FF5C72048C7FC0054198A /* entries.json in Resources */,
+				896FF5C62048C7FC0054198A /* treatments.json in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		896FF5772048C7510054198A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				896FF5A82048C77B0054198A /* Array.swift in Sources */,
+				896FF5AC2048C77B0054198A /* TimeInterval.swift in Sources */,
+				896FF5B02048C77B0054198A /* BloodGlucoseEntry.swift in Sources */,
+				896FF5AE2048C77B0054198A /* TimeFormatter.swift in Sources */,
+				896FF5AF2048C77B0054198A /* BloodGlucoseUnit.swift in Sources */,
+				896FF5AD2048C77B0054198A /* Treatment.swift in Sources */,
+				896FF5B12048C77B0054198A /* Result.swift in Sources */,
+				896FF5BC2048C7A30054198A /* JSONConvertible.swift in Sources */,
+				896FF5B52048C77B0054198A /* Nightscout.swift in Sources */,
+				896FF5A92048C77B0054198A /* Dictionary.swift in Sources */,
+				896FF5BD2048C7A30054198A /* StringParseable.swift in Sources */,
+				896FF5B22048C77B0054198A /* Profile.swift in Sources */,
+				896FF5AB2048C77B0054198A /* String.swift in Sources */,
+				896FF5AA2048C77B0054198A /* URL.swift in Sources */,
+				896FF5B42048C77B0054198A /* BloodGlucoseTrend.swift in Sources */,
+				896FF5BE2048C7A30054198A /* UniquelyIdentifiable.swift in Sources */,
+				896FF5B32048C77B0054198A /* ProfileStoreSnapshot.swift in Sources */,
+				896FF5B62048C77B0054198A /* NightscoutSettings.swift in Sources */,
+				896FF5BF2048C7A30054198A /* PartiallyRawRepresentable.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		896FF5812048C7510054198A /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				896FF5C92048C7FC0054198A /* XCTestCase.swift in Sources */,
+				896FF58B2048C7510054198A /* NightscoutKitTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		896FF5882048C7510054198A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 896FF57B2048C7510054198A /* NightscoutKit */;
+			targetProxy = 896FF5872048C7510054198A /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		896FF58E2048C7510054198A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		896FF58F2048C7510054198A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		896FF5912048C7510054198A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = NightscoutKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		896FF5922048C7510054198A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = NightscoutKit/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKit;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		896FF5942048C7510054198A /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
+				INFOPLIST_FILE = NightscoutKitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		896FF5952048C7510054198A /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
+				INFOPLIST_FILE = NightscoutKitTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKitTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		896FF5762048C7510054198A /* Build configuration list for PBXProject "NightscoutKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				896FF58E2048C7510054198A /* Debug */,
+				896FF58F2048C7510054198A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		896FF5902048C7510054198A /* Build configuration list for PBXNativeTarget "NightscoutKit" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				896FF5912048C7510054198A /* Debug */,
+				896FF5922048C7510054198A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		896FF5932048C7510054198A /* Build configuration list for PBXNativeTarget "NightscoutKitTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				896FF5942048C7510054198A /* Debug */,
+				896FF5952048C7510054198A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 896FF5732048C7510054198A /* Project object */;
+}
