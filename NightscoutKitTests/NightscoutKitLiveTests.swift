@@ -31,13 +31,13 @@ class NightscoutKitLiveTests: XCTestCase {
                 print(snapshot.settings)
                 print()
                 print("===== BLOOD GLUCOSE ENTRIES =====")
-                print(snapshot.recentBloodGlucoseEntries)
+                snapshot.recentBloodGlucoseEntries.forEach { print($0) }
                 print()
                 print("===== TREATMENTS =====")
-                print(snapshot.recentTreatments)
+                snapshot.recentTreatments.forEach { print($0) }
                 print()
                 print("===== PROFILE STORE SNAPSHOTS =====")
-                print(snapshot.profileStoreSnapshots)
+                snapshot.profileStoreSnapshots.forEach { print($0) }
                 print()
             case .failure(let error):
                 print(error)

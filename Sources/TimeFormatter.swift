@@ -33,7 +33,6 @@ fileprivate extension DateFormatter {
     static let hourAndMinuteFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
-        formatter.timeZone = TimeZone(secondsFromGMT: Int(TimeInterval(hours: -8))) // for some reason we have to use PST here
         return formatter
     }()
 
@@ -47,7 +46,7 @@ fileprivate extension DateFormatter {
 
 fileprivate extension Date {
     var midnight: Date {
-        let calendar = Calendar(identifier: .iso8601)
+        let calendar = Calendar.current
         return calendar.startOfDay(for: self)
     }
 

@@ -136,7 +136,11 @@ extension Nightscout {
 
 extension Nightscout {
     public func snapshot(recentBloodGlucoseEntryCount: Int = 10, recentTreatmentCount: Int = 10, completion: @escaping (Result<NightscoutSnapshot>) -> Void) {
-        var snapshot = NightscoutSnapshot(date: Date(), settings: .default, recentBloodGlucoseEntries: [], recentTreatments: [], profileStoreSnapshots: [])
+        let date = Date()
+        var settings = NightscoutSettings.default
+        var bloodGlucoseEntries: [BloodGlucoseEntry] = []
+        var treatments: [Treatment] = []
+        var profileStoreSnapshots: [ProfileStoreSnapshot] = []
         var error: Error?
 
         let snapshotGroup = DispatchGroup()
@@ -144,8 +148,8 @@ extension Nightscout {
         snapshotGroup.enter()
         fetchSettings { result in
             switch result {
-            case .success(let settings):
-                snapshot.settings = settings
+            case .success(let fetchedSettings):
+                settings = fetchedSettings
             case .failure(let err):
                 error = err
             }
@@ -156,8 +160,8 @@ extension Nightscout {
         snapshotGroup.enter()
         fetchProfileStoreSnapshots { result in
             switch result {
-            case .success(let profileStoreSnapshots):
-                snapshot.profileStoreSnapshots = profileStoreSnapshots
+            case .success(let fetchedProfileStoreSnapshots):
+                profileStoreSnapshots = fetchedProfileStoreSnapshots
             case .failure(let err):
                 error = err
             }
@@ -166,10 +170,10 @@ extension Nightscout {
         }
 
         snapshotGroup.enter()
-        fetchEntries(count: recentBloodGlucoseEntryCount, in: nil) { result in
+        fetchEntries(from: nil, count: recentBloodGlucoseEntryCount) { result in
             switch result {
-            case .success(let bloodGlucoseEntries):
-                snapshot.recentBloodGlucoseEntries = bloodGlucoseEntries
+            case .success(let fetchedBloodGlucoseEntries):
+                bloodGlucoseEntries = fetchedBloodGlucoseEntries
             case .failure(let err):
                 error = err
             }
@@ -178,10 +182,10 @@ extension Nightscout {
         }
 
         snapshotGroup.enter()
-        fetchTreatments(count: recentTreatmentCount, in: nil) { result in
+        fetchTreatments(from: nil, count: recentTreatmentCount) { result in
             switch result {
-            case .success(let treatments):
-                snapshot.recentTreatments = treatments
+            case .success(let fetchedTreatments):
+                treatments = fetchedTreatments
             case .failure(let err):
                 error = err
             }
@@ -191,9 +195,11 @@ extension Nightscout {
 
         snapshotGroup.wait()
 
+        // There's a race condition with errors here, but if any fetch request fails, we'll report an error--it doesn't matter which.
         if let error = error {
             completion(.failure(error))
         } else {
+            let snapshot = NightscoutSnapshot(date: date, settings: settings, recentBloodGlucoseEntries: bloodGlucoseEntries, recentTreatments: treatments, profileStoreSnapshots: profileStoreSnapshots)
             completion(.success(snapshot))
         }
     }
@@ -202,7 +208,7 @@ extension Nightscout {
         fetch(with: .settingsSession, from: .status, completion: completion)
     }
 
-    public func fetchEntries(count: Int = 10, in interval: DateInterval? = nil, completion: @escaping (Result<[BloodGlucoseEntry]>) -> Void) {
+    public func fetchEntries(from interval: DateInterval? = nil, count: Int = 10, completion: @escaping (Result<[BloodGlucoseEntry]>) -> Void) {
         var queries: [QueryItem] = [.count(count)]
         if let interval = interval {
             queries += QueryItem.dateQueries(from: interval)
@@ -210,7 +216,7 @@ extension Nightscout {
         fetchArray(with: .bloodGlucoseEntriesSession, from: .entries, queries: queries, completion: completion)
     }
 
-    public func fetchTreatments(count: Int = 10, in interval: DateInterval? = nil, completion: @escaping (Result<[Treatment]>) -> Void) {
+    public func fetchTreatments(from interval: DateInterval? = nil, count: Int = 10, completion: @escaping (Result<[Treatment]>) -> Void) {
         var queries: [QueryItem] = [.count(count)]
         if let interval = interval {
             queries += QueryItem.dateQueries(from: interval)

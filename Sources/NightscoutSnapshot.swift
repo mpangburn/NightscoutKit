@@ -11,8 +11,8 @@ import Foundation
 
 public struct NightscoutSnapshot {
     public let date: Date
-    public internal(set) var settings: NightscoutSettings
-    public internal(set) var recentBloodGlucoseEntries: [BloodGlucoseEntry]
-    public internal(set) var recentTreatments: [Treatment]
-    public internal(set) var profileStoreSnapshots: [ProfileStoreSnapshot]
+    public let settings: NightscoutSettings
+    public let recentBloodGlucoseEntries: [BloodGlucoseEntry]
+    public let recentTreatments: [Treatment]
+    public let profileStoreSnapshots: [ProfileStoreSnapshot]
 }
