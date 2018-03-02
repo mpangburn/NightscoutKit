@@ -72,14 +72,13 @@ extension Nightscout {
         }
     }
 
-    private func fetchData(from endpoint: APIEndpoint, queries: [QueryItem], completion: @escaping (Result<Data>) -> Void) {
+    private func fetchData(with session: URLSession, from endpoint: APIEndpoint, queries: [QueryItem], completion: @escaping (Result<Data>) -> Void) {
         let queryItems = queries.map { $0.urlQueryItem }
         guard let route = route(to: endpoint).components?.addingQueryItems(queryItems).url else {
             completion(.failure(NightscoutError.invalidURL))
             return
         }
 
-        let session = URLSession.shared
         let task = session.dataTask(with: route) { data, response, error in
             if let error = error {
                 completion(.failure(error))
@@ -98,8 +97,8 @@ extension Nightscout {
         task.resume()
     }
 
-    private func fetch<T: JSONParseable>(from endpoint: APIEndpoint, queries: [QueryItem] = [], completion: @escaping (Result<T>) -> Void) {
-        fetchData(from: endpoint, queries: queries) { result in
+    private func fetch<T: JSONParseable>(with session: URLSession, from endpoint: APIEndpoint, queries: [QueryItem] = [], completion: @escaping (Result<T>) -> Void) {
+        fetchData(with: session, from: endpoint, queries: queries) { result in
             switch result {
             case .success(let data):
                 do {
@@ -118,8 +117,8 @@ extension Nightscout {
     }
 
     // TODO: eliminate this method using conditional conformance with Array in Swift 4.1
-    private func fetchArray<T: JSONParseable>(from endpoint: APIEndpoint, queries: [QueryItem] = [], completion: @escaping (Result<[T]>) -> Void) {
-        fetchData(from: endpoint, queries: queries) { result in
+    private func fetchArray<T: JSONParseable>(with session: URLSession, from endpoint: APIEndpoint, queries: [QueryItem] = [], completion: @escaping (Result<[T]>) -> Void) {
+        fetchData(with: session, from: endpoint, queries: queries) { result in
             switch result {
             case .success(let data):
                 do {
@@ -136,12 +135,71 @@ extension Nightscout {
 }
 
 extension Nightscout {
-    public func fetchSettings(completion: @escaping (Result<NightscoutSettings>) -> Void) {
-        fetch(from: .status, completion: completion)
+    public func snapshot(recentBloodGlucoseEntryCount: Int = 10, recentTreatmentCount: Int = 10, completion: @escaping (Result<NightscoutSnapshot>) -> Void) {
+        var snapshot = NightscoutSnapshot(date: Date(), settings: .default, recentBloodGlucoseEntries: [], recentTreatments: [], profileStoreSnapshots: [])
+        var error: Error?
+
+        let snapshotGroup = DispatchGroup()
+
+        snapshotGroup.enter()
+        fetchSettings { result in
+            switch result {
+            case .success(let settings):
+                snapshot.settings = settings
+            case .failure(let err):
+                error = err
+            }
+
+            snapshotGroup.leave()
+        }
+
+        snapshotGroup.enter()
+        fetchProfileStoreSnapshots { result in
+            switch result {
+            case .success(let profileStoreSnapshots):
+                snapshot.profileStoreSnapshots = profileStoreSnapshots
+            case .failure(let err):
+                error = err
+            }
+
+            snapshotGroup.leave()
+        }
+
+        snapshotGroup.enter()
+        fetchEntries(count: recentBloodGlucoseEntryCount, in: nil) { result in
+            switch result {
+            case .success(let bloodGlucoseEntries):
+                snapshot.recentBloodGlucoseEntries = bloodGlucoseEntries
+            case .failure(let err):
+                error = err
+            }
+
+            snapshotGroup.leave()
+        }
+
+        snapshotGroup.enter()
+        fetchTreatments(count: recentTreatmentCount, in: nil) { result in
+            switch result {
+            case .success(let treatments):
+                snapshot.recentTreatments = treatments
+            case .failure(let err):
+                error = err
+            }
+
+            snapshotGroup.leave()
+        }
+
+        snapshotGroup.wait()
+
+        if let error = error {
+            completion(.failure(error))
+        } else {
+            completion(.success(snapshot))
+        }
     }
 
-    public func fetchProfileStoreSnapshots(completion: @escaping (Result<[ProfileStoreSnapshot]>) -> Void) {
-        fetchArray(from: .profile, completion: completion)
+    public func fetchSettings(completion: @escaping (Result<NightscoutSettings>) -> Void) {
+        fetch(with: .settingsSession, from: .status, completion: completion)
     }
 
     public func fetchEntries(count: Int = 10, in interval: DateInterval? = nil, completion: @escaping (Result<[BloodGlucoseEntry]>) -> Void) {
@@ -149,7 +207,7 @@ extension Nightscout {
         if let interval = interval {
             queries += QueryItem.dateQueries(from: interval)
         }
-        fetchArray(from: .entries, queries: queries, completion: completion)
+        fetchArray(with: .bloodGlucoseEntriesSession, from: .entries, queries: queries, completion: completion)
     }
 
     public func fetchTreatments(count: Int = 10, in interval: DateInterval? = nil, completion: @escaping (Result<[Treatment]>) -> Void) {
@@ -157,7 +215,17 @@ extension Nightscout {
         if let interval = interval {
             queries += QueryItem.dateQueries(from: interval)
         }
-        fetchArray(from: .treatments, queries: queries, completion: completion)
+        fetchArray(with: .treatmentsSession, from: .treatments, queries: queries, completion: completion)
+    }
+
+    public func fetchProfileStoreSnapshots(completion: @escaping (Result<[ProfileStoreSnapshot]>) -> Void) {
+        fetchArray(with: .profilesSession, from: .profile, completion: completion)
     }
 }
 
+fileprivate extension URLSession {
+    static let settingsSession = URLSession(configuration: .default)
+    static let bloodGlucoseEntriesSession = URLSession(configuration: .default)
+    static let treatmentsSession = URLSession(configuration: .default)
+    static let profilesSession = URLSession(configuration: .default)
+}

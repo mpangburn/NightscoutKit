@@ -19,59 +19,33 @@ class NightscoutKitLiveTests: XCTestCase {
                 return
         }
 
-        let settingsExpectation = expectation(description: "Settings response")
-        nightscout.fetchSettings { result in
+        let snapshotExpectation = expectation(description: "Nightscout snapshot")
+        nightscout.snapshot { result in
             switch result {
-            case .success(let settings):
+            case .success(let snapshot):
+                print()
+                print("===== NIGHTSCOUT SNAPSHOT =====")
+                print(snapshot.date)
+                print()
                 print("===== SETTINGS =====")
-                print(settings)
+                print(snapshot.settings)
                 print()
-            case .failure(let error):
-                print(error)
-            }
-            settingsExpectation.fulfill()
-        }
-
-        let entriesExpectation = expectation(description: "Entries response")
-        nightscout.fetchEntries { result in
-            switch result {
-            case .success(let entries):
-                print("===== ENTRIES =====")
-                entries.forEach { print($0) }
+                print("===== BLOOD GLUCOSE ENTRIES =====")
+                print(snapshot.recentBloodGlucoseEntries)
                 print()
-            case .failure(let error):
-                print(error)
-            }
-            entriesExpectation.fulfill()
-        }
-
-        let treatmentsExpectation = expectation(description: "Treatments response")
-        nightscout.fetchTreatments { result in
-            switch result {
-            case .success(let treatments):
                 print("===== TREATMENTS =====")
-                treatments.forEach { print($0) }
+                print(snapshot.recentTreatments)
+                print()
+                print("===== PROFILE STORE SNAPSHOTS =====")
+                print(snapshot.profileStoreSnapshots)
                 print()
             case .failure(let error):
                 print(error)
             }
-            treatmentsExpectation.fulfill()
-        }
 
-        let profileStoresExpectation = expectation(description: "Profile stores response")
-        nightscout.fetchProfileStoreSnapshots { result in
-            switch result {
-            case .success(let profileStores):
-                print("===== PROFILE STORES =====")
-                profileStores.forEach { print($0) }
-                print()
-            case .failure(let error):
-                print(error)
-            }
-            profileStoresExpectation.fulfill()
+            snapshotExpectation.fulfill()
         }
 
         waitForExpectations(timeout: 5, handler: nil)
     }
-
 }

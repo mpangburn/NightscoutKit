@@ -10,9 +10,9 @@ import Foundation
 
 
 public struct NightscoutSnapshot {
-    let date: Date
-    let settings: NightscoutSettings
-    let recentEntries: [BloodGlucoseEntry]
-    let recentTreatments: [Treatment]
-    let profileStoreSnapshots: [ProfileStoreSnapshot]
+    public let date: Date
+    public internal(set) var settings: NightscoutSettings
+    public internal(set) var recentBloodGlucoseEntries: [BloodGlucoseEntry]
+    public internal(set) var recentTreatments: [Treatment]
+    public internal(set) var profileStoreSnapshots: [ProfileStoreSnapshot]
 }
