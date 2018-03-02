@@ -6,7 +6,7 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-enum BloodGlucoseUnit: String {
+public enum BloodGlucoseUnit: String {
     case milligramsPerDeciliter = "mg/dl"
     case millimolesPerLiter = "mmol"
 }

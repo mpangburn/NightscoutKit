@@ -9,8 +9,8 @@
 import Foundation
 
 
-struct Profile {
-    struct ScheduleItem<T> {
+public struct Profile {
+    public struct ScheduleItem<T> {
         let startTime: TimeInterval // referenced to midnight
         let value: T
     }

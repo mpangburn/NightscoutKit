@@ -33,6 +33,9 @@
 		896FF5C72048C7FC0054198A /* entries.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5C22048C7FC0054198A /* entries.json */; };
 		896FF5C82048C7FC0054198A /* profile.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5C32048C7FC0054198A /* profile.json */; };
 		896FF5C92048C7FC0054198A /* XCTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5C52048C7FC0054198A /* XCTestCase.swift */; };
+		896FF5CB2048C9DC0054198A /* NightscoutSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */; };
+		896FF5CD2048CC160054198A /* NightscoutKitLiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5CC2048CC160054198A /* NightscoutKitLiveTests.swift */; };
+		896FF5CF2048CDE50054198A /* myNightscoutURL in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5CE2048CDE50054198A /* myNightscoutURL */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -75,6 +78,9 @@
 		896FF5C22048C7FC0054198A /* entries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = entries.json; sourceTree = "<group>"; };
 		896FF5C32048C7FC0054198A /* profile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = profile.json; sourceTree = "<group>"; };
 		896FF5C52048C7FC0054198A /* XCTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestCase.swift; sourceTree = "<group>"; };
+		896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutSnapshot.swift; sourceTree = "<group>"; };
+		896FF5CC2048CC160054198A /* NightscoutKitLiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutKitLiveTests.swift; sourceTree = "<group>"; };
+		896FF5CE2048CDE50054198A /* myNightscoutURL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = myNightscoutURL; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -130,6 +136,7 @@
 				896FF5C42048C7FC0054198A /* Extensions */,
 				896FF5C02048C7FC0054198A /* Fixtures */,
 				896FF58A2048C7510054198A /* NightscoutKitTests.swift */,
+				896FF5CC2048CC160054198A /* NightscoutKitLiveTests.swift */,
 				896FF58C2048C7510054198A /* Info.plist */,
 			);
 			path = NightscoutKitTests;
@@ -138,9 +145,19 @@
 		896FF5962048C7640054198A /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				896FF5B72048C7A30054198A /* Protocols */,
+				896FF5A12048C77B0054198A /* BloodGlucoseEntry.swift */,
+				896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */,
+				896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */,
+				896FF5A62048C77B0054198A /* Nightscout.swift */,
+				896FF5A72048C77B0054198A /* NightscoutSettings.swift */,
+				896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */,
+				896FF5A32048C77B0054198A /* Profile.swift */,
+				896FF5A42048C77B0054198A /* ProfileStoreSnapshot.swift */,
+				896FF5A22048C77B0054198A /* Result.swift */,
+				896FF59F2048C77B0054198A /* TimeFormatter.swift */,
+				896FF59E2048C77B0054198A /* Treatment.swift */,
 				896FF5972048C77A0054198A /* Extensions */,
-				896FF59D2048C77B0054198A /* Models */,
+				896FF5B72048C7A30054198A /* Protocols */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -155,23 +172,6 @@
 				896FF59C2048C77A0054198A /* TimeInterval.swift */,
 			);
 			path = Extensions;
-			sourceTree = "<group>";
-		};
-		896FF59D2048C77B0054198A /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				896FF59E2048C77B0054198A /* Treatment.swift */,
-				896FF59F2048C77B0054198A /* TimeFormatter.swift */,
-				896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */,
-				896FF5A12048C77B0054198A /* BloodGlucoseEntry.swift */,
-				896FF5A22048C77B0054198A /* Result.swift */,
-				896FF5A32048C77B0054198A /* Profile.swift */,
-				896FF5A42048C77B0054198A /* ProfileStoreSnapshot.swift */,
-				896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */,
-				896FF5A62048C77B0054198A /* Nightscout.swift */,
-				896FF5A72048C77B0054198A /* NightscoutSettings.swift */,
-			);
-			path = Models;
 			sourceTree = "<group>";
 		};
 		896FF5B72048C7A30054198A /* Protocols */ = {
@@ -191,6 +191,7 @@
 				896FF5C12048C7FC0054198A /* treatments.json */,
 				896FF5C22048C7FC0054198A /* entries.json */,
 				896FF5C32048C7FC0054198A /* profile.json */,
+				896FF5CE2048CDE50054198A /* myNightscoutURL */,
 			);
 			path = Fixtures;
 			sourceTree = "<group>";
@@ -303,6 +304,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				896FF5CF2048CDE50054198A /* myNightscoutURL in Resources */,
 				896FF5C82048C7FC0054198A /* profile.json in Resources */,
 				896FF5C72048C7FC0054198A /* entries.json in Resources */,
 				896FF5C62048C7FC0054198A /* treatments.json in Resources */,
@@ -335,6 +337,7 @@
 				896FF5B32048C77B0054198A /* ProfileStoreSnapshot.swift in Sources */,
 				896FF5B62048C77B0054198A /* NightscoutSettings.swift in Sources */,
 				896FF5BF2048C7A30054198A /* PartiallyRawRepresentable.swift in Sources */,
+				896FF5CB2048C9DC0054198A /* NightscoutSnapshot.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -344,6 +347,7 @@
 			files = (
 				896FF5C92048C7FC0054198A /* XCTestCase.swift in Sources */,
 				896FF58B2048C7510054198A /* NightscoutKitTests.swift in Sources */,
+				896FF5CD2048CC160054198A /* NightscoutKitLiveTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

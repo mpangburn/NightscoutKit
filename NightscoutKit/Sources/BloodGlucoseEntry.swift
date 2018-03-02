@@ -9,19 +9,19 @@
 import Foundation
 
 
-struct BloodGlucoseEntry: UniquelyIdentifiable {
-    enum Source {
+public struct BloodGlucoseEntry: UniquelyIdentifiable {
+    public enum Source {
         case sensor(trend: BloodGlucoseTrend)
         case meter
         case calibration
         case other
     }
 
-    let id: String
-    let glucoseValue: Int // TODO: can this be in mmol/L, or is it always uploaded in mg/dL?
-    let source: Source
-    let date: Date
-    let device: String?
+    public let id: String
+    public let glucoseValue: Int // Nightscout stores all BGs internally in mg/dL
+    public let source: Source
+    public let date: Date
+    public let device: String?
 }
 
 extension BloodGlucoseEntry: JSONParseable {
@@ -55,7 +55,7 @@ extension BloodGlucoseEntry: JSONParseable {
 }
 
 extension BloodGlucoseEntry: JSONConvertible {
-    var rawValue: JSONDictionary {
+    public var rawValue: [String: Any] {
         var raw: RawValue = [
             Key.id: id,
             Key.date: Int(date.timeIntervalSince1970.milliseconds),

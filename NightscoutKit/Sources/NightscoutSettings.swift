@@ -9,7 +9,7 @@
 import Foundation
 
 
-struct NightscoutSettings {
+public struct NightscoutSettings {
     let units: BloodGlucoseUnit
     let title: String
 

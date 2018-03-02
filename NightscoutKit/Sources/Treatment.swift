@@ -9,8 +9,8 @@
 import Foundation
 
 
-struct Treatment: UniquelyIdentifiable {
-    enum EventType {
+public struct Treatment: UniquelyIdentifiable {
+    public enum EventType {
         case bloodGlucoseCheck
         case bolus(type: BolusType)
         case tempBasal(type: TempBasalType)
@@ -25,35 +25,35 @@ struct Treatment: UniquelyIdentifiable {
         case unknown(String)
     }
 
-    enum BolusType {
+    public enum BolusType {
         case snack
         case meal
         case correction
         case combo(totalInsulin: Double, percentageUpFront: Int)
     }
 
-    enum TempBasalType {
+    public enum TempBasalType {
         case percentage(Int)
         case absolute(rate: Double)
         case ended
     }
 
-    enum GlucoseSource: String {
+    public enum GlucoseSource: String {
         case meter = "Finger"
         case sensor = "Sensor"
     }
 
-    typealias GlucoseMeasurement = (value: Double, units: BloodGlucoseUnit, source: GlucoseSource)
+    public typealias GlucoseMeasurement = (value: Double, units: BloodGlucoseUnit, source: GlucoseSource)
 
-    let id: String
-    let eventType: EventType
-    let date: Date
-    let duration: TimeInterval
-    let glucose: GlucoseMeasurement?
-    let insulinGiven: Double? // units
-    let carbsConsumed: Int? // grams
-    let creator: String
-    let notes: String
+    public let id: String
+    public let eventType: EventType
+    public let date: Date
+    public let duration: TimeInterval
+    public let glucose: GlucoseMeasurement?
+    public let insulinGiven: Double? // units
+    public let carbsConsumed: Int? // grams
+    public let creator: String
+    public let notes: String
 }
 
 extension Treatment: JSONParseable {
@@ -107,7 +107,7 @@ extension Treatment: JSONParseable {
 }
 
 extension Treatment: JSONConvertible {
-    var rawValue: JSONDictionary {
+    public var rawValue: [String: Any] {
         var raw: RawValue = [
             Key.id: id,
             Key.eventType: eventType.simpleRawValue,

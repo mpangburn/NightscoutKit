@@ -11,7 +11,6 @@ import XCTest
 
 
 class NightscoutKitTests: XCTestCase {
-
     func testParseTreatmentJSON() {
         let treatmentsJSON: [JSONDictionary] = loadFixture("treatments")
         let treatments = treatmentsJSON.flatMap(Treatment.init(rawValue:))

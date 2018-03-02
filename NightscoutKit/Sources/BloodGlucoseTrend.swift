@@ -6,7 +6,7 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-enum BloodGlucoseTrend: String {
+public enum BloodGlucoseTrend: String {
     case doubleUp = "DoubleUp"
     case singleUp = "SingleUp"
     case fortyFiveUp = "FortyFiveUp"
@@ -16,7 +16,7 @@ enum BloodGlucoseTrend: String {
     case doubleDown = "DoubleDown"
     case unknown
 
-    var symbol: String {
+    public var symbol: String {
         switch self {
         case .doubleUp:
             return "⇈"

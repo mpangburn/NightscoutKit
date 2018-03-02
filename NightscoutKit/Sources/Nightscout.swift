@@ -9,22 +9,20 @@
 import Foundation
 
 
-enum NightscoutError: Error {
+public enum NightscoutError: Error {
     case invalidURL
     case unexpectedHTTPResponse(HTTPURLResponse)
     case unexpectedDataFormat(Data)
 }
 
-class Nightscout {
+public class Nightscout {
     private let baseURL: URL
-    let settings: NightscoutSettings
 
-    init(baseURL: String, settings: NightscoutSettings = .default) throws {
+    init(baseURL: String) throws {
         guard let baseURL = URL(string: baseURL) else {
             throw NightscoutError.invalidURL
         }
         self.baseURL = baseURL
-        self.settings = settings
     }
 }
 
@@ -138,15 +136,15 @@ extension Nightscout {
 }
 
 extension Nightscout {
-    func fetchSettings(completion: @escaping (Result<NightscoutSettings>) -> Void) {
+    public func fetchSettings(completion: @escaping (Result<NightscoutSettings>) -> Void) {
         fetch(from: .status, completion: completion)
     }
 
-    func fetchProfileStores(completion: @escaping (Result<[ProfileStoreSnapshot]>) -> Void) {
+    public func fetchProfileStoreSnapshots(completion: @escaping (Result<[ProfileStoreSnapshot]>) -> Void) {
         fetchArray(from: .profile, completion: completion)
     }
 
-    func fetchEntries(count: Int = 10, in interval: DateInterval? = nil, completion: @escaping (Result<[BloodGlucoseEntry]>) -> Void) {
+    public func fetchEntries(count: Int = 10, in interval: DateInterval? = nil, completion: @escaping (Result<[BloodGlucoseEntry]>) -> Void) {
         var queries: [QueryItem] = [.count(count)]
         if let interval = interval {
             queries += QueryItem.dateQueries(from: interval)
@@ -154,7 +152,7 @@ extension Nightscout {
         fetchArray(from: .entries, queries: queries, completion: completion)
     }
 
-    func fetchTreatments(count: Int = 10, in interval: DateInterval? = nil, completion: @escaping (Result<[Treatment]>) -> Void) {
+    public func fetchTreatments(count: Int = 10, in interval: DateInterval? = nil, completion: @escaping (Result<[Treatment]>) -> Void) {
         var queries: [QueryItem] = [.count(count)]
         if let interval = interval {
             queries += QueryItem.dateQueries(from: interval)

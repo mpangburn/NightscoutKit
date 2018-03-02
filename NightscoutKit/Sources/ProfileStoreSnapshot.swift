@@ -9,12 +9,12 @@
 import Foundation
 
 
-struct ProfileStoreSnapshot: UniquelyIdentifiable {
-    let id: String
-    let defaultProfileName: String
-    let recordDate: Date
-    let units: BloodGlucoseUnit
-    let profiles: [String: Profile]
+public struct ProfileStoreSnapshot: UniquelyIdentifiable {
+    public let id: String
+    public let defaultProfileName: String
+    public let recordDate: Date
+    public let units: BloodGlucoseUnit
+    public let profiles: [String: Profile]
 }
 
 extension ProfileStoreSnapshot: JSONParseable {

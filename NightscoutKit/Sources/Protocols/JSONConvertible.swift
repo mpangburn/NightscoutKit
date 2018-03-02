@@ -34,7 +34,7 @@ extension JSONParseable {
 protocol JSONConvertible: JSONParseable, RawRepresentable where RawValue == JSONDictionary { }
 
 extension JSONConvertible {
-    init?(rawValue: RawValue) {
+    public init?(rawValue: RawValue) {
         guard let parsed = Self.parse(from: rawValue) else {
             return nil
         }
