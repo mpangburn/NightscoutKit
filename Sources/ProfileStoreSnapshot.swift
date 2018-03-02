@@ -17,6 +17,8 @@ public struct ProfileStoreSnapshot: UniquelyIdentifiable {
     public let profiles: [String: Profile]
 }
 
+// MARK: - JSON Parsing
+
 extension ProfileStoreSnapshot: JSONParseable {
     private struct Key {
         static let id = "_id"

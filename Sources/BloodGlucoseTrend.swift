@@ -37,3 +37,9 @@ public enum BloodGlucoseTrend: String {
         }
     }
 }
+
+extension BloodGlucoseTrend: CustomStringConvertible {
+    public var description: String {
+        return symbol
+    }
+}

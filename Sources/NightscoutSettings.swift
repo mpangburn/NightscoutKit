@@ -16,6 +16,8 @@ public struct NightscoutSettings {
     static let `default` = NightscoutSettings(units: .milligramsPerDeciliter, title: "Nightscout")
 }
 
+// MARK: - JSON Parsing
+
 extension NightscoutSettings: JSONParseable {
     private struct Key {
         static let settings = "settings"

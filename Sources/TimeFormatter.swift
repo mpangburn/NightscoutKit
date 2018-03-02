@@ -11,7 +11,13 @@ import Foundation
 
 enum TimeFormatter {
     static func time(from string: String) -> TimeInterval? {
-        return DateFormatter.gmtHourAndMinuteFormatter.date(from: string)?.timeIntervalSinceMidnight
+        let date = DateFormatter.hourAndMinuteFormatter.date(from: string)
+        return date?.timeIntervalSinceMidnight
+    }
+
+    static func string(from time: TimeInterval) -> String {
+        let date = Date().midnight + time
+        return DateFormatter.prettyTimeFormatter.string(from: date)
     }
 
     static func date(from string: String) -> Date? {
@@ -24,20 +30,29 @@ enum TimeFormatter {
 }
 
 fileprivate extension DateFormatter {
-    static let gmtHourAndMinuteFormatter: DateFormatter = {
+    static let hourAndMinuteFormatter: DateFormatter = {
         let formatter = DateFormatter()
         formatter.dateFormat = "HH:mm"
-        formatter.timeZone = TimeZone(secondsFromGMT: 0)
+        formatter.timeZone = TimeZone(secondsFromGMT: Int(TimeInterval(hours: -8))) // for some reason we have to use PST here
+        return formatter
+    }()
+
+    static let prettyTimeFormatter: DateFormatter = {
+        let formatter = DateFormatter()
+        formatter.dateStyle = .none
+        formatter.timeStyle = .short
         return formatter
     }()
 }
 
 fileprivate extension Date {
+    var midnight: Date {
+        let calendar = Calendar(identifier: .iso8601)
+        return calendar.startOfDay(for: self)
+    }
+
     var timeIntervalSinceMidnight: TimeInterval {
-        let calendar = Calendar(identifier: .gregorian)
-        let hours = calendar.component(.hour, from: self)
-        let minutes = calendar.component(.minute, from: self)
-        return .hours(Double(hours)) + .minutes(Double(minutes))
+        return timeIntervalSince(midnight)
     }
 }
 

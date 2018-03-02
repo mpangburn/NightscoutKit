@@ -29,6 +29,8 @@ public struct Profile {
     let timeZone: String // TODO: use TimeZone here
 }
 
+// MARK: - JSON Parsing
+
 extension Profile: JSONParseable {
     private struct Key {
         static let carbRatioSchedule = "carbratio"
@@ -99,5 +101,13 @@ extension Profile.ScheduleItem /*: JSONParseable */ where T: StringParseable {
         }
         
         return Profile.ScheduleItem(startTime: startTime, value: value)
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension Profile.ScheduleItem: CustomStringConvertible {
+    public var description: String {
+        return "ScheduleItem(startTime: \(TimeFormatter.string(from: startTime)), value: \(value))"
     }
 }

@@ -24,6 +24,8 @@ public struct BloodGlucoseEntry: UniquelyIdentifiable {
     public let device: String?
 }
 
+// MARK: - JSON Parsing
+
 extension BloodGlucoseEntry: JSONParseable {
     fileprivate struct Key {
         static let id = "_id"
@@ -120,6 +122,46 @@ extension BloodGlucoseEntry.Source: PartiallyRawRepresentable {
             return "cal"
         case .other:
             return "etc"
+        }
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension BloodGlucoseEntry: CustomStringConvertible, CustomDebugStringConvertible {
+    public var description: String {
+        return description(includingID: false)
+    }
+
+    public var debugDescription: String {
+        return description(includingID: true)
+    }
+
+    private func description(includingID: Bool) -> String {
+        var description = "BloodGlucoseEntry("
+        if includingID {
+            description += "id: \(id), "
+        }
+        description += "glucoseValue: \(glucoseValue) \(BloodGlucoseUnit.milligramsPerDeciliter), source: \(source), date: \(date)"
+        if let device = device {
+            description += ", device: \(device)"
+        }
+        description += ")"
+        return description
+    }
+}
+
+extension BloodGlucoseEntry.Source: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .sensor(trend: let trend):
+            return "sensor(trend: \(trend))"
+        case .meter:
+            return "meter"
+        case .calibration:
+            return "calibration"
+        case .other:
+            return "other"
         }
     }
 }

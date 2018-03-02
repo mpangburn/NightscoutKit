@@ -10,3 +10,14 @@ public enum BloodGlucoseUnit: String {
     case milligramsPerDeciliter = "mg/dl"
     case millimolesPerLiter = "mmol"
 }
+
+extension BloodGlucoseUnit: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .milligramsPerDeciliter:
+            return "mg/dL"
+        case .millimolesPerLiter:
+            return "mmol/L"
+        }
+    }
+}

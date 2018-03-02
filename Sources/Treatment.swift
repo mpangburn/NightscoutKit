@@ -56,6 +56,8 @@ public struct Treatment: UniquelyIdentifiable {
     public let notes: String
 }
 
+// MARK: - JSON Parsing
+
 extension Treatment: JSONParseable {
     fileprivate struct Key {
         static let id = "_id"
@@ -198,8 +200,14 @@ extension Treatment.EventType: PartiallyRawRepresentable {
             return "Temp Basal"
         case .carbCorrection:
             return "Carb Correction"
-        case .announcement, .note, .question, .exercise:
-            return String(describing: self).capitalized
+        case .announcement:
+            return "Announcement"
+        case .note:
+            return "Note"
+        case .question:
+            return "Question"
+        case .exercise:
+            return "Exercise"
         case .suspendPump:
             return "Suspend Pump"
         case .resumePump:
@@ -258,8 +266,12 @@ extension Treatment.BolusType: PartiallyRawRepresentable {
     var simpleRawValue: String {
         let typeString: String
         switch self {
-        case .snack, .meal, .correction:
-            typeString = String(describing: self).capitalized
+        case .snack:
+            return "Snack"
+        case .meal:
+            return "Meal"
+        case .correction:
+            return "Correction"
         case .combo(totalInsulin: _, percentageUpFront: _):
             typeString = "Combo"
         }
@@ -285,6 +297,49 @@ extension Treatment.TempBasalType: JSONParseable {
             return .absolute(rate: rate)
         } else {
             return .ended
+        }
+    }
+}
+
+// MARK: - CustomStringConvertible
+
+extension Treatment.EventType: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .bolus(type: let type):
+            return type.description
+        case .tempBasal(type: let type):
+            return type.description
+        case .profileSwitch(profileName: let profileName):
+            return "Profile Switch (\(profileName))"
+        case .unknown(let eventString):
+            return eventString
+        default: // simple case
+            return simpleRawValue
+        }
+    }
+}
+
+extension Treatment.BolusType: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .combo(totalInsulin: let totalInsulin, percentageUpFront: let percentageUpFront):
+            return "Combo Bolus (\(totalInsulin)U, \(percentageUpFront)/\(100 - percentageUpFront))"
+        case .snack, .meal, .correction:
+            return simpleRawValue
+        }
+    }
+}
+
+extension Treatment.TempBasalType: CustomStringConvertible {
+    public var description: String {
+        switch self {
+        case .percentage(let percentage):
+            return "Temp Basal (\(percentage)%)"
+        case .absolute(rate: let rate):
+            return "Temp Basal (\(rate)U)"
+        case .ended:
+            return "Temp Basal Ended"
         }
     }
 }
