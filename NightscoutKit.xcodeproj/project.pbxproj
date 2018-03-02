@@ -105,6 +105,7 @@
 		896FF5722048C7510054198A = {
 			isa = PBXGroup;
 			children = (
+				896FF5962048C7640054198A /* Sources */,
 				896FF57E2048C7510054198A /* NightscoutKit */,
 				896FF5892048C7510054198A /* NightscoutKitTests */,
 				896FF57D2048C7510054198A /* Products */,
@@ -123,7 +124,6 @@
 		896FF57E2048C7510054198A /* NightscoutKit */ = {
 			isa = PBXGroup;
 			children = (
-				896FF5962048C7640054198A /* Sources */,
 				896FF57F2048C7510054198A /* NightscoutKit.h */,
 				896FF5802048C7510054198A /* Info.plist */,
 			);
