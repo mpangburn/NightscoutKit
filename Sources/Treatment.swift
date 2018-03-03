@@ -22,6 +22,7 @@ public struct Treatment: UniquelyIdentifiable {
         case sensorStart, sensorChange
         case profileSwitch(profileName: String)
         case diabeticAlertDogAlert
+        case none
         case unknown(String)
     }
 
@@ -43,7 +44,11 @@ public struct Treatment: UniquelyIdentifiable {
         case sensor = "Sensor"
     }
 
-    public typealias GlucoseMeasurement = (value: Double, units: BloodGlucoseUnit, source: GlucoseSource)
+    public struct GlucoseMeasurement {
+        public let value: Double
+        public let units: BloodGlucoseUnit
+        public let source: GlucoseSource
+    }
 
     public let id: String
     public let eventType: EventType
@@ -54,6 +59,16 @@ public struct Treatment: UniquelyIdentifiable {
     public let carbsConsumed: Int? // grams
     public let creator: String
     public let notes: String
+}
+
+// MARK: - Equatable
+
+extension Treatment.GlucoseMeasurement: Equatable {
+    public static func == (lhs: Treatment.GlucoseMeasurement, rhs: Treatment.GlucoseMeasurement) -> Bool {
+        return lhs.value == rhs.value
+            && lhs.units == rhs.units
+            && lhs.source == rhs.source
+    }
 }
 
 // MARK: - JSON Parsing
@@ -89,7 +104,7 @@ extension Treatment: JSONParseable {
             let units = BloodGlucoseUnit(rawValue: unitString),
             let glucoseSourceString = treatmentJSON[Key.glucoseSourceString] as? String,
             let glucoseSource = GlucoseSource(rawValue: glucoseSourceString) {
-                glucose = (value: glucoseValue, units: units, source: glucoseSource)
+                glucose = GlucoseMeasurement(value: glucoseValue, units: units, source: glucoseSource)
         } else {
             glucose = nil
         }
@@ -141,10 +156,10 @@ extension Treatment: JSONConvertible {
             break
         }
 
-        if let (glucoseValue, units, glucoseSource) = glucose {
-            raw[Key.glucoseValue] = glucoseValue
-            raw[Key.unitString] = units.rawValue
-            raw[Key.glucoseSourceString] = glucoseSource.rawValue
+        if let glucose = glucose {
+            raw[Key.glucoseValue] = glucose.value
+            raw[Key.unitString] = glucose.units.rawValue
+            raw[Key.glucoseSourceString] = glucose.source.rawValue
         }
 
         raw[Key.carbsConsumed] = carbsConsumed
@@ -185,8 +200,8 @@ extension Treatment.EventType: PartiallyRawRepresentable {
     static var simpleCases: [Treatment.EventType] {
         return [
             .bloodGlucoseCheck, .carbCorrection, .announcement, .note, .question,
-            .exercise, .suspendPump, .resumePump, .pumpSiteChange,
-            .insulinChange, .sensorStart, .sensorChange, .diabeticAlertDogAlert
+            .exercise, .suspendPump, .resumePump, .pumpSiteChange, .insulinChange,
+            .sensorStart, .sensorChange, .diabeticAlertDogAlert, .none
         ]
     }
 
@@ -224,6 +239,8 @@ extension Treatment.EventType: PartiallyRawRepresentable {
             return "Profile Switch"
         case .diabeticAlertDogAlert:
             return "D.A.D. Alert"
+        case .none:
+            return "<none>"
         case .unknown(let description):
             return description
         }
@@ -267,11 +284,11 @@ extension Treatment.BolusType: PartiallyRawRepresentable {
         let typeString: String
         switch self {
         case .snack:
-            return "Snack"
+            typeString = "Snack"
         case .meal:
-            return "Meal"
+            typeString = "Meal"
         case .correction:
-            return "Correction"
+            typeString = "Correction"
         case .combo(totalInsulin: _, percentageUpFront: _):
             typeString = "Combo"
         }
@@ -313,7 +330,7 @@ extension Treatment.EventType: CustomStringConvertible {
         case .profileSwitch(profileName: let profileName):
             return "Profile Switch (\(profileName))"
         case .unknown(let eventString):
-            return eventString
+            return "\(eventString) (Unknown)"
         default: // simple case
             return simpleRawValue
         }

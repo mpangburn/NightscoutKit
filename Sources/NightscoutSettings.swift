@@ -10,8 +10,8 @@ import Foundation
 
 
 public struct NightscoutSettings {
-    let units: BloodGlucoseUnit
-    let title: String
+    public let units: BloodGlucoseUnit
+    public let title: String
 
     static let `default` = NightscoutSettings(units: .milligramsPerDeciliter, title: "Nightscout")
 }

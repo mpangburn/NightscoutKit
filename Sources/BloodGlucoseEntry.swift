@@ -14,7 +14,7 @@ public struct BloodGlucoseEntry: UniquelyIdentifiable {
         case sensor(trend: BloodGlucoseTrend)
         case meter
         case calibration
-        case other
+        case other(String)
     }
 
     public let id: String
@@ -92,7 +92,7 @@ extension BloodGlucoseEntry.Source: JSONParseable {
             return simpleGlucoseSource
         } else {
             guard typeString == "sgv" else {
-                return nil
+                return .other(typeString)
             }
 
             let trend: BloodGlucoseTrend
@@ -109,7 +109,7 @@ extension BloodGlucoseEntry.Source: JSONParseable {
 
 extension BloodGlucoseEntry.Source: PartiallyRawRepresentable {
     static var simpleCases: [BloodGlucoseEntry.Source] {
-        return [.meter, .calibration, .other]
+        return [.meter, .calibration]
     }
 
     var simpleRawValue: String {
@@ -120,8 +120,8 @@ extension BloodGlucoseEntry.Source: PartiallyRawRepresentable {
             return "mbg"
         case .calibration:
             return "cal"
-        case .other:
-            return "etc"
+        case .other(let source):
+            return source
         }
     }
 }
@@ -160,8 +160,8 @@ extension BloodGlucoseEntry.Source: CustomStringConvertible {
             return ".meter"
         case .calibration:
             return ".calibration"
-        case .other:
-            return ".other"
+        case .other(let source):
+            return ".other(\(source)"
         }
     }
 }

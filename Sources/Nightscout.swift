@@ -23,9 +23,9 @@ fileprivate enum HTTPMethod: String {
 }
 
 public class Nightscout {
-    private let baseURL: URL
+    public let baseURL: URL
 
-    init(baseURL: String) throws {
+    public init(baseURL: String) throws {
         guard let baseURL = URL(string: baseURL) else {
             throw NightscoutError.invalidURL
         }
@@ -206,7 +206,7 @@ extension Nightscout {
         if let error = error {
             completion(.failure(error))
         } else {
-            let snapshot = NightscoutSnapshot(date: date, settings: settings, recentBloodGlucoseEntries: bloodGlucoseEntries, recentTreatments: treatments, profileStoreSnapshots: profileStoreSnapshots)
+            let snapshot = NightscoutSnapshot(date: date, settings: settings, bloodGlucoseEntries: bloodGlucoseEntries, treatments: treatments, profileStoreSnapshots: profileStoreSnapshots)
             completion(.success(snapshot))
         }
     }

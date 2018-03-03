@@ -23,22 +23,7 @@ class NightscoutKitLiveTests: XCTestCase {
         nightscout.snapshot { result in
             switch result {
             case .success(let snapshot):
-                print()
-                print("===== NIGHTSCOUT SNAPSHOT =====")
-                print(snapshot.date)
-                print()
-                print("===== SETTINGS =====")
-                print(snapshot.settings)
-                print()
-                print("===== BLOOD GLUCOSE ENTRIES =====")
-                snapshot.recentBloodGlucoseEntries.forEach { print($0) }
-                print()
-                print("===== TREATMENTS =====")
-                snapshot.recentTreatments.forEach { print($0) }
-                print()
-                print("===== PROFILE STORE SNAPSHOTS =====")
-                snapshot.profileStoreSnapshots.forEach { print($0) }
-                print()
+                print(snapshot)
             case .failure(let error):
                 print(error)
             }

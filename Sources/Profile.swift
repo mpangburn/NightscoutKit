@@ -15,18 +15,18 @@ public struct Profile {
         let value: T
     }
 
-    typealias CarbRatioSchedule = [ScheduleItem<Int>] // g/unit
-    typealias BasalRateSchedule = [ScheduleItem<Double>] // units/hr
-    typealias InsulinSensitivitySchedule = [ScheduleItem<Double>] // <BG unit>/unit
-    typealias BloodGlucoseTargetSchedule = [ScheduleItem<ClosedRange<Double>>] // <BG unit>...<BG unit>
+    public typealias CarbRatioSchedule = [ScheduleItem<Int>] // g/unit
+    public typealias BasalRateSchedule = [ScheduleItem<Double>] // units/hr
+    public typealias InsulinSensitivitySchedule = [ScheduleItem<Double>] // <BG unit>/unit
+    public typealias BloodGlucoseTargetSchedule = [ScheduleItem<ClosedRange<Double>>] // <BG unit>...<BG unit>
 
-    let carbRatioSchedule: CarbRatioSchedule
-    let basalRateSchedule: BasalRateSchedule
-    let sensitivitySchedule: InsulinSensitivitySchedule
-    let bloodGlucoseTargetSchedule: BloodGlucoseTargetSchedule
-    let activeInsulinDuration: TimeInterval // DIA
-    let carbsActivityAbsorptionRate: Int // g/hour
-    let timeZone: String // TODO: use TimeZone here
+    public let carbRatioSchedule: CarbRatioSchedule
+    public let basalRateSchedule: BasalRateSchedule
+    public let sensitivitySchedule: InsulinSensitivitySchedule
+    public let bloodGlucoseTargetSchedule: BloodGlucoseTargetSchedule
+    public let activeInsulinDuration: TimeInterval // DIA
+    public let carbsActivityAbsorptionRate: Int // g/hour
+    public let timeZone: String // TODO: use TimeZone here
 }
 
 // MARK: - JSON Parsing
