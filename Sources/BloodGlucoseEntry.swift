@@ -27,7 +27,7 @@ public struct BloodGlucoseEntry: UniquelyIdentifiable {
 // MARK: - JSON Parsing
 
 extension BloodGlucoseEntry: JSONParseable {
-    fileprivate struct Key {
+    fileprivate enum Key {
         static let id = "_id"
         static let typeString = "type"
         static let date = "date"
@@ -79,7 +79,7 @@ extension BloodGlucoseEntry: JSONConvertible {
 }
 
 extension BloodGlucoseEntry.Source: JSONParseable {
-    fileprivate struct Key {
+    fileprivate enum Key {
         static let direction = "direction"
     }
 
@@ -155,13 +155,13 @@ extension BloodGlucoseEntry.Source: CustomStringConvertible {
     public var description: String {
         switch self {
         case .sensor(trend: let trend):
-            return "sensor(trend: \(trend))"
+            return ".sensor(trend: \(trend))"
         case .meter:
-            return "meter"
+            return ".meter"
         case .calibration:
-            return "calibration"
+            return ".calibration"
         case .other:
-            return "other"
+            return ".other"
         }
     }
 }

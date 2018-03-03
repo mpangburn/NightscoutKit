@@ -19,7 +19,7 @@ public struct NightscoutSettings {
 // MARK: - JSON Parsing
 
 extension NightscoutSettings: JSONParseable {
-    private struct Key {
+    private enum Key {
         static let settings = "settings"
         static let unitString = "units"
         static let title = "customTitle"

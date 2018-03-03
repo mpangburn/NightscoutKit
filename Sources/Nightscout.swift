@@ -15,6 +15,13 @@ public enum NightscoutError: Error {
     case unexpectedDataFormat(Data)
 }
 
+fileprivate enum HTTPMethod: String {
+    case get = "GET"
+    case put = "PUT"
+    case post = "POST"
+    case delete = "DELETE"
+}
+
 public class Nightscout {
     private let baseURL: URL
 
@@ -170,7 +177,7 @@ extension Nightscout {
         }
 
         snapshotGroup.enter()
-        fetchEntries(from: nil, count: recentBloodGlucoseEntryCount) { result in
+        fetchMostRecentEntries(count: recentBloodGlucoseEntryCount) { result in
             switch result {
             case .success(let fetchedBloodGlucoseEntries):
                 bloodGlucoseEntries = fetchedBloodGlucoseEntries
@@ -182,7 +189,7 @@ extension Nightscout {
         }
 
         snapshotGroup.enter()
-        fetchTreatments(from: nil, count: recentTreatmentCount) { result in
+        fetchMostRecentTreatments(count: recentTreatmentCount) { result in
             switch result {
             case .success(let fetchedTreatments):
                 treatments = fetchedTreatments
@@ -208,20 +215,24 @@ extension Nightscout {
         fetch(with: .settingsSession, from: .status, completion: completion)
     }
 
-    public func fetchEntries(from interval: DateInterval? = nil, count: Int = 10, completion: @escaping (Result<[BloodGlucoseEntry]>) -> Void) {
-        var queries: [QueryItem] = [.count(count)]
-        if let interval = interval {
-            queries += QueryItem.dateQueries(from: interval)
-        }
-        fetchArray(with: .bloodGlucoseEntriesSession, from: .entries, queries: queries, completion: completion)
+    public func fetchMostRecentEntries(count: Int = 10, completion: @escaping (Result<[BloodGlucoseEntry]>) -> Void) {
+        let queries: [QueryItem] = [.count(count)]
+        fetchArray(with: .currentEntriesSession, from: .entries, queries: queries, completion: completion)
     }
 
-    public func fetchTreatments(from interval: DateInterval? = nil, count: Int = 10, completion: @escaping (Result<[Treatment]>) -> Void) {
-        var queries: [QueryItem] = [.count(count)]
-        if let interval = interval {
-            queries += QueryItem.dateQueries(from: interval)
-        }
-        fetchArray(with: .treatmentsSession, from: .treatments, queries: queries, completion: completion)
+    public func fetchEntries(from interval: DateInterval, maxCount: Int = .max, completion: @escaping (Result<[BloodGlucoseEntry]>) -> Void) {
+        let queries = QueryItem.dateQueries(from: interval) + [.count(maxCount)]
+        fetchArray(with: .pastEntriesSession, from: .entries, queries: queries, completion: completion)
+    }
+
+    public func fetchMostRecentTreatments(count: Int = 10, completion: @escaping (Result<[Treatment]>) -> Void) {
+        let queries: [QueryItem] = [.count(count)]
+        fetchArray(with: .currentTreatmentsSession, from: .treatments, queries: queries, completion: completion)
+    }
+
+    public func fetchTreatments(from interval: DateInterval, maxCount: Int = .max, completion: @escaping (Result<[Treatment]>) -> Void) {
+        let queries = QueryItem.dateQueries(from: interval) + [.count(maxCount)]
+        fetchArray(with: .pastTreatmentsSession, from: .treatments, queries: queries, completion: completion)
     }
 
     public func fetchProfileStoreSnapshots(completion: @escaping (Result<[ProfileStoreSnapshot]>) -> Void) {
@@ -231,7 +242,9 @@ extension Nightscout {
 
 fileprivate extension URLSession {
     static let settingsSession = URLSession(configuration: .default)
-    static let bloodGlucoseEntriesSession = URLSession(configuration: .default)
-    static let treatmentsSession = URLSession(configuration: .default)
+    static let currentEntriesSession = URLSession(configuration: .default)
+    static let pastEntriesSession = URLSession(configuration: .default)
+    static let currentTreatmentsSession = URLSession(configuration: .default)
+    static let pastTreatmentsSession = URLSession(configuration: .default)
     static let profilesSession = URLSession(configuration: .default)
 }

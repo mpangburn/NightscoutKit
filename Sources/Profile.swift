@@ -32,7 +32,7 @@ public struct Profile {
 // MARK: - JSON Parsing
 
 extension Profile: JSONParseable {
-    private struct Key {
+    private enum Key {
         static let carbRatioSchedule = "carbratio"
         static let basalRateSchedule = "basal"
         static let sensitivitySchedule = "sens"
@@ -83,7 +83,7 @@ extension Profile: JSONParseable {
 }
 
 // can't store static properties in a generic, so we'll stick this out here instead
-private struct ScheduleItemKey {
+fileprivate enum ScheduleItemKey {
     static let startDateString = "time"
     static let valueString = "value"
 }

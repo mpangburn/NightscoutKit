@@ -59,7 +59,7 @@ public struct Treatment: UniquelyIdentifiable {
 // MARK: - JSON Parsing
 
 extension Treatment: JSONParseable {
-    fileprivate struct Key {
+    fileprivate enum Key {
         static let id = "_id"
         static let eventType = "eventType"
         static let dateString = "created_at"
@@ -155,7 +155,7 @@ extension Treatment: JSONConvertible {
 }
 
 extension Treatment.EventType: JSONParseable {
-    fileprivate struct Key {
+    fileprivate enum Key {
         static let profileName = "profile"
     }
 
@@ -231,7 +231,7 @@ extension Treatment.EventType: PartiallyRawRepresentable {
 }
 
 extension Treatment.BolusType: JSONParseable {
-    fileprivate struct Key {
+    fileprivate enum Key {
         static let totalInsulinString = "enteredinsulin"
         static let percentageUpFrontString = "splitNow"
         static let percentageOverTimeString = "splitExt"
@@ -281,7 +281,7 @@ extension Treatment.BolusType: PartiallyRawRepresentable {
 }
 
 extension Treatment.TempBasalType: JSONParseable {
-    fileprivate struct Key {
+    fileprivate enum Key {
         static let percentage = "percent"
         static let absolute = "absolute"
     }

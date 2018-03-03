@@ -20,7 +20,7 @@ public struct ProfileStoreSnapshot: UniquelyIdentifiable {
 // MARK: - JSON Parsing
 
 extension ProfileStoreSnapshot: JSONParseable {
-    private struct Key {
+    private enum Key {
         static let id = "_id"
         static let defaultProfileName = "defaultProfile"
         static let recordDateString = "startDate"
