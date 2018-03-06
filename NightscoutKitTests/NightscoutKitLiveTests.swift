@@ -10,14 +10,18 @@ import XCTest
 @testable import NightscoutKit
 
 
-/// These tests are used for loading Nightscout data from my personal URL.
-/// My URL is untracked by git, so these tests are ignored if the file "myNightscoutURL" does not exist.
+/// These tests interact with Nightscout data from my personal site.
+/// My URL and API secret are untracked by git, so these tests are ignored if the files containing them do not exist.
 class NightscoutKitLiveTests: XCTestCase {
-    func testHTTPRequest() {
-        guard let nightscoutURLString = loadNightscoutURL(),
-            let nightscout = try? Nightscout(baseURL: nightscoutURLString) else {
-                return
+    lazy var nightscout: Nightscout? = {
+        guard let urlString = loadString(from: "nightscouturl"), let apiSecret = loadString(from: "apisecret") else {
+            return nil
         }
+        return try? Nightscout(baseURLString: urlString, apiSecret: apiSecret)
+    }()
+
+    func testFetchSnapshot() {
+        guard let nightscout = nightscout else { return }
 
         let snapshotExpectation = expectation(description: "Nightscout snapshot")
         nightscout.snapshot { result in
@@ -29,6 +33,20 @@ class NightscoutKitLiveTests: XCTestCase {
             }
 
             snapshotExpectation.fulfill()
+        }
+
+        waitForExpectations(timeout: 5, handler: nil)
+    }
+
+    func testAuthorization() {
+        guard let nightscout = nightscout else { return }
+
+        let authorizationExpectation = expectation(description: "Authorization")
+        nightscout.verifyAuthorization { error in
+            if let error = error {
+                print(error)
+            }
+            authorizationExpectation.fulfill()
         }
 
         waitForExpectations(timeout: 5, handler: nil)

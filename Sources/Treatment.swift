@@ -74,7 +74,7 @@ extension Treatment.GlucoseMeasurement: Equatable {
 // MARK: - JSON Parsing
 
 extension Treatment: JSONParseable {
-    fileprivate enum Key {
+    enum Key {
         static let id = "_id"
         static let eventType = "eventType"
         static let dateString = "created_at"

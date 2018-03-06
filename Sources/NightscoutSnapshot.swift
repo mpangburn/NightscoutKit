@@ -27,13 +27,13 @@ extension NightscoutSnapshot: CustomStringConvertible {
         \(settings)
 
         ===== BLOOD GLUCOSE ENTRIES =====
-        \(bloodGlucoseEntries.map { String(describing: $0) }.joined(separator: "\n"))
+        \(bloodGlucoseEntries.map(String.init(describing:)).joined(separator: "\n"))
 
         ===== TREATMENTS =====
-        \(treatments.map { String(describing: $0) }.joined(separator: "\n"))
+        \(treatments.map(String.init(describing:)).joined(separator: "\n"))
 
         ===== PROFILE STORE SNAPSHOTS =====
-        \(profileStoreSnapshots.map { String(describing: $0) }.joined(separator: "\n"))
+        \(profileStoreSnapshots.map(String.init(describing:)).joined(separator: "\n"))
         """
     }
 }

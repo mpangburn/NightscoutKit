@@ -40,15 +40,25 @@ extension JSONConvertible {
         }
         self = parsed
     }
+
+    func jsonData() throws -> Data {
+        return try JSONSerialization.data(withJSONObject: rawValue, options: [])
+    }
 }
 
 extension Array /*: DataParseable */ where Element: JSONParseable {
-    static func parse(from data: Data) throws -> [Element] {
+    static func parse(from data: Data) throws -> [Element]? {
         guard let dictionaries = try JSONSerialization.jsonObject(with: data, options: []) as? [JSONDictionary] else {
-            return []
+            return nil
         }
         let items = dictionaries.flatMap(Element.parse)
         assert(dictionaries.count == items.count)
         return items
+    }
+}
+
+extension Array where Element: JSONConvertible {
+    func jsonData() throws -> Data {
+        return try JSONSerialization.data(withJSONObject: map { $0.rawValue }, options: [])
     }
 }

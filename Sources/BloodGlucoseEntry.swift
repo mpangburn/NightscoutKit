@@ -27,10 +27,10 @@ public struct BloodGlucoseEntry: UniquelyIdentifiable {
 // MARK: - JSON Parsing
 
 extension BloodGlucoseEntry: JSONParseable {
-    fileprivate enum Key {
+    enum Key {
         static let id = "_id"
         static let typeString = "type"
-        static let date = "date"
+        static let millisecondsSince1970 = "date"
         static let dateString = "dateString"
         static let device = "device"
     }
@@ -38,7 +38,7 @@ extension BloodGlucoseEntry: JSONParseable {
     static func parse(from entryJSON: JSONDictionary) -> BloodGlucoseEntry? {
         guard
             let id = entryJSON[Key.id] as? String,
-            let millisecondsSince1970 = entryJSON[Key.date] as? Double,
+            let millisecondsSince1970 = entryJSON[Key.millisecondsSince1970] as? Double,
             let typeString = entryJSON[Key.typeString] as? String,
             let glucoseValue = entryJSON[typeString] as? Int,
             let source = Source.parse(from: entryJSON)
@@ -60,7 +60,7 @@ extension BloodGlucoseEntry: JSONConvertible {
     public var rawValue: [String: Any] {
         var raw: RawValue = [
             Key.id: id,
-            Key.date: Int(date.timeIntervalSince1970.milliseconds),
+            Key.millisecondsSince1970: Int(date.timeIntervalSince1970.milliseconds),
             Key.dateString: TimeFormatter.string(from: date),
             Key.typeString: source.simpleRawValue,
             source.simpleRawValue: glucoseValue

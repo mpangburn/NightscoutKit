@@ -19,12 +19,12 @@ extension XCTestCase {
         return try! JSONSerialization.jsonObject(with: Data(contentsOf: URL(fileURLWithPath: path)), options: []) as! T
     }
 
-    func loadNightscoutURL() -> String? {
-        guard let path = bundle.path(forResource: "myNightscoutURL", ofType: nil),
-            let nightscoutURLString = try? String(contentsOf: URL(fileURLWithPath: path)) else {
-            return nil
+    func loadString(from resource: String) -> String? {
+        guard let path = bundle.path(forResource: resource, ofType: nil),
+            let contents = try? String(contentsOf: URL(fileURLWithPath: path)) else {
+                return nil
         }
 
-        return nightscoutURLString.trimmingCharacters(in: .whitespacesAndNewlines)
+        return contents.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }

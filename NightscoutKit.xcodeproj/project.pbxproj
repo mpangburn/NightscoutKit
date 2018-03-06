@@ -18,7 +18,6 @@
 		896FF5AE2048C77B0054198A /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59F2048C77B0054198A /* TimeFormatter.swift */; };
 		896FF5AF2048C77B0054198A /* BloodGlucoseUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */; };
 		896FF5B02048C77B0054198A /* BloodGlucoseEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A12048C77B0054198A /* BloodGlucoseEntry.swift */; };
-		896FF5B12048C77B0054198A /* Result.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A22048C77B0054198A /* Result.swift */; };
 		896FF5B22048C77B0054198A /* Profile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A32048C77B0054198A /* Profile.swift */; };
 		896FF5B32048C77B0054198A /* ProfileStoreSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A42048C77B0054198A /* ProfileStoreSnapshot.swift */; };
 		896FF5B42048C77B0054198A /* BloodGlucoseTrend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */; };
@@ -30,11 +29,13 @@
 		896FF5BF2048C7A30054198A /* PartiallyRawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */; };
 		896FF5C62048C7FC0054198A /* treatments.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5C12048C7FC0054198A /* treatments.json */; };
 		896FF5C72048C7FC0054198A /* entries.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5C22048C7FC0054198A /* entries.json */; };
-		896FF5C82048C7FC0054198A /* profile.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5C32048C7FC0054198A /* profile.json */; };
+		896FF5C82048C7FC0054198A /* profiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5C32048C7FC0054198A /* profiles.json */; };
 		896FF5C92048C7FC0054198A /* XCTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5C52048C7FC0054198A /* XCTestCase.swift */; };
 		896FF5CB2048C9DC0054198A /* NightscoutSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */; };
 		896FF5CD2048CC160054198A /* NightscoutKitLiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5CC2048CC160054198A /* NightscoutKitLiveTests.swift */; };
-		896FF5CF2048CDE50054198A /* myNightscoutURL in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5CE2048CDE50054198A /* myNightscoutURL */; };
+		896FF5CF2048CDE50054198A /* nightscouturl in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5CE2048CDE50054198A /* nightscouturl */; };
+		896FF5D2204BB9810054198A /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5D1204BB9810054198A /* String.swift */; };
+		89D48E33204BCC0D0066B293 /* apisecret in Resources */ = {isa = PBXBuildFile; fileRef = 89D48E32204BCC0D0066B293 /* apisecret */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -62,7 +63,6 @@
 		896FF59F2048C77B0054198A /* TimeFormatter.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeFormatter.swift; sourceTree = "<group>"; };
 		896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BloodGlucoseUnit.swift; sourceTree = "<group>"; };
 		896FF5A12048C77B0054198A /* BloodGlucoseEntry.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BloodGlucoseEntry.swift; sourceTree = "<group>"; };
-		896FF5A22048C77B0054198A /* Result.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Result.swift; sourceTree = "<group>"; };
 		896FF5A32048C77B0054198A /* Profile.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Profile.swift; sourceTree = "<group>"; };
 		896FF5A42048C77B0054198A /* ProfileStoreSnapshot.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ProfileStoreSnapshot.swift; sourceTree = "<group>"; };
 		896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = BloodGlucoseTrend.swift; sourceTree = "<group>"; };
@@ -74,11 +74,14 @@
 		896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartiallyRawRepresentable.swift; sourceTree = "<group>"; };
 		896FF5C12048C7FC0054198A /* treatments.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = treatments.json; sourceTree = "<group>"; };
 		896FF5C22048C7FC0054198A /* entries.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = entries.json; sourceTree = "<group>"; };
-		896FF5C32048C7FC0054198A /* profile.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = profile.json; sourceTree = "<group>"; };
+		896FF5C32048C7FC0054198A /* profiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = profiles.json; sourceTree = "<group>"; };
 		896FF5C52048C7FC0054198A /* XCTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestCase.swift; sourceTree = "<group>"; };
 		896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutSnapshot.swift; sourceTree = "<group>"; };
 		896FF5CC2048CC160054198A /* NightscoutKitLiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutKitLiveTests.swift; sourceTree = "<group>"; };
-		896FF5CE2048CDE50054198A /* myNightscoutURL */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = myNightscoutURL; sourceTree = "<group>"; };
+		896FF5CE2048CDE50054198A /* nightscouturl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nightscouturl; sourceTree = "<group>"; };
+		896FF5D1204BB9810054198A /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
+		89D48E31204BBE200066B293 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
+		89D48E32204BCC0D0066B293 /* apisecret */ = {isa = PBXFileReference; lastKnownFileType = text; path = apisecret; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -104,6 +107,7 @@
 			isa = PBXGroup;
 			children = (
 				896FF5962048C7640054198A /* Sources */,
+				89D48E30204BBDFA0066B293 /* CCommonCrypto */,
 				896FF57E2048C7510054198A /* NightscoutKit */,
 				896FF5892048C7510054198A /* NightscoutKitTests */,
 				896FF57D2048C7510054198A /* Products */,
@@ -151,7 +155,6 @@
 				896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */,
 				896FF5A32048C77B0054198A /* Profile.swift */,
 				896FF5A42048C77B0054198A /* ProfileStoreSnapshot.swift */,
-				896FF5A22048C77B0054198A /* Result.swift */,
 				896FF59F2048C77B0054198A /* TimeFormatter.swift */,
 				896FF59E2048C77B0054198A /* Treatment.swift */,
 				896FF5972048C77A0054198A /* Extensions */,
@@ -165,8 +168,9 @@
 			children = (
 				896FF5982048C77A0054198A /* Array.swift */,
 				896FF5992048C77A0054198A /* Dictionary.swift */,
-				896FF59A2048C77A0054198A /* URL.swift */,
+				896FF5D1204BB9810054198A /* String.swift */,
 				896FF59C2048C77A0054198A /* TimeInterval.swift */,
+				896FF59A2048C77A0054198A /* URL.swift */,
 			);
 			path = Extensions;
 			sourceTree = "<group>";
@@ -187,8 +191,9 @@
 			children = (
 				896FF5C12048C7FC0054198A /* treatments.json */,
 				896FF5C22048C7FC0054198A /* entries.json */,
-				896FF5C32048C7FC0054198A /* profile.json */,
-				896FF5CE2048CDE50054198A /* myNightscoutURL */,
+				896FF5C32048C7FC0054198A /* profiles.json */,
+				896FF5CE2048CDE50054198A /* nightscouturl */,
+				89D48E32204BCC0D0066B293 /* apisecret */,
 			);
 			path = Fixtures;
 			sourceTree = "<group>";
@@ -199,6 +204,14 @@
 				896FF5C52048C7FC0054198A /* XCTestCase.swift */,
 			);
 			path = Extensions;
+			sourceTree = "<group>";
+		};
+		89D48E30204BBDFA0066B293 /* CCommonCrypto */ = {
+			isa = PBXGroup;
+			children = (
+				89D48E31204BBE200066B293 /* module.modulemap */,
+			);
+			path = CCommonCrypto;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -301,8 +314,9 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				896FF5CF2048CDE50054198A /* myNightscoutURL in Resources */,
-				896FF5C82048C7FC0054198A /* profile.json in Resources */,
+				89D48E33204BCC0D0066B293 /* apisecret in Resources */,
+				896FF5CF2048CDE50054198A /* nightscouturl in Resources */,
+				896FF5C82048C7FC0054198A /* profiles.json in Resources */,
 				896FF5C72048C7FC0054198A /* entries.json in Resources */,
 				896FF5C62048C7FC0054198A /* treatments.json in Resources */,
 			);
@@ -315,13 +329,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				896FF5D2204BB9810054198A /* String.swift in Sources */,
 				896FF5A82048C77B0054198A /* Array.swift in Sources */,
 				896FF5AC2048C77B0054198A /* TimeInterval.swift in Sources */,
 				896FF5B02048C77B0054198A /* BloodGlucoseEntry.swift in Sources */,
 				896FF5AE2048C77B0054198A /* TimeFormatter.swift in Sources */,
 				896FF5AF2048C77B0054198A /* BloodGlucoseUnit.swift in Sources */,
 				896FF5AD2048C77B0054198A /* Treatment.swift in Sources */,
-				896FF5B12048C77B0054198A /* Result.swift in Sources */,
 				896FF5BC2048C7A30054198A /* JSONConvertible.swift in Sources */,
 				896FF5B52048C77B0054198A /* Nightscout.swift in Sources */,
 				896FF5A92048C77B0054198A /* Dictionary.swift in Sources */,
@@ -474,6 +488,7 @@
 		896FF5912048C7510054198A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -487,6 +502,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = " ${SRCROOT}/CCommonCrypto";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
@@ -495,6 +512,7 @@
 		896FF5922048C7510054198A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CLANG_ALLOW_NON_MODULAR_INCLUDES_IN_FRAMEWORK_MODULES = NO;
 				CODE_SIGN_IDENTITY = "";
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -508,6 +526,8 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKit;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = " ${SRCROOT}/CCommonCrypto";
+				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
