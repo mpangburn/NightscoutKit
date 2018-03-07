@@ -19,13 +19,15 @@ public struct NightscoutSettings {
 // MARK: - JSON Parsing
 
 extension NightscoutSettings: JSONParseable {
+    typealias JSONParseType = JSONDictionary
+
     private enum Key {
         static let settings = "settings"
         static let unitString = "units"
         static let title = "customTitle"
     }
 
-    static func parse(from statusJSON: JSONDictionary) -> NightscoutSettings? {
+    static func parse(fromJSON statusJSON: JSONDictionary) -> NightscoutSettings? {
         guard
             let settingsDictionary = statusJSON[Key.settings] as? JSONDictionary,
             let unitsString = settingsDictionary[Key.unitString] as? String,

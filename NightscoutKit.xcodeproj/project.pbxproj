@@ -36,6 +36,7 @@
 		896FF5CF2048CDE50054198A /* nightscouturl in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5CE2048CDE50054198A /* nightscouturl */; };
 		896FF5D2204BB9810054198A /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5D1204BB9810054198A /* String.swift */; };
 		89D48E33204BCC0D0066B293 /* apisecret in Resources */ = {isa = PBXBuildFile; fileRef = 89D48E32204BCC0D0066B293 /* apisecret */; };
+		89D48E36204FA3980066B293 /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E34204FA3310066B293 /* DataConvertible.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -82,6 +83,7 @@
 		896FF5D1204BB9810054198A /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		89D48E31204BBE200066B293 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		89D48E32204BCC0D0066B293 /* apisecret */ = {isa = PBXFileReference; lastKnownFileType = text; path = apisecret; sourceTree = "<group>"; };
+		89D48E34204FA3310066B293 /* DataConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConvertible.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -182,6 +184,7 @@
 				896FF5B92048C7A30054198A /* StringParseable.swift */,
 				896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */,
 				896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */,
+				89D48E34204FA3310066B293 /* DataConvertible.swift */,
 			);
 			path = Protocols;
 			sourceTree = "<group>";
@@ -344,6 +347,7 @@
 				896FF5AA2048C77B0054198A /* URL.swift in Sources */,
 				896FF5B42048C77B0054198A /* BloodGlucoseTrend.swift in Sources */,
 				896FF5BE2048C7A30054198A /* UniquelyIdentifiable.swift in Sources */,
+				89D48E36204FA3980066B293 /* DataConvertible.swift in Sources */,
 				896FF5B32048C77B0054198A /* ProfileRecord.swift in Sources */,
 				896FF5B62048C77B0054198A /* NightscoutSettings.swift in Sources */,
 				896FF5BF2048C7A30054198A /* PartiallyRawRepresentable.swift in Sources */,

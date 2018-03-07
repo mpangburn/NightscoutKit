@@ -32,6 +32,8 @@ public struct Profile {
 // MARK: - JSON Parsing
 
 extension Profile: JSONParseable {
+    typealias JSONParseType = JSONDictionary
+
     private enum Key {
         static let carbRatioSchedule = "carbratio"
         static let basalRateSchedule = "basal"
@@ -43,7 +45,7 @@ extension Profile: JSONParseable {
         static let timeZone = "timezone"
     }
 
-    static func parse(from profileJSON: JSONDictionary) -> Profile? {
+    static func parse(fromJSON profileJSON: JSONDictionary) -> Profile? {
         guard
             let carbRatioDictionaries = profileJSON[Key.carbRatioSchedule] as? [JSONDictionary],
             let basalRateDictionaries = profileJSON[Key.basalRateSchedule] as? [JSONDictionary],
@@ -83,15 +85,15 @@ extension Profile: JSONParseable {
 }
 
 extension Profile: JSONConvertible {
-    public var rawValue: [String: Any] {
+    func json() -> JSONDictionary {
         let splitTargets = bloodGlucoseTargetSchedule.map { $0.split() }
         return [
-            Key.carbRatioSchedule: carbRatioSchedule.map { $0.rawValue },
-            Key.basalRateSchedule: basalRateSchedule.map { $0.rawValue },
-            Key.sensitivitySchedule: sensitivitySchedule.map { $0.rawValue },
-            Key.lowTargets: splitTargets.map { $0.lower.rawValue },
-            Key.highTargets: splitTargets.map { $0.upper.rawValue },
-            Key.activeInsulinDuration: activeInsulinDuration.hours,
+            Key.carbRatioSchedule: carbRatioSchedule.map { $0.json() },
+            Key.basalRateSchedule: basalRateSchedule.map { $0.json() },
+            Key.sensitivitySchedule: sensitivitySchedule.map { $0.json() },
+            Key.lowTargets: splitTargets.map { $0.lower.json() },
+            Key.highTargets: splitTargets.map { $0.upper.json() },
+            Key.activeInsulinDuration: String(activeInsulinDuration.hours),
             Key.carbsActivityAbsorptionRate: String(carbsActivityAbsorptionRate),
             Key.timeZone: timeZone
         ]
@@ -121,7 +123,7 @@ extension Profile.ScheduleItem /*: JSONParseable */ where Value: StringParseable
 }
 
 extension Profile.ScheduleItem /*: JSONConvertible */ /* where T: StringParseable */ {
-    var rawValue: [String: Any] {
+    func json() -> JSONDictionary {
         return [
             ScheduleItemKey.startDateString: TimeFormatter.string(from: startTime),
             ScheduleItemKey.valueString: String(describing: value)

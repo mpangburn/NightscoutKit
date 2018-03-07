@@ -314,7 +314,7 @@ extension Nightscout {
             switch result {
             case .success(let data):
                 do {
-                    guard let parsed = try T.parse(from: data) else {
+                    guard let parsed = try T.parse(fromData: data) else {
                         completion(.failure(.dataParsingFailure(data)))
                         return
                     }
@@ -334,7 +334,7 @@ extension Nightscout {
             switch result {
             case .success(let data):
                 do {
-                    guard let parsed = try [T].parse(from: data) else {
+                    guard let parsed = try [T].parse(fromData: data) else {
                         completion(.failure(.dataParsingFailure(data)))
                         return
                     }
@@ -407,6 +407,10 @@ extension Nightscout {
         delete(treatments, from: .treatments, completion: completion)
     }
 
+    public func uploadProfileRecords(_ records: [ProfileRecord], completion: @escaping (NightscoutResult<[ProfileRecord]>) -> Void) {
+        post(records, to: .profiles, completion: completion)
+    }
+
     public func deleteProfileRecords(_ records: [ProfileRecord], completion: @escaping (NightscoutError?) -> Void) {
         delete(records, from: .profiles, completion: completion)
     }
@@ -470,7 +474,7 @@ extension Nightscout {
 
         let data: Data
         do {
-            data = try item.jsonData()
+            data = try item.data()
         } catch {
             completion(.failure(.jsonParsingError(error)))
             return
@@ -493,16 +497,16 @@ extension Nightscout {
 
         let data: Data
         do {
-            data = try items.jsonData()
+            data = try items.data()
         } catch {
             completion(.failure(.jsonParsingError(error)))
             return
         }
 
-        uploadData(data, to: endpoint, with: request) { (result: NightscoutResult<[JSONDictionary]>) in
+        uploadData(data, to: endpoint, with: request) { (result: NightscoutResult<[T.JSONRepresentation]>) in
             switch result {
             case .success(let rawValues):
-                let successfullyUploaded = rawValues.flatMap(T.init(rawValue:))
+                let successfullyUploaded = rawValues.flatMap(T.parse)
                 completion(.success(successfullyUploaded))
             case .failure(let error):
                 completion(.failure(error))

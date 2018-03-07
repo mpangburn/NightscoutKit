@@ -27,6 +27,8 @@ public struct BloodGlucoseEntry: UniquelyIdentifiable {
 // MARK: - JSON Parsing
 
 extension BloodGlucoseEntry: JSONParseable {
+    typealias JSONParseType = JSONDictionary
+
     enum Key {
         static let id = "_id"
         static let typeString = "type"
@@ -35,13 +37,13 @@ extension BloodGlucoseEntry: JSONParseable {
         static let device = "device"
     }
 
-    static func parse(from entryJSON: JSONDictionary) -> BloodGlucoseEntry? {
+    static func parse(fromJSON entryJSON: JSONDictionary) -> BloodGlucoseEntry? {
         guard
             let id = entryJSON[Key.id] as? String,
             let millisecondsSince1970 = entryJSON[Key.millisecondsSince1970] as? Double,
             let typeString = entryJSON[Key.typeString] as? String,
             let glucoseValue = entryJSON[typeString] as? Int,
-            let source = Source.parse(from: entryJSON)
+            let source = Source.parse(fromJSON: entryJSON)
         else {
             return nil
         }
@@ -57,7 +59,7 @@ extension BloodGlucoseEntry: JSONParseable {
 }
 
 extension BloodGlucoseEntry: JSONConvertible {
-    public var rawValue: [String: Any] {
+    func json() -> JSONDictionary {
         var raw: RawValue = [
             Key.id: id,
             Key.millisecondsSince1970: Int(date.timeIntervalSince1970.milliseconds),
@@ -79,11 +81,13 @@ extension BloodGlucoseEntry: JSONConvertible {
 }
 
 extension BloodGlucoseEntry.Source: JSONParseable {
+    typealias JSONParseType = JSONDictionary
+    
     fileprivate enum Key {
         static let direction = "direction"
     }
 
-    static func parse(from entryJSON: JSONDictionary) -> BloodGlucoseEntry.Source? {
+    static func parse(fromJSON entryJSON: JSONDictionary) -> BloodGlucoseEntry.Source? {
         guard let typeString = entryJSON[BloodGlucoseEntry.Key.typeString] as? String else {
             return nil
         }

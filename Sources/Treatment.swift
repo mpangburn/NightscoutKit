@@ -74,6 +74,8 @@ extension Treatment.GlucoseMeasurement: Equatable {
 // MARK: - JSON Parsing
 
 extension Treatment: JSONParseable {
+    typealias JSONParseType = JSONDictionary
+
     enum Key {
         static let id = "_id"
         static let eventType = "eventType"
@@ -88,10 +90,10 @@ extension Treatment: JSONParseable {
         static let notes = "notes"
     }
 
-    static func parse(from treatmentJSON: JSONDictionary) -> Treatment? {
+    static func parse(fromJSON treatmentJSON: JSONDictionary) -> Treatment? {
         guard
             let id = treatmentJSON[Key.id] as? String,
-            let eventType = EventType.parse(from: treatmentJSON),
+            let eventType = EventType.parse(fromJSON: treatmentJSON),
             let dateString = treatmentJSON[Key.dateString] as? String,
             let date = TimeFormatter.date(from: dateString)
         else {
@@ -124,7 +126,7 @@ extension Treatment: JSONParseable {
 }
 
 extension Treatment: JSONConvertible {
-    public var rawValue: [String: Any] {
+    func json() -> JSONDictionary {
         var raw: RawValue = [
             Key.id: id,
             Key.eventType: eventType.simpleRawValue,
@@ -170,20 +172,22 @@ extension Treatment: JSONConvertible {
 }
 
 extension Treatment.EventType: JSONParseable {
+    typealias JSONParseType = JSONDictionary
+
     fileprivate enum Key {
         static let profileName = "profile"
     }
 
-    static func parse(from treatmentJSON: JSONDictionary) -> Treatment.EventType? {
+    static func parse(fromJSON treatmentJSON: JSONDictionary) -> Treatment.EventType? {
         guard let eventTypeString = treatmentJSON[Treatment.Key.eventType] as? String else {
             return nil
         }
 
         if let simpleEventType = Treatment.EventType(simpleRawValue: eventTypeString) {
             return simpleEventType
-        } else if let bolusType = Treatment.BolusType.parse(from: treatmentJSON) {
+        } else if let bolusType = Treatment.BolusType.parse(fromJSON: treatmentJSON) {
             return .bolus(type: bolusType)
-        } else if let tempBasalType = Treatment.TempBasalType.parse(from: treatmentJSON) {
+        } else if let tempBasalType = Treatment.TempBasalType.parse(fromJSON: treatmentJSON) {
             return .tempBasal(type: tempBasalType)
         } else if eventTypeString == "Profile Switch" {
             guard let profileName = treatmentJSON[Key.profileName] as? String else {
@@ -248,13 +252,15 @@ extension Treatment.EventType: PartiallyRawRepresentable {
 }
 
 extension Treatment.BolusType: JSONParseable {
+    typealias JSONParseType = JSONDictionary
+
     fileprivate enum Key {
         static let totalInsulinString = "enteredinsulin"
         static let percentageUpFrontString = "splitNow"
         static let percentageOverTimeString = "splitExt"
     }
 
-    static func parse(from treatmentJSON: JSONDictionary) -> Treatment.BolusType? {
+    static func parse(fromJSON treatmentJSON: JSONDictionary) -> Treatment.BolusType? {
         guard let eventTypeString = treatmentJSON[Treatment.Key.eventType] as? String, eventTypeString.contains("Bolus") else {
             return nil
         }
@@ -298,12 +304,14 @@ extension Treatment.BolusType: PartiallyRawRepresentable {
 }
 
 extension Treatment.TempBasalType: JSONParseable {
+    typealias JSONParseType = JSONDictionary
+
     fileprivate enum Key {
         static let percentage = "percent"
         static let absolute = "absolute"
     }
 
-    static func parse(from treatmentJSON: JSONDictionary) -> Treatment.TempBasalType? {
+    static func parse(fromJSON treatmentJSON: JSONDictionary) -> Treatment.TempBasalType? {
         guard let eventTypeString = treatmentJSON[Treatment.Key.eventType] as? String, eventTypeString == "Temp Basal" else {
             return nil
         }
