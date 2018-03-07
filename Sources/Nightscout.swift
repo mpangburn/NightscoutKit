@@ -227,12 +227,13 @@ extension Nightscout {
         snapshotGroup.wait()
 
         // There's a race condition with errors here, but if any fetch request fails, we'll report an error--it doesn't matter which.
-        if let error = error {
-            completion(.failure(.fetchError(error)))
-        } else {
-            let snapshot = NightscoutSnapshot(date: date, settings: settings, bloodGlucoseEntries: bloodGlucoseEntries, treatments: treatments, profileRecords: profileRecords)
-            completion(.success(snapshot))
+        guard error == nil else {
+            completion(.failure(.fetchError(error!)))
+            return
         }
+
+        let snapshot = NightscoutSnapshot(date: date, settings: settings, bloodGlucoseEntries: bloodGlucoseEntries, treatments: treatments, profileRecords: profileRecords)
+        completion(.success(snapshot))
     }
 
     public func fetchSettings(completion: @escaping (NightscoutResult<NightscoutSettings>) -> Void) {
@@ -268,8 +269,8 @@ extension Nightscout {
     private func fetchData(from endpoint: APIEndpoint, with request: URLRequest, completion: @escaping (NightscoutResult<Data>) -> Void) {
         let session = urlSession(for: endpoint)
         let task = session.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(.fetchError(error)))
+            guard error == nil else {
+                completion(.failure(.fetchError(error!)))
                 return
             }
 
@@ -309,12 +310,12 @@ extension Nightscout {
         fetchData(from: endpoint, with: request, completion: completion)
     }
 
-    private func fetch<T: JSONParseable>(from endpoint: APIEndpoint, queryItems: [QueryItem] = [], completion: @escaping (NightscoutResult<T>) -> Void) {
+    private func fetch<Response: JSONParseable>(from endpoint: APIEndpoint, queryItems: [QueryItem] = [], completion: @escaping (NightscoutResult<Response>) -> Void) {
         fetchData(from: endpoint, queryItems: queryItems) { result in
             switch result {
             case .success(let data):
                 do {
-                    guard let parsed = try T.parse(fromData: data) else {
+                    guard let parsed = try Response.parse(fromData: data) else {
                         completion(.failure(.dataParsingFailure(data)))
                         return
                     }
@@ -329,12 +330,12 @@ extension Nightscout {
     }
 
     // TODO: eliminate this method using conditional conformance with Array in Swift 4.1
-    private func fetchArray<T: JSONParseable>(from endpoint: APIEndpoint, queryItems: [QueryItem] = [], completion: @escaping (NightscoutResult<[T]>) -> Void) {
+    private func fetchArray<Response: JSONParseable>(from endpoint: APIEndpoint, queryItems: [QueryItem] = [], completion: @escaping (NightscoutResult<[Response]>) -> Void) {
         fetchData(from: endpoint, queryItems: queryItems) { result in
             switch result {
             case .success(let data):
                 do {
-                    guard let parsed = try [T].parse(fromData: data) else {
+                    guard let parsed = try [Response].parse(fromData: data) else {
                         completion(.failure(.dataParsingFailure(data)))
                         return
                     }
@@ -382,25 +383,7 @@ extension Nightscout {
     }
 
     public func updateTreatments(_ treatments: [Treatment], completion: @escaping (NightscoutError?) -> Void) {
-        let modifyGroup = DispatchGroup()
-        var error: NightscoutError?
-
-        for treatment in treatments {
-            modifyGroup.enter()
-            upload(treatment, to: .treatments, httpMethod: .put) { result in
-                // TODO: remove this print statement
-                if case .success(let response) = result {
-                    print(response)
-                }
-                if case .failure(let err) = result {
-                    error = err
-                }
-                modifyGroup.leave()
-            }
-        }
-
-        modifyGroup.wait()
-        completion(error)
+        put(treatments, to: .treatments, completion: completion)
     }
 
     public func deleteTreatments(_ treatments: [Treatment], completion: @escaping (NightscoutError?) -> Void) {
@@ -411,17 +394,21 @@ extension Nightscout {
         post(records, to: .profiles, completion: completion)
     }
 
+    public func updateProfileRecords(_ records: [ProfileRecord], completion: @escaping (NightscoutError?) -> Void) {
+        put(records, to: .profiles, completion: completion)
+    }
+
     public func deleteProfileRecords(_ records: [ProfileRecord], completion: @escaping (NightscoutError?) -> Void) {
         delete(records, from: .profiles, completion: completion)
     }
 }
 
 extension Nightscout {
-    private func uploadData<Response>(_ data: Data, to endpoint: APIEndpoint, with request: URLRequest, completion: @escaping (NightscoutResult<Response>) -> Void) {
+    private func uploadData(_ data: Data, to endpoint: APIEndpoint, with request: URLRequest, completion: @escaping (NightscoutResult<Data>) -> Void) {
         let session = urlSession(for: endpoint)
         let task = session.uploadTask(with: request, from: data) { data, response, error in
-            if let error = error {
-                completion(.failure(.uploadError(error)))
+            guard error == nil else {
+                completion(.failure(.uploadError(error!)))
                 return
             }
 
@@ -446,22 +433,13 @@ extension Nightscout {
                 return
             }
 
-            do {
-                guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? Response else {
-                    completion(.failure(.dataParsingFailure(data)))
-                    return
-                }
-                completion(.success(json))
-            } catch let error {
-                completion(.failure(.jsonParsingError(error)))
-            }
+            completion(.success(data))
         }
 
         task.resume()
     }
 
-    // TODO: handle result success type better here
-    private func upload<T: JSONConvertible>(_ item: T, to endpoint: APIEndpoint, httpMethod: HTTPMethod, completion: @escaping (NightscoutResult<[String: Any]>) -> Void) {
+    private func upload<Payload: JSONConvertible, Response: JSONParseable>(_ item: Payload, to endpoint: APIEndpoint, httpMethod: HTTPMethod, completion: @escaping (NightscoutResult<Response>) -> Void) {
         guard apiSecret != nil else {
             completion(.failure(.missingAPISecret))
             return
@@ -480,11 +458,26 @@ extension Nightscout {
             return
         }
 
-        uploadData(data, to: endpoint, with: request, completion: completion)
+        uploadData(data, to: endpoint, with: request) { result in
+            switch result {
+            case .success(let data):
+                do {
+                    guard let response = try Response.parse(fromData: data) else {
+                        completion(.failure(.dataParsingFailure(data)))
+                        return
+                    }
+                    completion(.success(response))
+                } catch {
+                    completion(.failure(.jsonParsingError(error)))
+                }
+            case .failure(let error):
+                completion(.failure(error))
+            }
+        }
     }
 
-    // TODO: Remove this with conditional conformance in Swift 4.1?
-    private func uploadArray<T: JSONConvertible>(_ items: [T], to endpoint: APIEndpoint, httpMethod: HTTPMethod, completion: @escaping (NightscoutResult<[T]>) -> Void) {
+    // TODO: Remove this with conditional conformance in Swift 4.1
+    private func uploadArray<Payload: JSONRepresentable, Response: JSONParseable>(_ items: [Payload], to endpoint: APIEndpoint, httpMethod: HTTPMethod, completion: @escaping (NightscoutResult<[Response]>) -> Void) {
         guard apiSecret != nil else {
             completion(.failure(.missingAPISecret))
             return
@@ -503,40 +496,44 @@ extension Nightscout {
             return
         }
 
-        uploadData(data, to: endpoint, with: request) { (result: NightscoutResult<[T.JSONRepresentation]>) in
+        uploadData(data, to: endpoint, with: request) { result in
             switch result {
-            case .success(let rawValues):
-                let successfullyUploaded = rawValues.flatMap(T.parse)
-                completion(.success(successfullyUploaded))
+            case .success(let data):
+                do {
+                    guard let response = try [Response].parse(fromData: data) else {
+                        completion(.failure(.dataParsingFailure(data)))
+                        return
+                    }
+                    completion(.success(response))
+                } catch {
+                    completion(.failure(.jsonParsingError(error)))
+                }
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
 
-    private func post<T: JSONConvertible>(_ items: [T], to endpoint: APIEndpoint, completion: @escaping (NightscoutResult<[T]>) -> Void) {
+    private func post<Payload: JSONConvertible>(_ items: [Payload], to endpoint: APIEndpoint, completion: @escaping (NightscoutResult<[Payload]>) -> Void) {
         uploadArray(items, to: endpoint, httpMethod: .post, completion: completion)
     }
 
-    private func delete<T: UniquelyIdentifiable>(_ items: [T], from endpoint: APIEndpoint, completion: @escaping (NightscoutError?) -> Void) {
-        let deleteGroup = DispatchGroup()
-        var error: NightscoutError?
-
-        for item in items {
-            deleteGroup.enter()
-            delete(item, from: endpoint) { err in
-                if let err = err {
-                    error = err
-                }
-                deleteGroup.leave()
-            }
-        }
-
-        deleteGroup.wait()
-        completion(error)
+    private func put<Payload: JSONConvertible>(_ items: [Payload], to endpoint: APIEndpoint, completion: @escaping (NightscoutError?) -> Void) {
+        synchronizeOperation(_put, items: items, endpoint: endpoint, completion: completion)
     }
 
-    private func delete<T: UniquelyIdentifiable>(_ item: T, from endpoint: APIEndpoint, completion: @escaping (NightscoutError?) -> Void) {
+    private func _put<Payload: JSONConvertible>(_ item: Payload, to endpoint: APIEndpoint, completion: @escaping (NightscoutError?) -> Void) {
+        upload(item, to: endpoint, httpMethod: .put) { (result: NightscoutResult<AnyJSON>) in
+            if case .success(let response) = result { print(response) } // TODO: remove this print statement
+            completion(result.error)
+        }
+    }
+
+    private func delete<Payload: UniquelyIdentifiable>(_ items: [Payload], from endpoint: APIEndpoint, completion: @escaping (NightscoutError?) -> Void) {
+        synchronizeOperation(_delete, items: items, endpoint: endpoint, completion: completion)
+    }
+
+    private func _delete<Payload: UniquelyIdentifiable>(_ item: Payload, from endpoint: APIEndpoint, completion: @escaping (NightscoutError?) -> Void) {
         guard apiSecret != nil else {
             completion(.missingAPISecret)
             return
@@ -552,6 +549,25 @@ extension Nightscout {
         fetchData(from: endpoint, with: request) { result in
             completion(result.error)
         }
+    }
+
+    private typealias Operation<T> = (_ item: T, _ endpoint: APIEndpoint, _ completion: @escaping (NightscoutError?) -> Void) -> Void
+    private func synchronizeOperation<T>(_ operation: Operation<T>, items: [T], endpoint: APIEndpoint, completion: @escaping (NightscoutError?) -> Void) {
+        let dispatchGroup = DispatchGroup()
+        var error: NightscoutError?
+
+        for item in items {
+            dispatchGroup.enter()
+            operation(item, endpoint) { err in
+                if let err = err {
+                    error = err
+                }
+                dispatchGroup.leave()
+            }
+        }
+
+        dispatchGroup.wait()
+        completion(error)
     }
 }
 

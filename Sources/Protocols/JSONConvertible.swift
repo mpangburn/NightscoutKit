@@ -11,8 +11,6 @@ import Foundation
 
 typealias JSONDictionary = [String: Any]
 
-// MARK: - JSON conversions
-
 /// A type that can be parsed from JSON data.
 protocol JSONParseable: DataParseable {
     associatedtype JSONParseType
@@ -61,7 +59,7 @@ extension JSONConvertible {
 extension Array /*: JSONParseable */ where Element: JSONParseable {
     typealias JSONParseType = [Element.JSONParseType]
 
-    static func parse(from jsonArray: JSONParseType) -> [Element]? {
+    static func parse(fromJSON jsonArray: JSONParseType) -> [Element]? {
         return jsonArray.flatMap(Element.parse)
     }
 
@@ -70,11 +68,11 @@ extension Array /*: JSONParseable */ where Element: JSONParseable {
         guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? JSONParseType else {
             return nil
         }
-        return parse(from: json)
+        return parse(fromJSON: json)
     }
 }
 
-extension Array /*: JSONConvertible */ where Element: JSONRepresentable {
+extension Array /*: JSONRepresentable */ where Element: JSONRepresentable {
     typealias JSONRepresentation = [Element.JSONRepresentation]
 
     func json() -> JSONRepresentation {
@@ -87,37 +85,4 @@ extension Array /*: JSONConvertible */ where Element: JSONRepresentable {
     }
 }
 
-
-/// A type that can be converted to and from JSON data.
-//protocol JSONConvertible: JSONParseable, RawRepresentable where RawValue == JSONDictionary { }
-//
-//extension JSONConvertible {
-//    public init?(rawValue: RawValue) {
-//        guard let parsed = Self.parse(from: rawValue) else {
-//            return nil
-//        }
-//        self = parsed
-//    }
-//
-//    func jsonData() throws -> Data {
-//        return try JSONSerialization.data(withJSONObject: rawValue, options: [])
-//    }
-//}
-//
-//extension Array /*: DataParseable */ where Element: JSONParseable {
-//    static func parse(from data: Data) throws -> [Element]? {
-//        guard let dictionaries = try JSONSerialization.jsonObject(with: data, options: []) as? [JSONDictionary] else {
-//            return nil
-//        }
-//        let items = dictionaries.flatMap(Element.parse)
-//        assert(dictionaries.count == items.count)
-//        return items
-//    }
-//}
-//
-//extension Array where Element: JSONConvertible {
-//    func jsonData() throws -> Data {
-//        return try JSONSerialization.data(withJSONObject: map { $0.rawValue }, options: [])
-//    }
-//}
-
+extension Array /*: JSONConvertible */ where Element: JSONConvertible { }

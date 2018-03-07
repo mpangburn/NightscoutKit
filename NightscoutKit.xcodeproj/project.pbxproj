@@ -37,6 +37,7 @@
 		896FF5D2204BB9810054198A /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5D1204BB9810054198A /* String.swift */; };
 		89D48E33204BCC0D0066B293 /* apisecret in Resources */ = {isa = PBXBuildFile; fileRef = 89D48E32204BCC0D0066B293 /* apisecret */; };
 		89D48E36204FA3980066B293 /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E34204FA3310066B293 /* DataConvertible.swift */; };
+		89D48E39204FAC6A0066B293 /* AnyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E37204FAC0E0066B293 /* AnyJSON.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -84,6 +85,7 @@
 		89D48E31204BBE200066B293 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		89D48E32204BCC0D0066B293 /* apisecret */ = {isa = PBXFileReference; lastKnownFileType = text; path = apisecret; sourceTree = "<group>"; };
 		89D48E34204FA3310066B293 /* DataConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConvertible.swift; sourceTree = "<group>"; };
+		89D48E37204FAC0E0066B293 /* AnyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSON.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -149,6 +151,7 @@
 		896FF5962048C7640054198A /* Sources */ = {
 			isa = PBXGroup;
 			children = (
+				89D48E37204FAC0E0066B293 /* AnyJSON.swift */,
 				896FF5A12048C77B0054198A /* BloodGlucoseEntry.swift */,
 				896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */,
 				896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */,
@@ -332,6 +335,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				89D48E39204FAC6A0066B293 /* AnyJSON.swift in Sources */,
 				896FF5D2204BB9810054198A /* String.swift in Sources */,
 				896FF5A82048C77B0054198A /* Array.swift in Sources */,
 				896FF5AC2048C77B0054198A /* TimeInterval.swift in Sources */,

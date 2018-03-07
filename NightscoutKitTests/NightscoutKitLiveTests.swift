@@ -53,20 +53,6 @@ class NightscoutKitLiveTests: XCTestCase {
     }
 
     func testLive() {
-        guard let nightscout = nightscout else { return }
-
-        let fakeProfile = Profile(
-            carbRatioSchedule: [.init(startTime: 0, value: 30)],
-            basalRateSchedule: [.init(startTime: 0, value: 1.0)],
-            sensitivitySchedule: [.init(startTime: 0, value: 50)],
-            bloodGlucoseTargetSchedule: [.init(startTime: 0, value: 80...120)],
-            activeInsulinDuration: .hours(5),
-            carbsActivityAbsorptionRate: 30,
-            timeZone: "UTC"
-        )
-        let fakeRecord = ProfileRecord(id: "591bca2d7b6d740c00aae1ff", defaultProfileName: "FAKE 4", date: Date(), units: .milligramsPerDeciliter, profiles: ["FAKE 4": fakeProfile])
-
-        nightscout.uploadProfileRecords([fakeRecord], completion: { print($0) })
-//        nightscout.deleteProfileRecords([fakeRecord], completion: { print($0 as Any) })
+//        guard let nightscout = nightscout else { return }
     }
 }
