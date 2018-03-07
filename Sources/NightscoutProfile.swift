@@ -1,5 +1,5 @@
 //
-//  Profile.swift
+//  NightscoutProfile.swift
 //  NightscoutKit
 //
 //  Created by Michael Pangburn on 2/23/18.
@@ -9,7 +9,7 @@
 import Foundation
 
 
-public struct Profile {
+public struct NightscoutProfile {
     public struct ScheduleItem<Value> {
         let startTime: TimeInterval // referenced to midnight
         let value: Value
@@ -31,7 +31,7 @@ public struct Profile {
 
 // MARK: - JSON Parsing
 
-extension Profile: JSONParseable {
+extension NightscoutProfile: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -45,7 +45,7 @@ extension Profile: JSONParseable {
         static let timeZone = "timezone"
     }
 
-    static func parse(fromJSON profileJSON: JSONDictionary) -> Profile? {
+    static func parse(fromJSON profileJSON: JSONDictionary) -> NightscoutProfile? {
         guard
             let carbRatioDictionaries = profileJSON[Key.carbRatioSchedule] as? [JSONDictionary],
             let basalRateDictionaries = profileJSON[Key.basalRateSchedule] as? [JSONDictionary],
@@ -72,7 +72,7 @@ extension Profile: JSONParseable {
             bloodGlucoseTargetSchedule.append(targetScheduleItem)
         }
 
-        return Profile(
+        return NightscoutProfile(
             carbRatioSchedule: carbRatioDictionaries.flatMap(ScheduleItem.parse),
             basalRateSchedule: basalRateDictionaries.flatMap(ScheduleItem.parse),
             sensitivitySchedule: sensitivityDictionaries.flatMap(ScheduleItem.parse),
@@ -84,7 +84,7 @@ extension Profile: JSONParseable {
     }
 }
 
-extension Profile: JSONConvertible {
+extension NightscoutProfile: JSONConvertible {
     func json() -> JSONDictionary {
         let splitTargets = bloodGlucoseTargetSchedule.map { $0.split() }
         return [
@@ -107,8 +107,8 @@ fileprivate enum ScheduleItemKey {
 }
 
 // TODO: conditional conformance here
-extension Profile.ScheduleItem /*: JSONParseable */ where Value: StringParseable {
-    static func parse(from itemJSON: JSONDictionary) -> Profile.ScheduleItem<Value>? {
+extension NightscoutProfile.ScheduleItem /*: JSONParseable */ where Value: StringParseable {
+    static func parse(from itemJSON: JSONDictionary) -> NightscoutProfile.ScheduleItem<Value>? {
         guard
             let startDateString = itemJSON[ScheduleItemKey.startDateString] as? String,
             let startTime = TimeFormatter.time(from: startDateString),
@@ -118,11 +118,11 @@ extension Profile.ScheduleItem /*: JSONParseable */ where Value: StringParseable
             return nil
         }
         
-        return Profile.ScheduleItem(startTime: startTime, value: value)
+        return NightscoutProfile.ScheduleItem(startTime: startTime, value: value)
     }
 }
 
-extension Profile.ScheduleItem /*: JSONConvertible */ /* where T: StringParseable */ {
+extension NightscoutProfile.ScheduleItem /*: JSONConvertible */ /* where T: StringParseable */ {
     func json() -> JSONDictionary {
         return [
             ScheduleItemKey.startDateString: TimeFormatter.string(from: startTime),
@@ -131,17 +131,17 @@ extension Profile.ScheduleItem /*: JSONConvertible */ /* where T: StringParseabl
     }
 }
 
-extension Profile.ScheduleItem where Value == ClosedRange<Double> {
-    func split() -> (lower: Profile.ScheduleItem<Double>, upper: Profile.ScheduleItem<Double>) {
-        let lower = Profile.ScheduleItem(startTime: startTime, value: value.lowerBound)
-        let upper = Profile.ScheduleItem(startTime: startTime, value: value.upperBound)
+extension NightscoutProfile.ScheduleItem where Value == ClosedRange<Double> {
+    func split() -> (lower: NightscoutProfile.ScheduleItem<Double>, upper: NightscoutProfile.ScheduleItem<Double>) {
+        let lower = NightscoutProfile.ScheduleItem(startTime: startTime, value: value.lowerBound)
+        let upper = NightscoutProfile.ScheduleItem(startTime: startTime, value: value.upperBound)
         return (lower: lower, upper: upper)
     }
 }
 
 // MARK: - CustomStringConvertible
 
-extension Profile.ScheduleItem: CustomStringConvertible {
+extension NightscoutProfile.ScheduleItem: CustomStringConvertible {
     public var description: String {
         return "ScheduleItem(startTime: \(TimeFormatter.prettyString(from: startTime)), value: \(value))"
     }

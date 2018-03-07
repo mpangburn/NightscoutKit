@@ -1,5 +1,5 @@
 //
-//  Treatment.swift
+//  NightscoutTreatment.swift
 //  NightscoutKit
 //
 //  Created by Michael Pangburn on 2/16/18.
@@ -9,7 +9,7 @@
 import Foundation
 
 
-public struct Treatment: UniquelyIdentifiable {
+public struct NightscoutTreatment: UniquelyIdentifiable {
     public enum EventType {
         case bloodGlucoseCheck
         case bolus(type: BolusType)
@@ -63,8 +63,8 @@ public struct Treatment: UniquelyIdentifiable {
 
 // MARK: - Equatable
 
-extension Treatment.GlucoseMeasurement: Equatable {
-    public static func == (lhs: Treatment.GlucoseMeasurement, rhs: Treatment.GlucoseMeasurement) -> Bool {
+extension NightscoutTreatment.GlucoseMeasurement: Equatable {
+    public static func == (lhs: NightscoutTreatment.GlucoseMeasurement, rhs: NightscoutTreatment.GlucoseMeasurement) -> Bool {
         return lhs.value == rhs.value
             && lhs.units == rhs.units
             && lhs.source == rhs.source
@@ -73,7 +73,7 @@ extension Treatment.GlucoseMeasurement: Equatable {
 
 // MARK: - JSON Parsing
 
-extension Treatment: JSONParseable {
+extension NightscoutTreatment: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     enum Key {
@@ -90,7 +90,7 @@ extension Treatment: JSONParseable {
         static let notes = "notes"
     }
 
-    static func parse(fromJSON treatmentJSON: JSONDictionary) -> Treatment? {
+    static func parse(fromJSON treatmentJSON: JSONDictionary) -> NightscoutTreatment? {
         guard
             let id = treatmentJSON[Key.id] as? String,
             let eventType = EventType.parse(fromJSON: treatmentJSON),
@@ -111,7 +111,7 @@ extension Treatment: JSONParseable {
             glucose = nil
         }
 
-        return Treatment(
+        return NightscoutTreatment(
             id: id,
             eventType: eventType,
             date: date,
@@ -125,7 +125,7 @@ extension Treatment: JSONParseable {
     }
 }
 
-extension Treatment: JSONConvertible {
+extension NightscoutTreatment: JSONConvertible {
     func json() -> JSONDictionary {
         var raw: RawValue = [
             Key.id: id,
@@ -171,23 +171,23 @@ extension Treatment: JSONConvertible {
     }
 }
 
-extension Treatment.EventType: JSONParseable {
+extension NightscoutTreatment.EventType: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     fileprivate enum Key {
         static let profileName = "profile"
     }
 
-    static func parse(fromJSON treatmentJSON: JSONDictionary) -> Treatment.EventType? {
-        guard let eventTypeString = treatmentJSON[Treatment.Key.eventType] as? String else {
+    static func parse(fromJSON treatmentJSON: JSONDictionary) -> NightscoutTreatment.EventType? {
+        guard let eventTypeString = treatmentJSON[NightscoutTreatment.Key.eventType] as? String else {
             return nil
         }
 
-        if let simpleEventType = Treatment.EventType(simpleRawValue: eventTypeString) {
+        if let simpleEventType = NightscoutTreatment.EventType(simpleRawValue: eventTypeString) {
             return simpleEventType
-        } else if let bolusType = Treatment.BolusType.parse(fromJSON: treatmentJSON) {
+        } else if let bolusType = NightscoutTreatment.BolusType.parse(fromJSON: treatmentJSON) {
             return .bolus(type: bolusType)
-        } else if let tempBasalType = Treatment.TempBasalType.parse(fromJSON: treatmentJSON) {
+        } else if let tempBasalType = NightscoutTreatment.TempBasalType.parse(fromJSON: treatmentJSON) {
             return .tempBasal(type: tempBasalType)
         } else if eventTypeString == "Profile Switch" {
             guard let profileName = treatmentJSON[Key.profileName] as? String else {
@@ -200,8 +200,8 @@ extension Treatment.EventType: JSONParseable {
     }
 }
 
-extension Treatment.EventType: PartiallyRawRepresentable {
-    static var simpleCases: [Treatment.EventType] {
+extension NightscoutTreatment.EventType: PartiallyRawRepresentable {
+    static var simpleCases: [NightscoutTreatment.EventType] {
         return [
             .bloodGlucoseCheck, .carbCorrection, .announcement, .note, .question,
             .exercise, .suspendPump, .resumePump, .pumpSiteChange, .insulinChange,
@@ -251,7 +251,7 @@ extension Treatment.EventType: PartiallyRawRepresentable {
     }
 }
 
-extension Treatment.BolusType: JSONParseable {
+extension NightscoutTreatment.BolusType: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     fileprivate enum Key {
@@ -260,12 +260,12 @@ extension Treatment.BolusType: JSONParseable {
         static let percentageOverTimeString = "splitExt"
     }
 
-    static func parse(fromJSON treatmentJSON: JSONDictionary) -> Treatment.BolusType? {
-        guard let eventTypeString = treatmentJSON[Treatment.Key.eventType] as? String, eventTypeString.contains("Bolus") else {
+    static func parse(fromJSON treatmentJSON: JSONDictionary) -> NightscoutTreatment.BolusType? {
+        guard let eventTypeString = treatmentJSON[NightscoutTreatment.Key.eventType] as? String, eventTypeString.contains("Bolus") else {
             return nil
         }
 
-        if let simpleBolusType = Treatment.BolusType(simpleRawValue: eventTypeString) {
+        if let simpleBolusType = NightscoutTreatment.BolusType(simpleRawValue: eventTypeString) {
             return simpleBolusType
         } else {
             guard
@@ -281,8 +281,8 @@ extension Treatment.BolusType: JSONParseable {
     }
 }
 
-extension Treatment.BolusType: PartiallyRawRepresentable {
-    static var simpleCases: [Treatment.BolusType] {
+extension NightscoutTreatment.BolusType: PartiallyRawRepresentable {
+    static var simpleCases: [NightscoutTreatment.BolusType] {
         return [.snack, .meal, .correction]
     }
 
@@ -303,7 +303,7 @@ extension Treatment.BolusType: PartiallyRawRepresentable {
     }
 }
 
-extension Treatment.TempBasalType: JSONParseable {
+extension NightscoutTreatment.TempBasalType: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     fileprivate enum Key {
@@ -311,8 +311,8 @@ extension Treatment.TempBasalType: JSONParseable {
         static let absolute = "absolute"
     }
 
-    static func parse(fromJSON treatmentJSON: JSONDictionary) -> Treatment.TempBasalType? {
-        guard let eventTypeString = treatmentJSON[Treatment.Key.eventType] as? String, eventTypeString == "Temp Basal" else {
+    static func parse(fromJSON treatmentJSON: JSONDictionary) -> NightscoutTreatment.TempBasalType? {
+        guard let eventTypeString = treatmentJSON[NightscoutTreatment.Key.eventType] as? String, eventTypeString == "Temp Basal" else {
             return nil
         }
 
@@ -328,7 +328,7 @@ extension Treatment.TempBasalType: JSONParseable {
 
 // MARK: - CustomStringConvertible
 
-extension Treatment.EventType: CustomStringConvertible {
+extension NightscoutTreatment.EventType: CustomStringConvertible {
     public var description: String {
         switch self {
         case .bolus(type: let type):
@@ -345,7 +345,7 @@ extension Treatment.EventType: CustomStringConvertible {
     }
 }
 
-extension Treatment.BolusType: CustomStringConvertible {
+extension NightscoutTreatment.BolusType: CustomStringConvertible {
     public var description: String {
         switch self {
         case .combo(totalInsulin: let totalInsulin, percentageUpFront: let percentageUpFront):
@@ -356,7 +356,7 @@ extension Treatment.BolusType: CustomStringConvertible {
     }
 }
 
-extension Treatment.TempBasalType: CustomStringConvertible {
+extension NightscoutTreatment.TempBasalType: CustomStringConvertible {
     public var description: String {
         switch self {
         case .percentage(let percentage):

@@ -12,9 +12,9 @@ import Foundation
 public struct NightscoutSnapshot {
     public let date: Date
     public let settings: NightscoutSettings
-    public let bloodGlucoseEntries: [BloodGlucoseEntry]
-    public let treatments: [Treatment]
-    public let profileRecords: [ProfileRecord]
+    public let entries: [NightscoutEntry]
+    public let treatments: [NightscoutTreatment]
+    public let profileRecords: [NightscoutProfileRecord]
 }
 
 extension NightscoutSnapshot: CustomStringConvertible {
@@ -27,7 +27,7 @@ extension NightscoutSnapshot: CustomStringConvertible {
         \(settings)
 
         ===== BLOOD GLUCOSE ENTRIES =====
-        \(bloodGlucoseEntries.map(String.init(describing:)).joined(separator: "\n"))
+        \(entries.map(String.init(describing:)).joined(separator: "\n"))
 
         ===== TREATMENTS =====
         \(treatments.map(String.init(describing:)).joined(separator: "\n"))

@@ -23,9 +23,9 @@ class NightscoutKitTests: XCTestCase {
             "type": "sgv"
         ]
 
-        let entry = BloodGlucoseEntry(rawValue: entryJSON)!
+        let entry = NightscoutEntry(rawValue: entryJSON)!
 
-        let expectedEntry = BloodGlucoseEntry(
+        let expectedEntry = NightscoutEntry(
             id: "5a8a0764dc13514404097ed7",
             glucoseValue: 145,
             source: .sensor(trend: .flat),
@@ -49,7 +49,7 @@ class NightscoutKitTests: XCTestCase {
 
     func testParseEntryJSON() {
         let entriesJSON: [JSONDictionary] = loadFixture("entries")
-        let entries = entriesJSON.flatMap(BloodGlucoseEntry.init(rawValue:))
+        let entries = entriesJSON.flatMap(NightscoutEntry.init(rawValue:))
         XCTAssert(entries.count == entriesJSON.count)
     }
 
@@ -65,9 +65,9 @@ class NightscoutKitTests: XCTestCase {
             "timestamp": "2018-02-18T22:25:01Z"
         ]
 
-        let treatment = Treatment(rawValue: treatmentJSON)!
+        let treatment = NightscoutTreatment(rawValue: treatmentJSON)!
 
-        let expectedTreatment = Treatment(
+        let expectedTreatment = NightscoutTreatment(
             id: "5a89f9fcdc13514404093e3f",
             eventType: .bolus(type: .meal),
             date: TimeFormatter.date(from: "2018-02-18T22:25:01Z")!,
@@ -99,7 +99,7 @@ class NightscoutKitTests: XCTestCase {
 
     func testParseTreatmentJSON() {
         let treatmentsJSON: [JSONDictionary] = loadFixture("treatments")
-        let treatments = treatmentsJSON.flatMap(Treatment.init(rawValue:))
+        let treatments = treatmentsJSON.flatMap(NightscoutTreatment.init(rawValue:))
         XCTAssert(treatments.count == treatmentsJSON.count)
 
         for treatment in treatments {
@@ -111,7 +111,7 @@ class NightscoutKitTests: XCTestCase {
 
     func testParseProfileRecordJSON() {
         let profileJSON: [JSONDictionary] = loadFixture("profiles")
-        let profileStores = profileJSON.flatMap(ProfileRecord.parse)
+        let profileStores = profileJSON.flatMap(NightscoutProfileRecord.parse)
         XCTAssert(profileJSON.count == profileStores.count)
     }
 }

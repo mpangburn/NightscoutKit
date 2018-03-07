@@ -1,5 +1,5 @@
 //
-//  BloodGlucoseEntry.swift
+//  NightscoutEntry.swift
 //  NightscoutKit
 //
 //  Created by Michael Pangburn on 2/16/18.
@@ -9,7 +9,7 @@
 import Foundation
 
 
-public struct BloodGlucoseEntry: UniquelyIdentifiable {
+public struct NightscoutEntry: UniquelyIdentifiable {
     public enum Source {
         case sensor(trend: BloodGlucoseTrend)
         case meter
@@ -24,7 +24,7 @@ public struct BloodGlucoseEntry: UniquelyIdentifiable {
 
 // MARK: - JSON Parsing
 
-extension BloodGlucoseEntry: JSONParseable {
+extension NightscoutEntry: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     enum Key {
@@ -35,7 +35,7 @@ extension BloodGlucoseEntry: JSONParseable {
         static let device = "device"
     }
 
-    static func parse(fromJSON entryJSON: JSONDictionary) -> BloodGlucoseEntry? {
+    static func parse(fromJSON entryJSON: JSONDictionary) -> NightscoutEntry? {
         guard
             let id = entryJSON[Key.id] as? String,
             let millisecondsSince1970 = entryJSON[Key.millisecondsSince1970] as? Double,
@@ -46,7 +46,7 @@ extension BloodGlucoseEntry: JSONParseable {
             return nil
         }
 
-        return BloodGlucoseEntry(
+        return NightscoutEntry(
             id: id,
             glucoseValue: glucoseValue,
             source: source,
@@ -56,7 +56,7 @@ extension BloodGlucoseEntry: JSONParseable {
     }
 }
 
-extension BloodGlucoseEntry: JSONConvertible {
+extension NightscoutEntry: JSONConvertible {
     func json() -> JSONDictionary {
         var raw: RawValue = [
             Key.id: id,
@@ -78,19 +78,19 @@ extension BloodGlucoseEntry: JSONConvertible {
     }
 }
 
-extension BloodGlucoseEntry.Source: JSONParseable {
+extension NightscoutEntry.Source: JSONParseable {
     typealias JSONParseType = JSONDictionary
     
     fileprivate enum Key {
         static let direction = "direction"
     }
 
-    static func parse(fromJSON entryJSON: JSONDictionary) -> BloodGlucoseEntry.Source? {
-        guard let typeString = entryJSON[BloodGlucoseEntry.Key.typeString] as? String else {
+    static func parse(fromJSON entryJSON: JSONDictionary) -> NightscoutEntry.Source? {
+        guard let typeString = entryJSON[NightscoutEntry.Key.typeString] as? String else {
             return nil
         }
 
-        if let simpleGlucoseSource = BloodGlucoseEntry.Source(simpleRawValue: typeString) {
+        if let simpleGlucoseSource = NightscoutEntry.Source(simpleRawValue: typeString) {
             return simpleGlucoseSource
         } else {
             let trend: BloodGlucoseTrend
@@ -105,8 +105,8 @@ extension BloodGlucoseEntry.Source: JSONParseable {
     }
 }
 
-extension BloodGlucoseEntry.Source: PartiallyRawRepresentable {
-    static var simpleCases: [BloodGlucoseEntry.Source] {
+extension NightscoutEntry.Source: PartiallyRawRepresentable {
+    static var simpleCases: [NightscoutEntry.Source] {
         return [.meter]
     }
 
@@ -122,7 +122,7 @@ extension BloodGlucoseEntry.Source: PartiallyRawRepresentable {
 
 // MARK: - CustomStringConvertible
 
-extension BloodGlucoseEntry: CustomStringConvertible, CustomDebugStringConvertible {
+extension NightscoutEntry: CustomStringConvertible, CustomDebugStringConvertible {
     public var description: String {
         return description(includingID: false)
     }
@@ -132,7 +132,7 @@ extension BloodGlucoseEntry: CustomStringConvertible, CustomDebugStringConvertib
     }
 
     private func description(includingID: Bool) -> String {
-        var description = "BloodGlucoseEntry("
+        var description = "NightscoutEntry("
         if includingID {
             description += "id: \(id), "
         }
@@ -145,7 +145,7 @@ extension BloodGlucoseEntry: CustomStringConvertible, CustomDebugStringConvertib
     }
 }
 
-extension BloodGlucoseEntry.Source: CustomStringConvertible {
+extension NightscoutEntry.Source: CustomStringConvertible {
     public var description: String {
         switch self {
         case .sensor(trend: let trend):

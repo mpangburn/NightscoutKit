@@ -95,20 +95,20 @@ extension Nightscout {
 
         static func entryDate(_ operator: ComparativeOperator, _ date: Date) -> QueryItem {
             let millisecondsSince1970 = date.timeIntervalSince1970.milliseconds
-            return .find(property: BloodGlucoseEntry.Key.millisecondsSince1970, `operator`, value: String(millisecondsSince1970))
+            return .find(property: NightscoutEntry.Key.millisecondsSince1970, `operator`, value: String(millisecondsSince1970))
         }
 
         static func entryDates(from dateInterval: DateInterval) -> [QueryItem] {
             return [.entryDate(.greaterThanOrEqualTo, dateInterval.start), .entryDate(.lessThanOrEqualTo, dateInterval.end)]
         }
 
-        static func treatmentEventType(matching eventType: Treatment.EventType) -> QueryItem {
-            return .find(property: Treatment.Key.eventType, .equalTo, value: eventType.simpleRawValue)
+        static func treatmentEventType(matching eventType: NightscoutTreatment.EventType) -> QueryItem {
+            return .find(property: NightscoutTreatment.Key.eventType, .equalTo, value: eventType.simpleRawValue)
         }
 
         static func treatmentDate(_ operator: ComparativeOperator, _ date: Date) -> QueryItem {
             let dateString = "\(TimeFormatter.string(from: date)).000Z"
-            return .find(property: Treatment.Key.dateString, `operator`, value: dateString)
+            return .find(property: NightscoutTreatment.Key.dateString, `operator`, value: dateString)
         }
 
         static func treatmentDates(from dateInterval: DateInterval) -> [QueryItem] {
@@ -169,9 +169,9 @@ extension Nightscout {
     public func snapshot(recentBloodGlucoseEntryCount: Int = 10, recentTreatmentCount: Int = 10, completion: @escaping (NightscoutResult<NightscoutSnapshot>) -> Void) {
         let date = Date()
         var settings = NightscoutSettings.default
-        var bloodGlucoseEntries: [BloodGlucoseEntry] = []
-        var treatments: [Treatment] = []
-        var profileRecords: [ProfileRecord] = []
+        var entries: [NightscoutEntry] = []
+        var treatments: [NightscoutTreatment] = []
+        var profileRecords: [NightscoutProfileRecord] = []
         var error: Error?
 
         let snapshotGroup = DispatchGroup()
@@ -204,7 +204,7 @@ extension Nightscout {
         fetchMostRecentEntries(count: recentBloodGlucoseEntryCount) { result in
             switch result {
             case .success(let fetchedBloodGlucoseEntries):
-                bloodGlucoseEntries = fetchedBloodGlucoseEntries
+                entries = fetchedBloodGlucoseEntries
             case .failure(let err):
                 error = err
             }
@@ -232,7 +232,7 @@ extension Nightscout {
             return
         }
 
-        let snapshot = NightscoutSnapshot(date: date, settings: settings, bloodGlucoseEntries: bloodGlucoseEntries, treatments: treatments, profileRecords: profileRecords)
+        let snapshot = NightscoutSnapshot(date: date, settings: settings, entries: entries, treatments: treatments, profileRecords: profileRecords)
         completion(.success(snapshot))
     }
 
@@ -240,27 +240,27 @@ extension Nightscout {
         fetch(from: .status, completion: completion)
     }
 
-    public func fetchMostRecentEntries(count: Int = 10, completion: @escaping (NightscoutResult<[BloodGlucoseEntry]>) -> Void) {
+    public func fetchMostRecentEntries(count: Int = 10, completion: @escaping (NightscoutResult<[NightscoutEntry]>) -> Void) {
         let queryItems: [QueryItem] = [.count(count)]
         fetchArray(from: .entries, queryItems: queryItems, completion: completion)
     }
 
-    public func fetchEntries(from interval: DateInterval, maxCount: Int = .max, completion: @escaping (NightscoutResult<[BloodGlucoseEntry]>) -> Void) {
+    public func fetchEntries(from interval: DateInterval, maxCount: Int = .max, completion: @escaping (NightscoutResult<[NightscoutEntry]>) -> Void) {
         let queryItems = QueryItem.entryDates(from: interval) + [.count(maxCount)]
         fetchArray(from: .entries, queryItems: queryItems, completion: completion)
     }
 
-    public func fetchMostRecentTreatments(count: Int = 10, completion: @escaping (NightscoutResult<[Treatment]>) -> Void) {
+    public func fetchMostRecentTreatments(count: Int = 10, completion: @escaping (NightscoutResult<[NightscoutTreatment]>) -> Void) {
         let queryItems: [QueryItem] = [.count(count)]
         fetchArray(from: .treatments, queryItems: queryItems, completion: completion)
     }
 
-    public func fetchTreatments(from interval: DateInterval, maxCount: Int = .max, completion: @escaping (NightscoutResult<[Treatment]>) -> Void) {
+    public func fetchTreatments(from interval: DateInterval, maxCount: Int = .max, completion: @escaping (NightscoutResult<[NightscoutTreatment]>) -> Void) {
         let queryItems = QueryItem.treatmentDates(from: interval) + [.count(maxCount)]
         fetchArray(from: .treatments, queryItems: queryItems, completion: completion)
     }
 
-    public func fetchProfileRecords(completion: @escaping (NightscoutResult<[ProfileRecord]>) -> Void) {
+    public func fetchProfileRecords(completion: @escaping (NightscoutResult<[NightscoutProfileRecord]>) -> Void) {
         fetchArray(from: .profiles, completion: completion)
     }
 }
@@ -369,36 +369,36 @@ extension Nightscout {
         }
     }
 
-    public func uploadEntries(_ entries: [BloodGlucoseEntry], completion: @escaping (NightscoutResult<[BloodGlucoseEntry]>) -> Void) {
+    public func uploadEntries(_ entries: [NightscoutEntry], completion: @escaping (NightscoutResult<[NightscoutEntry]>) -> Void) {
         post(entries, to: .entries, completion: completion)
     }
 
     // FIXME: entry deletion fails--but why?
-    /* public */ func deleteEntries(_ entries: [BloodGlucoseEntry], completion: @escaping (NightscoutError?) -> Void) {
+    /* public */ func deleteEntries(_ entries: [NightscoutEntry], completion: @escaping (NightscoutError?) -> Void) {
         delete(entries, from: .entries, completion: completion)
     }
 
-    public func uploadTreatments(_ treatments: [Treatment], completion: @escaping (NightscoutResult<[Treatment]>) -> Void) {
+    public func uploadTreatments(_ treatments: [NightscoutTreatment], completion: @escaping (NightscoutResult<[NightscoutTreatment]>) -> Void) {
         post(treatments, to: .treatments, completion: completion)
     }
 
-    public func updateTreatments(_ treatments: [Treatment], completion: @escaping (NightscoutError?) -> Void) {
+    public func updateTreatments(_ treatments: [NightscoutTreatment], completion: @escaping (NightscoutError?) -> Void) {
         put(treatments, to: .treatments, completion: completion)
     }
 
-    public func deleteTreatments(_ treatments: [Treatment], completion: @escaping (NightscoutError?) -> Void) {
+    public func deleteTreatments(_ treatments: [NightscoutTreatment], completion: @escaping (NightscoutError?) -> Void) {
         delete(treatments, from: .treatments, completion: completion)
     }
 
-    public func uploadProfileRecords(_ records: [ProfileRecord], completion: @escaping (NightscoutResult<[ProfileRecord]>) -> Void) {
+    public func uploadProfileRecords(_ records: [NightscoutProfileRecord], completion: @escaping (NightscoutResult<[NightscoutProfileRecord]>) -> Void) {
         post(records, to: .profiles, completion: completion)
     }
 
-    public func updateProfileRecords(_ records: [ProfileRecord], completion: @escaping (NightscoutError?) -> Void) {
+    public func updateProfileRecords(_ records: [NightscoutProfileRecord], completion: @escaping (NightscoutError?) -> Void) {
         put(records, to: .profiles, completion: completion)
     }
 
-    public func deleteProfileRecords(_ records: [ProfileRecord], completion: @escaping (NightscoutError?) -> Void) {
+    public func deleteProfileRecords(_ records: [NightscoutProfileRecord], completion: @escaping (NightscoutError?) -> Void) {
         delete(records, from: .profiles, completion: completion)
     }
 }

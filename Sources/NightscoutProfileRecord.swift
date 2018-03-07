@@ -1,5 +1,5 @@
 //
-//  ProfileRecord.swift
+//  NightscoutProfileRecord.swift
 //  NightscoutKit
 //
 //  Created by Michael Pangburn on 2/23/18.
@@ -9,17 +9,17 @@
 import Foundation
 
 
-public struct ProfileRecord: UniquelyIdentifiable {
+public struct NightscoutProfileRecord: UniquelyIdentifiable {
     public let id: String
     public let defaultProfileName: String
     public let date: Date
     public let units: BloodGlucoseUnit
-    public let profiles: [String: Profile]
+    public let profiles: [String: NightscoutProfile]
 }
 
 // MARK: - JSON Parsing
 
-extension ProfileRecord: JSONParseable {
+extension NightscoutProfileRecord: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -30,7 +30,7 @@ extension ProfileRecord: JSONParseable {
         static let profileDictionaries = "store"
     }
 
-    static func parse(fromJSON profileJSON: JSONDictionary) -> ProfileRecord? {
+    static func parse(fromJSON profileJSON: JSONDictionary) -> NightscoutProfileRecord? {
         guard
             let id = profileJSON[Key.id] as? String,
             let defaultProfileName = profileJSON[Key.defaultProfileName] as? String,
@@ -43,17 +43,17 @@ extension ProfileRecord: JSONParseable {
             return nil
         }
 
-        return ProfileRecord(
+        return NightscoutProfileRecord(
             id: id,
             defaultProfileName: defaultProfileName,
             date: recordDate,
             units: units,
-            profiles: profileDictionaries.compactMapValues(Profile.parse)
+            profiles: profileDictionaries.compactMapValues(NightscoutProfile.parse)
         )
     }
 }
 
-extension ProfileRecord: JSONConvertible {
+extension NightscoutProfileRecord: JSONConvertible {
     func json() -> JSONDictionary {
         return [
             Key.id: id,
