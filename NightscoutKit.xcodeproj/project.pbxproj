@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		896FB45D20507EB10021107F /* JSONKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45C20507EB10021107F /* JSONKey.swift */; };
 		896FF5862048C7510054198A /* NightscoutKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896FF57C2048C7510054198A /* NightscoutKit.framework */; };
 		896FF58B2048C7510054198A /* NightscoutKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF58A2048C7510054198A /* NightscoutKitTests.swift */; };
 		896FF58D2048C7510054198A /* NightscoutKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 896FF57F2048C7510054198A /* NightscoutKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -51,6 +52,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		896FB45C20507EB10021107F /* JSONKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONKey.swift; sourceTree = "<group>"; };
 		896FF57C2048C7510054198A /* NightscoutKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		896FF57F2048C7510054198A /* NightscoutKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscoutKit.h; sourceTree = "<group>"; };
 		896FF5802048C7510054198A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -162,6 +164,7 @@
 				896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */,
 				896FF59E2048C77B0054198A /* NightscoutTreatment.swift */,
 				896FF59F2048C77B0054198A /* TimeFormatter.swift */,
+				896FB45C20507EB10021107F /* JSONKey.swift */,
 				896FF5972048C77A0054198A /* Extensions */,
 				896FF5B72048C7A30054198A /* Protocols */,
 			);
@@ -341,6 +344,7 @@
 				896FF5AC2048C77B0054198A /* TimeInterval.swift in Sources */,
 				896FF5B02048C77B0054198A /* NightscoutEntry.swift in Sources */,
 				896FF5AE2048C77B0054198A /* TimeFormatter.swift in Sources */,
+				896FB45D20507EB10021107F /* JSONKey.swift in Sources */,
 				896FF5AF2048C77B0054198A /* BloodGlucoseUnit.swift in Sources */,
 				896FF5AD2048C77B0054198A /* NightscoutTreatment.swift in Sources */,
 				896FF5BC2048C7A30054198A /* JSONConvertible.swift in Sources */,

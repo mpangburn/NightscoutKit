@@ -14,7 +14,7 @@ class NightscoutKitTests: XCTestCase {
     func testParseIndividualEntry() {
         let entryJSON: JSONDictionary = [
             "_id": "5a8a0764dc13514404097ed7",
-            "date": 1518995177000 as Double,
+            "date": 1518995177000,
             "dateString": "2018-02-18T23:06:17.000Z",
             "device": "share2",
             "direction": "Flat",

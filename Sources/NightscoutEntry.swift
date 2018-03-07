@@ -28,18 +28,18 @@ extension NightscoutEntry: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     enum Key {
-        static let id = "_id"
-        static let typeString = "type"
-        static let millisecondsSince1970 = "date"
-        static let dateString = "dateString"
-        static let device = "device"
+        static let id: JSONKey<String> = "_id"
+        static let typeString: JSONKey<String> = "type"
+        static let millisecondsSince1970: JSONKey<Int> = "date"
+        static let dateString: JSONKey<String> = "dateString"
+        static let device: JSONKey<String> = "device"
     }
 
     static func parse(fromJSON entryJSON: JSONDictionary) -> NightscoutEntry? {
         guard
-            let id = entryJSON[Key.id] as? String,
-            let millisecondsSince1970 = entryJSON[Key.millisecondsSince1970] as? Double,
-            let typeString = entryJSON[Key.typeString] as? String,
+            let id = entryJSON[Key.id],
+            let millisecondsSince1970 = entryJSON[Key.millisecondsSince1970],
+            let typeString = entryJSON[Key.typeString],
             let glucoseValue = entryJSON[typeString] as? Int,
             let source = Source.parse(fromJSON: entryJSON)
         else {
@@ -50,31 +50,30 @@ extension NightscoutEntry: JSONParseable {
             id: id,
             glucoseValue: glucoseValue,
             source: source,
-            date: Date(timeIntervalSince1970: .milliseconds(millisecondsSince1970)),
-            device: entryJSON[Key.device] as? String
+            date: Date(timeIntervalSince1970: .milliseconds(Double(millisecondsSince1970))),
+            device: entryJSON[Key.device]
         )
     }
 }
 
 extension NightscoutEntry: JSONConvertible {
     func json() -> JSONDictionary {
-        var raw: RawValue = [
-            Key.id: id,
-            Key.millisecondsSince1970: Int(date.timeIntervalSince1970.milliseconds),
-            Key.dateString: TimeFormatter.string(from: date),
-            Key.typeString: source.simpleRawValue,
-            source.simpleRawValue: glucoseValue
-        ]
+        var json: JSONDictionary = [:]
+        json[Key.id] = id
+        json[Key.millisecondsSince1970] = Int(date.timeIntervalSince1970.milliseconds)
+        json[Key.dateString] = TimeFormatter.string(from: date)
+        json[Key.typeString] = source.simpleRawValue
+        json[source.simpleRawValue] = glucoseValue
 
         if case .sensor(trend: let trend) = source, trend != .unknown {
-            raw[Source.Key.direction] = trend.rawValue
+            json[Source.Key.direction] = trend.rawValue
         }
 
         if let device = device {
-            raw[Key.device] = device
+            json[Key.device] = device
         }
 
-        return raw
+        return json
     }
 }
 
@@ -82,24 +81,18 @@ extension NightscoutEntry.Source: JSONParseable {
     typealias JSONParseType = JSONDictionary
     
     fileprivate enum Key {
-        static let direction = "direction"
+        static let direction: JSONKey<String> = "direction"
     }
 
     static func parse(fromJSON entryJSON: JSONDictionary) -> NightscoutEntry.Source? {
-        guard let typeString = entryJSON[NightscoutEntry.Key.typeString] as? String else {
+        guard let typeString = entryJSON[NightscoutEntry.Key.typeString] else {
             return nil
         }
 
         if let simpleGlucoseSource = NightscoutEntry.Source(simpleRawValue: typeString) {
             return simpleGlucoseSource
         } else {
-            let trend: BloodGlucoseTrend
-            if let directionString = entryJSON[Key.direction] as? String, let bgTrend = BloodGlucoseTrend(rawValue: directionString) {
-                trend = bgTrend
-            } else {
-                trend = .unknown
-            }
-
+            let trend = entryJSON[Key.direction].flatMap(BloodGlucoseTrend.init(rawValue:)) ?? .unknown
             return .sensor(trend: trend)
         }
     }

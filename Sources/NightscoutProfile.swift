@@ -35,28 +35,26 @@ extension NightscoutProfile: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
-        static let carbRatioSchedule = "carbratio"
-        static let basalRateSchedule = "basal"
-        static let sensitivitySchedule = "sens"
-        static let lowTargets = "target_low"
-        static let highTargets = "target_high"
-        static let activeInsulinDuration = "dia"
-        static let carbsActivityAbsorptionRate = "carbs_hr"
-        static let timeZone = "timezone"
+        static let carbRatioSchedule: JSONKey<[JSONDictionary]> = "carbratio"
+        static let basalRateSchedule: JSONKey<[JSONDictionary]> = "basal"
+        static let sensitivitySchedule: JSONKey<[JSONDictionary]> = "sens"
+        static let lowTargets: JSONKey<[JSONDictionary]> = "target_low"
+        static let highTargets: JSONKey<[JSONDictionary]> = "target_high"
+        static let activeInsulinDurationInHoursString: JSONKey<String> = "dia"
+        static let carbsActivityAbsorptionRateString: JSONKey<String>  = "carbs_hr"
+        static let timeZone: JSONKey<String>  = "timezone"
     }
 
     static func parse(fromJSON profileJSON: JSONDictionary) -> NightscoutProfile? {
         guard
-            let carbRatioDictionaries = profileJSON[Key.carbRatioSchedule] as? [JSONDictionary],
-            let basalRateDictionaries = profileJSON[Key.basalRateSchedule] as? [JSONDictionary],
-            let sensitivityDictionaries = profileJSON[Key.sensitivitySchedule] as? [JSONDictionary],
-            let lowTargetDictionaries = profileJSON[Key.lowTargets] as? [JSONDictionary],
-            let highTargetDictionaries = profileJSON[Key.highTargets] as? [JSONDictionary],
-            let activeInsulinDurationString = profileJSON[Key.activeInsulinDuration] as? String,
-            let activeInsulinDurationInHours = Double(activeInsulinDurationString),
-            let carbsActivityAbsorptionRateString = profileJSON[Key.carbsActivityAbsorptionRate] as? String,
-            let carbsActivityAbsorptionRate = Int(carbsActivityAbsorptionRateString),
-            let timeZone = profileJSON[Key.timeZone] as? String
+            let carbRatioDictionaries = profileJSON[Key.carbRatioSchedule],
+            let basalRateDictionaries = profileJSON[Key.basalRateSchedule],
+            let sensitivityDictionaries = profileJSON[Key.sensitivitySchedule],
+            let lowTargetDictionaries = profileJSON[Key.lowTargets],
+            let highTargetDictionaries = profileJSON[Key.highTargets],
+            let activeInsulinDurationInHours = profileJSON[Key.activeInsulinDurationInHoursString].flatMap(Double.init),
+            let carbsActivityAbsorptionRate = profileJSON[Key.carbsActivityAbsorptionRateString].flatMap(Int.init),
+            let timeZone = profileJSON[Key.timeZone]
         else {
             return nil
         }
@@ -73,9 +71,9 @@ extension NightscoutProfile: JSONParseable {
         }
 
         return NightscoutProfile(
-            carbRatioSchedule: carbRatioDictionaries.flatMap(ScheduleItem.parse),
-            basalRateSchedule: basalRateDictionaries.flatMap(ScheduleItem.parse),
-            sensitivitySchedule: sensitivityDictionaries.flatMap(ScheduleItem.parse),
+            carbRatioSchedule: carbRatioDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),
+            basalRateSchedule: basalRateDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),
+            sensitivitySchedule: sensitivityDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),
             bloodGlucoseTargetSchedule: bloodGlucoseTargetSchedule,
             activeInsulinDuration: .hours(activeInsulinDurationInHours),
             carbsActivityAbsorptionRate: carbsActivityAbsorptionRate,
@@ -86,34 +84,35 @@ extension NightscoutProfile: JSONParseable {
 
 extension NightscoutProfile: JSONConvertible {
     func json() -> JSONDictionary {
+        var json: JSONDictionary = [:]
+        json[Key.carbRatioSchedule] = carbRatioSchedule.map { $0.json() }
+        json[Key.sensitivitySchedule] = basalRateSchedule.map { $0.json() }
+
         let splitTargets = bloodGlucoseTargetSchedule.map { $0.split() }
-        return [
-            Key.carbRatioSchedule: carbRatioSchedule.map { $0.json() },
-            Key.basalRateSchedule: basalRateSchedule.map { $0.json() },
-            Key.sensitivitySchedule: sensitivitySchedule.map { $0.json() },
-            Key.lowTargets: splitTargets.map { $0.lower.json() },
-            Key.highTargets: splitTargets.map { $0.upper.json() },
-            Key.activeInsulinDuration: String(activeInsulinDuration.hours),
-            Key.carbsActivityAbsorptionRate: String(carbsActivityAbsorptionRate),
-            Key.timeZone: timeZone
-        ]
+        json[Key.sensitivitySchedule] = sensitivitySchedule.map { $0.json() }
+        json[Key.lowTargets] = splitTargets.map { $0.lower.json() }
+        json[Key.highTargets] = splitTargets.map { $0.upper.json() }
+
+        json[Key.activeInsulinDurationInHoursString] = String(activeInsulinDuration.hours)
+        json[Key.carbsActivityAbsorptionRateString] = String(carbsActivityAbsorptionRate)
+        json[Key.timeZone] = timeZone
+
+        return json
     }
 }
 
 // can't store static properties in a generic, so we'll stick this out here instead
 fileprivate enum ScheduleItemKey {
-    static let startDateString = "time"
-    static let valueString = "value"
+    static let startDateString: JSONKey<String> = "time"
+    static let valueString: JSONKey<String> = "value"
 }
 
 // TODO: conditional conformance here
 extension NightscoutProfile.ScheduleItem /*: JSONParseable */ where Value: StringParseable {
-    static func parse(from itemJSON: JSONDictionary) -> NightscoutProfile.ScheduleItem<Value>? {
+    static func parse(fromJSON itemJSON: JSONDictionary) -> NightscoutProfile.ScheduleItem<Value>? {
         guard
-            let startDateString = itemJSON[ScheduleItemKey.startDateString] as? String,
-            let startTime = TimeFormatter.time(from: startDateString),
-            let valueString = itemJSON[ScheduleItemKey.valueString] as? String,
-            let value = Value(valueString)
+            let startTime = itemJSON[ScheduleItemKey.startDateString].flatMap(TimeFormatter.time(from:)),
+            let value = itemJSON[ScheduleItemKey.valueString].flatMap(Value.init)
         else {
             return nil
         }
@@ -124,10 +123,10 @@ extension NightscoutProfile.ScheduleItem /*: JSONParseable */ where Value: Strin
 
 extension NightscoutProfile.ScheduleItem /*: JSONConvertible */ /* where T: StringParseable */ {
     func json() -> JSONDictionary {
-        return [
-            ScheduleItemKey.startDateString: TimeFormatter.string(from: startTime),
-            ScheduleItemKey.valueString: String(describing: value)
-        ]
+        var json: JSONDictionary = [:]
+        json[ScheduleItemKey.startDateString] = TimeFormatter.string(from: startTime)
+        json[ScheduleItemKey.valueString] = String(describing: value)
+        return json
     }
 }
 

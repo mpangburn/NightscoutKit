@@ -23,22 +23,20 @@ extension NightscoutProfileRecord: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
-        static let id = "_id"
-        static let defaultProfileName = "defaultProfile"
-        static let dateString = "startDate"
-        static let unitString = "units"
-        static let profileDictionaries = "store"
+        static let id: JSONKey<String> = "_id"
+        static let defaultProfileName: JSONKey<String> = "defaultProfile"
+        static let dateString: JSONKey<String> = "startDate"
+        static let unitString: JSONKey<String> = "units"
+        static let profileDictionaries: JSONKey<[String: JSONDictionary]> = "store"
     }
 
     static func parse(fromJSON profileJSON: JSONDictionary) -> NightscoutProfileRecord? {
         guard
-            let id = profileJSON[Key.id] as? String,
-            let defaultProfileName = profileJSON[Key.defaultProfileName] as? String,
-            let recordDateString = profileJSON[Key.dateString] as? String,
-            let recordDate = TimeFormatter.date(from: recordDateString),
-            let unitString = profileJSON[Key.unitString] as? String,
-            let units = BloodGlucoseUnit(rawValue: unitString),
-            let profileDictionaries = profileJSON[Key.profileDictionaries] as? [String: JSONDictionary]
+            let id = profileJSON[Key.id],
+            let defaultProfileName = profileJSON[Key.defaultProfileName],
+            let recordDate = profileJSON[Key.dateString].flatMap(TimeFormatter.date(from:)),
+            let units = profileJSON[Key.unitString].flatMap(BloodGlucoseUnit.init(rawValue:)),
+            let profileDictionaries = profileJSON[Key.profileDictionaries]
         else {
             return nil
         }
@@ -55,12 +53,12 @@ extension NightscoutProfileRecord: JSONParseable {
 
 extension NightscoutProfileRecord: JSONConvertible {
     func json() -> JSONDictionary {
-        return [
-            Key.id: id,
-            Key.defaultProfileName: defaultProfileName,
-            Key.dateString: TimeFormatter.string(from: date),
-            Key.unitString: units.rawValue,
-            Key.profileDictionaries: profiles.mapValues { $0.rawValue }
-        ]
+        var json: JSONDictionary = [:]
+        json[Key.id] = id
+        json[Key.defaultProfileName] = defaultProfileName
+        json[Key.dateString] = TimeFormatter.string(from: date)
+        json[Key.unitString] = units.rawValue
+        json[Key.profileDictionaries] = profiles.mapValues { $0.json() }
+        return json
     }
 }

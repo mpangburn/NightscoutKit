@@ -95,7 +95,7 @@ extension Nightscout {
 
         static func entryDate(_ operator: ComparativeOperator, _ date: Date) -> QueryItem {
             let millisecondsSince1970 = date.timeIntervalSince1970.milliseconds
-            return .find(property: NightscoutEntry.Key.millisecondsSince1970, `operator`, value: String(millisecondsSince1970))
+            return .find(property: NightscoutEntry.Key.millisecondsSince1970.key, `operator`, value: String(millisecondsSince1970))
         }
 
         static func entryDates(from dateInterval: DateInterval) -> [QueryItem] {
@@ -103,12 +103,12 @@ extension Nightscout {
         }
 
         static func treatmentEventType(matching eventType: NightscoutTreatment.EventType) -> QueryItem {
-            return .find(property: NightscoutTreatment.Key.eventType, .equalTo, value: eventType.simpleRawValue)
+            return .find(property: NightscoutTreatment.Key.eventTypeString.key, .equalTo, value: eventType.simpleRawValue)
         }
 
         static func treatmentDate(_ operator: ComparativeOperator, _ date: Date) -> QueryItem {
             let dateString = "\(TimeFormatter.string(from: date)).000Z"
-            return .find(property: NightscoutTreatment.Key.dateString, `operator`, value: dateString)
+            return .find(property: NightscoutTreatment.Key.dateString.key, `operator`, value: dateString)
         }
 
         static func treatmentDates(from dateInterval: DateInterval) -> [QueryItem] {

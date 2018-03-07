@@ -77,35 +77,32 @@ extension NightscoutTreatment: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     enum Key {
-        static let id = "_id"
-        static let eventType = "eventType"
-        static let dateString = "created_at"
-        static let duration = "duration"
-        static let glucoseValue = "glucose"
-        static let unitString = "units"
-        static let glucoseSourceString = "glucoseType"
-        static let insulinGiven = "insulin"
-        static let carbsConsumed = "carbs"
-        static let creator = "enteredBy"
-        static let notes = "notes"
+        static let id: JSONKey<String> = "_id"
+        static let eventTypeString: JSONKey<String> = "eventType"
+        static let dateString: JSONKey<String> = "created_at"
+        static let duration: JSONKey<Double> = "duration"
+        static let glucoseValue: JSONKey<Double> = "glucose"
+        static let unitString: JSONKey<String> = "units"
+        static let glucoseSourceString: JSONKey<String> = "glucoseType"
+        static let insulinGiven: JSONKey<Double> = "insulin"
+        static let carbsConsumed: JSONKey<Int> = "carbs"
+        static let creator: JSONKey<String> = "enteredBy"
+        static let notes: JSONKey<String> = "notes"
     }
 
     static func parse(fromJSON treatmentJSON: JSONDictionary) -> NightscoutTreatment? {
         guard
-            let id = treatmentJSON[Key.id] as? String,
+            let id = treatmentJSON[Key.id],
             let eventType = EventType.parse(fromJSON: treatmentJSON),
-            let dateString = treatmentJSON[Key.dateString] as? String,
-            let date = TimeFormatter.date(from: dateString)
+            let date = treatmentJSON[Key.dateString].flatMap(TimeFormatter.date(from:))
         else {
             return nil
         }
 
         let glucose: GlucoseMeasurement?
-        if let glucoseValue = treatmentJSON[Key.glucoseValue] as? Double,
-            let unitString = treatmentJSON[Key.unitString] as? String,
-            let units = BloodGlucoseUnit(rawValue: unitString),
-            let glucoseSourceString = treatmentJSON[Key.glucoseSourceString] as? String,
-            let glucoseSource = GlucoseSource(rawValue: glucoseSourceString) {
+        if let glucoseValue = treatmentJSON[Key.glucoseValue],
+            let units = treatmentJSON[Key.unitString].flatMap(BloodGlucoseUnit.init(rawValue:)),
+            let glucoseSource = treatmentJSON[Key.glucoseSourceString].flatMap(GlucoseSource.init(rawValue:)) {
                 glucose = GlucoseMeasurement(value: glucoseValue, units: units, source: glucoseSource)
         } else {
             glucose = nil
@@ -115,59 +112,59 @@ extension NightscoutTreatment: JSONParseable {
             id: id,
             eventType: eventType,
             date: date,
-            duration: .minutes((treatmentJSON[Key.duration] as? Double) ?? 0),
+            duration: .minutes(treatmentJSON[Key.duration] ?? 0),
             glucose: glucose,
-            insulinGiven: treatmentJSON[Key.insulinGiven] as? Double,
-            carbsConsumed: treatmentJSON[Key.carbsConsumed] as? Int,
-            creator: (treatmentJSON[Key.creator] as? String) ?? "",
-            notes: (treatmentJSON[Key.notes] as? String) ?? ""
+            insulinGiven: treatmentJSON[Key.insulinGiven],
+            carbsConsumed: treatmentJSON[Key.carbsConsumed],
+            creator: treatmentJSON[Key.creator] ?? "",
+            notes: treatmentJSON[Key.notes] ?? ""
         )
     }
 }
 
 extension NightscoutTreatment: JSONConvertible {
     func json() -> JSONDictionary {
-        var raw: RawValue = [
-            Key.id: id,
-            Key.eventType: eventType.simpleRawValue,
-            Key.duration: duration.minutes,
-            Key.dateString: TimeFormatter.string(from: date),
-            Key.creator: creator,
-            Key.notes: notes
-        ]
+        var json: JSONDictionary = [:]
+
+        json[Key.id] = id
+        json[Key.eventTypeString] = eventType.simpleRawValue
+        json[Key.duration] = duration.minutes
+        json[Key.dateString] = TimeFormatter.string(from: date)
+        json[Key.creator] = creator
+        json[Key.notes] = notes
 
         switch eventType {
         case .bolus(type: .combo(totalInsulin: let totalInsulin, percentageUpFront: let percentageUpFront)):
-            raw[BolusType.Key.totalInsulinString] = String(totalInsulin)
-            raw[BolusType.Key.percentageUpFrontString] = String(percentageUpFront)
-            raw[BolusType.Key.percentageOverTimeString] = String(100 - percentageUpFront)
+            json[BolusType.Key.totalInsulinString] = String(totalInsulin)
+            json[BolusType.Key.percentageUpFrontString] = String(percentageUpFront)
+            json[BolusType.Key.percentageOverTimeString] = String(100 - percentageUpFront)
         case .tempBasal(type: let type):
             switch type {
             case .percentage(let percentage):
-                raw[TempBasalType.Key.percentage] = percentage
+                json[TempBasalType.Key.percentage] = percentage
             case .absolute(rate: let rate):
-                raw[TempBasalType.Key.absolute] = rate
+                json[TempBasalType.Key.absolute] = rate
             case .ended:
                 break
             }
         case .profileSwitch(profileName: let profileName):
-            raw[EventType.Key.profileName] = profileName
+            json[EventType.Key.profileName] = profileName
         case .announcement:
-            raw["isAnnouncement"] = 1
+            json["isAnnouncement"] = 1
         default:
             break
         }
 
         if let glucose = glucose {
-            raw[Key.glucoseValue] = glucose.value
-            raw[Key.unitString] = glucose.units.rawValue
-            raw[Key.glucoseSourceString] = glucose.source.rawValue
+            json[Key.glucoseValue] = glucose.value
+            json[Key.unitString] = glucose.units.rawValue
+            json[Key.glucoseSourceString] = glucose.source.rawValue
         }
 
-        raw[Key.carbsConsumed] = carbsConsumed
-        raw[Key.insulinGiven] = insulinGiven
+        json[Key.carbsConsumed] = carbsConsumed
+        json[Key.insulinGiven] = insulinGiven
 
-        return raw
+        return json
     }
 }
 
@@ -175,11 +172,11 @@ extension NightscoutTreatment.EventType: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     fileprivate enum Key {
-        static let profileName = "profile"
+        static let profileName: JSONKey<String> = "profile"
     }
 
     static func parse(fromJSON treatmentJSON: JSONDictionary) -> NightscoutTreatment.EventType? {
-        guard let eventTypeString = treatmentJSON[NightscoutTreatment.Key.eventType] as? String else {
+        guard let eventTypeString = treatmentJSON[NightscoutTreatment.Key.eventTypeString] else {
             return nil
         }
 
@@ -190,7 +187,7 @@ extension NightscoutTreatment.EventType: JSONParseable {
         } else if let tempBasalType = NightscoutTreatment.TempBasalType.parse(fromJSON: treatmentJSON) {
             return .tempBasal(type: tempBasalType)
         } else if eventTypeString == "Profile Switch" {
-            guard let profileName = treatmentJSON[Key.profileName] as? String else {
+            guard let profileName = treatmentJSON[Key.profileName] else {
                 return nil
             }
             return .profileSwitch(profileName: profileName)
@@ -255,13 +252,13 @@ extension NightscoutTreatment.BolusType: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     fileprivate enum Key {
-        static let totalInsulinString = "enteredinsulin"
-        static let percentageUpFrontString = "splitNow"
-        static let percentageOverTimeString = "splitExt"
+        static let totalInsulinString: JSONKey<String> = "enteredinsulin"
+        static let percentageUpFrontString: JSONKey<String> = "splitNow"
+        static let percentageOverTimeString: JSONKey<String> = "splitExt"
     }
 
     static func parse(fromJSON treatmentJSON: JSONDictionary) -> NightscoutTreatment.BolusType? {
-        guard let eventTypeString = treatmentJSON[NightscoutTreatment.Key.eventType] as? String, eventTypeString.contains("Bolus") else {
+        guard let eventTypeString = treatmentJSON[NightscoutTreatment.Key.eventTypeString], eventTypeString.contains("Bolus") else {
             return nil
         }
 
@@ -269,9 +266,9 @@ extension NightscoutTreatment.BolusType: JSONParseable {
             return simpleBolusType
         } else {
             guard
-                let totalInsulinString = treatmentJSON[Key.totalInsulinString] as? String,
+                let totalInsulinString = treatmentJSON[Key.totalInsulinString],
                 let totalInsulin = Double(totalInsulinString),
-                let percentageUpFrontString = treatmentJSON[Key.percentageUpFrontString] as? String,
+                let percentageUpFrontString = treatmentJSON[Key.percentageUpFrontString],
                 let percentageUpFront = Int(percentageUpFrontString)
             else {
                 return nil
@@ -312,7 +309,7 @@ extension NightscoutTreatment.TempBasalType: JSONParseable {
     }
 
     static func parse(fromJSON treatmentJSON: JSONDictionary) -> NightscoutTreatment.TempBasalType? {
-        guard let eventTypeString = treatmentJSON[NightscoutTreatment.Key.eventType] as? String, eventTypeString == "Temp Basal" else {
+        guard let eventTypeString = treatmentJSON[NightscoutTreatment.Key.eventTypeString], eventTypeString == "Temp Basal" else {
             return nil
         }
 

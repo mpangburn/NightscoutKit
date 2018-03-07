@@ -60,7 +60,7 @@ extension Array /*: JSONParseable */ where Element: JSONParseable {
     typealias JSONParseType = [Element.JSONParseType]
 
     static func parse(fromJSON jsonArray: JSONParseType) -> [Element]? {
-        return jsonArray.flatMap(Element.parse)
+        return jsonArray.flatMap(Element.parse(fromJSON:))
     }
 
     // Can be removed post-conditional conformance

@@ -22,23 +22,22 @@ extension NightscoutSettings: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
-        static let settings = "settings"
-        static let unitString = "units"
-        static let title = "customTitle"
+        static let settingsDictionary: JSONKey<JSONDictionary> = "settings"
+        static let unitString: JSONKey<String> = "units"
+        static let title: JSONKey<String> = "customTitle"
     }
 
     static func parse(fromJSON statusJSON: JSONDictionary) -> NightscoutSettings? {
         guard
-            let settingsDictionary = statusJSON[Key.settings] as? JSONDictionary,
-            let unitsString = settingsDictionary[Key.unitString] as? String,
-            let units = BloodGlucoseUnit(rawValue: unitsString)
+            let settingsDictionary = statusJSON[Key.settingsDictionary],
+            let units = settingsDictionary[Key.unitString].flatMap(BloodGlucoseUnit.init(rawValue:))
         else {
             return nil
         }
 
         return NightscoutSettings(
             units: units,
-            title: (settingsDictionary[Key.title] as? String) ?? NightscoutSettings.default.title
+            title: settingsDictionary[Key.title] ?? NightscoutSettings.default.title
         )
     }
 }
