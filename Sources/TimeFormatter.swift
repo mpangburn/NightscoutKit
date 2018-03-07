@@ -6,9 +6,6 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import Foundation
-
-
 enum TimeFormatter {
     static func time(from string: String) -> TimeInterval? {
         let date = DateFormatter.hourAndMinuteFormatter.date(from: string)

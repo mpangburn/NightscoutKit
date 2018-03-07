@@ -6,9 +6,6 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import Foundation
-
-
 public struct NightscoutProfile {
     public struct ScheduleItem<Value> {
         let startTime: TimeInterval // referenced to midnight

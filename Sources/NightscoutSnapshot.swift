@@ -6,9 +6,6 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import Foundation
-
-
 public struct NightscoutSnapshot {
     public let date: Date
     public let settings: NightscoutSettings

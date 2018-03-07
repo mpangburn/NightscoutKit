@@ -6,9 +6,6 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import Foundation
-
-
 public struct NightscoutProfileRecord: UniquelyIdentifiable {
     public let id: String
     public let defaultProfileName: String

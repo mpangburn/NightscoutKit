@@ -6,11 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import Foundation
-
-
 extension TimeInterval {
     // MARK: - hours
+
     init(hours: Double) {
         self.init(minutes: hours * 60)
     }
@@ -24,6 +22,7 @@ extension TimeInterval {
     }
     
     // MARK: - minutes
+
     init(minutes: Double) {
         self.init(minutes * 60)
     }
@@ -37,6 +36,7 @@ extension TimeInterval {
     }
 
     // MARK: - milliseconds
+
     init(milliseconds: Double) {
         self.init(milliseconds / 1000)
     }

@@ -6,9 +6,6 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import Foundation
-
-
 public struct NightscoutTreatment: UniquelyIdentifiable {
     public enum EventType {
         case bloodGlucoseCheck

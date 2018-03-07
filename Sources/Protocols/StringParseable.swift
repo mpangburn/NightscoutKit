@@ -6,9 +6,6 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import Foundation
-
-
 /// A type that can be parsed from a string.
 protocol StringParseable {
     init?(_ string: String)

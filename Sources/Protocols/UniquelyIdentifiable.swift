@@ -6,9 +6,6 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import Foundation
-
-
 /// A type that can be uniquely identified by an id string.
 public protocol UniquelyIdentifiable: Hashable {
     var id: String { get }

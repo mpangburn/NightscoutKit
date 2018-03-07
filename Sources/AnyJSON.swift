@@ -6,9 +6,6 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import Foundation
-
-
 /// A "type-erased" JSON wrapper to be used when the details of the response JSON are unknown.
 struct AnyJSON {
     private let _json: Any

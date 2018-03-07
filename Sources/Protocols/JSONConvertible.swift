@@ -6,9 +6,6 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import Foundation
-
-
 typealias JSONDictionary = [String: Any]
 
 /// A type that can be parsed from JSON data.
