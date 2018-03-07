@@ -109,9 +109,9 @@ class NightscoutKitTests: XCTestCase {
         }
     }
 
-    func testParseProfileStoreSnapshotJSON() {
+    func testParseProfileRecordJSON() {
         let profileJSON: [JSONDictionary] = loadFixture("profiles")
-        let profileStores = profileJSON.flatMap(ProfileStoreSnapshot.parse)
+        let profileStores = profileJSON.flatMap(ProfileRecord.parse)
         XCTAssert(profileJSON.count == profileStores.count)
     }
 }

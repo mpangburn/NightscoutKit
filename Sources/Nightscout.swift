@@ -171,7 +171,7 @@ extension Nightscout {
         var settings = NightscoutSettings.default
         var bloodGlucoseEntries: [BloodGlucoseEntry] = []
         var treatments: [Treatment] = []
-        var profileStoreSnapshots: [ProfileStoreSnapshot] = []
+        var profileRecords: [ProfileRecord] = []
         var error: Error?
 
         let snapshotGroup = DispatchGroup()
@@ -189,10 +189,10 @@ extension Nightscout {
         }
 
         snapshotGroup.enter()
-        fetchProfileStoreSnapshots { result in
+        fetchProfileRecords { result in
             switch result {
-            case .success(let fetchedProfileStoreSnapshots):
-                profileStoreSnapshots = fetchedProfileStoreSnapshots
+            case .success(let fetchedProfileRecords):
+                profileRecords = fetchedProfileRecords
             case .failure(let err):
                 error = err
             }
@@ -230,7 +230,7 @@ extension Nightscout {
         if let error = error {
             completion(.failure(.fetchError(error)))
         } else {
-            let snapshot = NightscoutSnapshot(date: date, settings: settings, bloodGlucoseEntries: bloodGlucoseEntries, treatments: treatments, profileStoreSnapshots: profileStoreSnapshots)
+            let snapshot = NightscoutSnapshot(date: date, settings: settings, bloodGlucoseEntries: bloodGlucoseEntries, treatments: treatments, profileRecords: profileRecords)
             completion(.success(snapshot))
         }
     }
@@ -259,7 +259,7 @@ extension Nightscout {
         fetchArray(from: .treatments, queryItems: queryItems, completion: completion)
     }
 
-    public func fetchProfileStoreSnapshots(completion: @escaping (NightscoutResult<[ProfileStoreSnapshot]>) -> Void) {
+    public func fetchProfileRecords(completion: @escaping (NightscoutResult<[ProfileRecord]>) -> Void) {
         fetchArray(from: .profiles, completion: completion)
     }
 }
@@ -372,7 +372,8 @@ extension Nightscout {
         post(entries, to: .entries, completion: completion)
     }
 
-    public func deleteEntries(_ entries: [BloodGlucoseEntry], completion: @escaping (NightscoutError?) -> Void) {
+    // FIXME: entry deletion fails--but why?
+    /* public */ func deleteEntries(_ entries: [BloodGlucoseEntry], completion: @escaping (NightscoutError?) -> Void) {
         delete(entries, from: .entries, completion: completion)
     }
 
@@ -404,6 +405,10 @@ extension Nightscout {
 
     public func deleteTreatments(_ treatments: [Treatment], completion: @escaping (NightscoutError?) -> Void) {
         delete(treatments, from: .treatments, completion: completion)
+    }
+
+    public func deleteProfileRecords(_ records: [ProfileRecord], completion: @escaping (NightscoutError?) -> Void) {
+        delete(records, from: .profiles, completion: completion)
     }
 }
 

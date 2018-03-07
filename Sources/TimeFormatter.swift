@@ -17,6 +17,11 @@ enum TimeFormatter {
 
     static func string(from time: TimeInterval) -> String {
         let date = Date().midnight + time
+        return DateFormatter.hourAndMinuteFormatter.string(from: date)
+    }
+
+    static func prettyString(from time: TimeInterval) -> String {
+        let date = Date().midnight + time
         return DateFormatter.prettyTimeFormatter.string(from: date)
     }
 

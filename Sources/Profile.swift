@@ -10,9 +10,9 @@ import Foundation
 
 
 public struct Profile {
-    public struct ScheduleItem<T> {
+    public struct ScheduleItem<Value> {
         let startTime: TimeInterval // referenced to midnight
-        let value: T
+        let value: Value
     }
 
     public typealias CarbRatioSchedule = [ScheduleItem<Int>] // g/unit
@@ -82,6 +82,22 @@ extension Profile: JSONParseable {
     }
 }
 
+extension Profile: JSONConvertible {
+    public var rawValue: [String: Any] {
+        let splitTargets = bloodGlucoseTargetSchedule.map { $0.split() }
+        return [
+            Key.carbRatioSchedule: carbRatioSchedule.map { $0.rawValue },
+            Key.basalRateSchedule: basalRateSchedule.map { $0.rawValue },
+            Key.sensitivitySchedule: sensitivitySchedule.map { $0.rawValue },
+            Key.lowTargets: splitTargets.map { $0.lower.rawValue },
+            Key.highTargets: splitTargets.map { $0.upper.rawValue },
+            Key.activeInsulinDuration: activeInsulinDuration.hours,
+            Key.carbsActivityAbsorptionRate: String(carbsActivityAbsorptionRate),
+            Key.timeZone: timeZone
+        ]
+    }
+}
+
 // can't store static properties in a generic, so we'll stick this out here instead
 fileprivate enum ScheduleItemKey {
     static let startDateString = "time"
@@ -89,13 +105,13 @@ fileprivate enum ScheduleItemKey {
 }
 
 // TODO: conditional conformance here
-extension Profile.ScheduleItem /*: JSONParseable */ where T: StringParseable {
-    static func parse(from itemJSON: JSONDictionary) -> Profile.ScheduleItem<T>? {
+extension Profile.ScheduleItem /*: JSONParseable */ where Value: StringParseable {
+    static func parse(from itemJSON: JSONDictionary) -> Profile.ScheduleItem<Value>? {
         guard
             let startDateString = itemJSON[ScheduleItemKey.startDateString] as? String,
             let startTime = TimeFormatter.time(from: startDateString),
             let valueString = itemJSON[ScheduleItemKey.valueString] as? String,
-            let value = T(valueString)
+            let value = Value(valueString)
         else {
             return nil
         }
@@ -104,10 +120,27 @@ extension Profile.ScheduleItem /*: JSONParseable */ where T: StringParseable {
     }
 }
 
+extension Profile.ScheduleItem /*: JSONConvertible */ /* where T: StringParseable */ {
+    var rawValue: [String: Any] {
+        return [
+            ScheduleItemKey.startDateString: TimeFormatter.string(from: startTime),
+            ScheduleItemKey.valueString: String(describing: value)
+        ]
+    }
+}
+
+extension Profile.ScheduleItem where Value == ClosedRange<Double> {
+    func split() -> (lower: Profile.ScheduleItem<Double>, upper: Profile.ScheduleItem<Double>) {
+        let lower = Profile.ScheduleItem(startTime: startTime, value: value.lowerBound)
+        let upper = Profile.ScheduleItem(startTime: startTime, value: value.upperBound)
+        return (lower: lower, upper: upper)
+    }
+}
+
 // MARK: - CustomStringConvertible
 
 extension Profile.ScheduleItem: CustomStringConvertible {
     public var description: String {
-        return "ScheduleItem(startTime: \(TimeFormatter.string(from: startTime)), value: \(value))"
+        return "ScheduleItem(startTime: \(TimeFormatter.prettyString(from: startTime)), value: \(value))"
     }
 }
