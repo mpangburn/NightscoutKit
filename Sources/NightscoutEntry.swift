@@ -62,7 +62,7 @@ extension NightscoutEntry: JSONConvertible {
         json[Key.typeString] = source.simpleRawValue
         json[source.simpleRawValue] = glucoseValue
 
-        if case .sensor(trend: let trend) = source, trend != .unknown {
+        if case .sensor(trend: let trend) = source {
             json[Source.Key.direction] = trend.rawValue
         }
 

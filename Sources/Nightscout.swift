@@ -91,7 +91,7 @@ extension Nightscout {
         }
 
         static func entryDate(_ operator: ComparativeOperator, _ date: Date) -> QueryItem {
-            let millisecondsSince1970 = date.timeIntervalSince1970.milliseconds
+            let millisecondsSince1970 = Int(date.timeIntervalSince1970.milliseconds)
             return .find(property: NightscoutEntry.Key.millisecondsSince1970.key, `operator`, value: String(millisecondsSince1970))
         }
 
@@ -138,7 +138,7 @@ extension Nightscout {
         }
     }
 
-    private func configureURLRequest(forEndpoint endpoint: APIEndpoint, queryItems: [QueryItem] = [], httpMethod: HTTPMethod? = nil) -> URLRequest? {
+    private func configureURLRequest(for endpoint: APIEndpoint, queryItems: [QueryItem] = [], httpMethod: HTTPMethod? = nil) -> URLRequest? {
         guard let url = route(to: endpoint, queryItems: queryItems) else {
             return nil
         }
@@ -242,7 +242,7 @@ extension Nightscout {
         fetchArray(from: .entries, queryItems: queryItems, completion: completion)
     }
 
-    public func fetchEntries(from interval: DateInterval, maxCount: Int = .max, completion: @escaping (NightscoutResult<[NightscoutEntry]>) -> Void) {
+    public func fetchEntries(from interval: DateInterval, maxCount: Int = 2 << 31, completion: @escaping (NightscoutResult<[NightscoutEntry]>) -> Void) {
         let queryItems = QueryItem.entryDates(from: interval) + [.count(maxCount)]
         fetchArray(from: .entries, queryItems: queryItems, completion: completion)
     }
@@ -252,7 +252,7 @@ extension Nightscout {
         fetchArray(from: .treatments, queryItems: queryItems, completion: completion)
     }
 
-    public func fetchTreatments(from interval: DateInterval, maxCount: Int = .max, completion: @escaping (NightscoutResult<[NightscoutTreatment]>) -> Void) {
+    public func fetchTreatments(from interval: DateInterval, maxCount: Int = 2 << 31, completion: @escaping (NightscoutResult<[NightscoutTreatment]>) -> Void) {
         let queryItems = QueryItem.treatmentDates(from: interval) + [.count(maxCount)]
         fetchArray(from: .treatments, queryItems: queryItems, completion: completion)
     }
@@ -299,7 +299,7 @@ extension Nightscout {
     }
 
     private func fetchData(from endpoint: APIEndpoint, queryItems: [QueryItem], completion: @escaping (NightscoutResult<Data>) -> Void) {
-        guard let request = configureURLRequest(forEndpoint: endpoint, queryItems: queryItems, httpMethod: .get) else {
+        guard let request = configureURLRequest(for: endpoint, queryItems: queryItems, httpMethod: .get) else {
             completion(.failure(.invalidURL))
             return
         }
@@ -356,7 +356,7 @@ extension Nightscout {
             return
         }
 
-        guard let request = configureURLRequest(forEndpoint: .authorization) else {
+        guard let request = configureURLRequest(for: .authorization) else {
             completion(.invalidURL)
             return
         }
@@ -442,7 +442,7 @@ extension Nightscout {
             return
         }
 
-        guard let request = configureURLRequest(forEndpoint: endpoint, httpMethod: httpMethod) else {
+        guard let request = configureURLRequest(for: endpoint, httpMethod: httpMethod) else {
             completion(.failure(.invalidURL))
             return
         }
@@ -480,7 +480,7 @@ extension Nightscout {
             return
         }
 
-        guard let request = configureURLRequest(forEndpoint: endpoint, httpMethod: httpMethod) else {
+        guard let request = configureURLRequest(for: endpoint, httpMethod: httpMethod) else {
             completion(.failure(.invalidURL))
             return
         }
@@ -536,7 +536,7 @@ extension Nightscout {
             return
         }
 
-        guard var request = configureURLRequest(forEndpoint: endpoint, httpMethod: .delete) else {
+        guard var request = configureURLRequest(for: endpoint, httpMethod: .delete) else {
             completion(.invalidURL)
             return
         }

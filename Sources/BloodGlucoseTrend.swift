@@ -14,7 +14,7 @@ public enum BloodGlucoseTrend: String {
     case fortyFiveDown = "FortyFiveDown"
     case singleDown = "SingleDown"
     case doubleDown = "DoubleDown"
-    case unknown
+    case unknown = "NONE"
 
     public var symbol: String {
         switch self {

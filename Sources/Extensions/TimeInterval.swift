@@ -7,6 +7,20 @@
 //
 
 extension TimeInterval {
+    // MARK: - days
+
+    init(days: Double) {
+        self.init(hours: days * 24)
+    }
+
+    static func days(_ days: Double) -> TimeInterval {
+        return self.init(days: days)
+    }
+
+    var days: Double {
+        return hours / 24
+    }
+
     // MARK: - hours
 
     init(hours: Double) {
@@ -17,7 +31,7 @@ extension TimeInterval {
         return self.init(hours: hours)
     }
 
-    var hours: TimeInterval {
+    var hours: Double {
         return minutes / 60
     }
     
