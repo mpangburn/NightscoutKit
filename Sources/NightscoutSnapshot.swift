@@ -12,6 +12,7 @@ public struct NightscoutSnapshot {
     public let entries: [NightscoutEntry]
     public let treatments: [NightscoutTreatment]
     public let profileRecords: [NightscoutProfileRecord]
+    public let deviceStatuses: [NightscoutDeviceStatus]
 }
 
 extension NightscoutSnapshot: CustomStringConvertible {
@@ -31,6 +32,9 @@ extension NightscoutSnapshot: CustomStringConvertible {
 
         ===== PROFILE RECORDS =====
         \(profileRecords.map(String.init(describing:)).joined(separator: "\n"))
+        
+        ===== DEVICE STATUSES =====
+        \(deviceStatuses.map(String.init(describing:)).joined(separator: "\n"))
         """
     }
 }

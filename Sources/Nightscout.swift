@@ -111,6 +111,15 @@ extension Nightscout {
         static func treatmentDates(from dateInterval: DateInterval) -> [QueryItem] {
             return [.treatmentDate(.greaterThanOrEqualTo, dateInterval.start), .treatmentDate(.lessThanOrEqualTo, dateInterval.end)]
         }
+
+        static func deviceStatusDate(_ operator: ComparativeOperator, _ date: Date) -> QueryItem {
+            let dateString = "\(TimeFormatter.string(from: date))Z"
+            return .find(property: NightscoutDeviceStatus.Key.dateString.key, `operator`, value: dateString)
+        }
+
+        static func deviceStatusDates(from dateInterval: DateInterval) -> [QueryItem] {
+            return [.deviceStatusDate(.greaterThanOrEqualTo, dateInterval.start), .deviceStatusDate(.lessThanOrEqualTo, dateInterval.end)]
+        }
     }
 
     private static let apiVersion = "v1"
@@ -163,9 +172,10 @@ extension Nightscout {
 // MARK: - Fetching
 
 extension Nightscout {
-    public func snapshot(recentBloodGlucoseEntryCount: Int = 10, recentTreatmentCount: Int = 10, completion: @escaping (NightscoutResult<NightscoutSnapshot>) -> Void) {
+    public func snapshot(recentBloodGlucoseEntryCount: Int = 10, recentTreatmentCount: Int = 10, recentDeviceStatusCount: Int = 10, completion: @escaping (NightscoutResult<NightscoutSnapshot>) -> Void) {
         let date = Date()
         var status: NightscoutStatus?
+        var deviceStatuses: [NightscoutDeviceStatus] = []
         var entries: [NightscoutEntry] = []
         var treatments: [NightscoutTreatment] = []
         var profileRecords: [NightscoutProfileRecord] = []
@@ -182,6 +192,17 @@ extension Nightscout {
                 error = err
             }
 
+            snapshotGroup.leave()
+        }
+
+        snapshotGroup.enter()
+        fetchMostRecentDeviceStatuses(count: recentDeviceStatusCount) { result in
+            switch result {
+            case .success(let fetchedDeviceStatuses):
+                deviceStatuses = fetchedDeviceStatuses
+            case .failure(let err):
+                error = err
+            }
             snapshotGroup.leave()
         }
 
@@ -229,7 +250,7 @@ extension Nightscout {
             return
         }
 
-        let snapshot = NightscoutSnapshot(date: date, status: status!, entries: entries, treatments: treatments, profileRecords: profileRecords)
+        let snapshot = NightscoutSnapshot(date: date, status: status!, entries: entries, treatments: treatments, profileRecords: profileRecords, deviceStatuses: deviceStatuses)
         completion(.success(snapshot))
     }
 
@@ -257,8 +278,19 @@ extension Nightscout {
         fetchArray(from: .treatments, queryItems: queryItems, completion: completion)
     }
 
+    // TODO: profile records by count / date if there are a large number of profiles?
     public func fetchProfileRecords(completion: @escaping (NightscoutResult<[NightscoutProfileRecord]>) -> Void) {
         fetchArray(from: .profiles, completion: completion)
+    }
+
+    public func fetchMostRecentDeviceStatuses(count: Int = 10, completion: @escaping (NightscoutResult<[NightscoutDeviceStatus]>) -> Void) {
+        let queryItems: [QueryItem] = [.count(count)]
+        fetchArray(from: .deviceStatus, queryItems: queryItems, completion: completion)
+    }
+
+    public func fetchDeviceStatuses(from interval: DateInterval, maxCount: Int = 2 << 31, completion: @escaping (NightscoutResult<[NightscoutDeviceStatus]>) -> Void) {
+        let queryItems = QueryItem.deviceStatusDates(from: interval) + [.count(maxCount)]
+        fetchArray(from: .deviceStatus, queryItems: queryItems, completion: completion)
     }
 }
 

@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		896FB45D20507EB10021107F /* JSONKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45C20507EB10021107F /* JSONKey.swift */; };
 		896FB45F2050BBFC0021107F /* NightscoutStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45E2050BBFC0021107F /* NightscoutStatus.swift */; };
+		896FB4612050CEA90021107F /* NightscoutDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */; };
 		896FF5862048C7510054198A /* NightscoutKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896FF57C2048C7510054198A /* NightscoutKit.framework */; };
 		896FF58B2048C7510054198A /* NightscoutKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF58A2048C7510054198A /* NightscoutKitTests.swift */; };
 		896FF58D2048C7510054198A /* NightscoutKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 896FF57F2048C7510054198A /* NightscoutKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -55,6 +56,7 @@
 /* Begin PBXFileReference section */
 		896FB45C20507EB10021107F /* JSONKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONKey.swift; sourceTree = "<group>"; };
 		896FB45E2050BBFC0021107F /* NightscoutStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutStatus.swift; sourceTree = "<group>"; };
+		896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutDeviceStatus.swift; sourceTree = "<group>"; };
 		896FF57C2048C7510054198A /* NightscoutKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		896FF57F2048C7510054198A /* NightscoutKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscoutKit.h; sourceTree = "<group>"; };
 		896FF5802048C7510054198A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -159,6 +161,7 @@
 				896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */,
 				896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */,
 				896FF5A62048C77B0054198A /* Nightscout.swift */,
+				896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */,
 				896FF5A12048C77B0054198A /* NightscoutEntry.swift */,
 				896FF5A32048C77B0054198A /* NightscoutProfile.swift */,
 				896FF5A42048C77B0054198A /* NightscoutProfileRecord.swift */,
@@ -352,6 +355,7 @@
 				896FF5AF2048C77B0054198A /* BloodGlucoseUnit.swift in Sources */,
 				896FF5AD2048C77B0054198A /* NightscoutTreatment.swift in Sources */,
 				896FF5BC2048C7A30054198A /* JSONConvertible.swift in Sources */,
+				896FB4612050CEA90021107F /* NightscoutDeviceStatus.swift in Sources */,
 				896FF5B52048C77B0054198A /* Nightscout.swift in Sources */,
 				896FF5A92048C77B0054198A /* Dictionary.swift in Sources */,
 				896FF5BD2048C7A30054198A /* StringParseable.swift in Sources */,
