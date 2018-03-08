@@ -68,7 +68,7 @@ extension NightscoutTreatment.GlucoseMeasurement: Equatable {
     }
 }
 
-// MARK: - JSON Parsing
+// MARK: - JSON
 
 extension NightscoutTreatment: JSONParseable {
     typealias JSONParseType = JSONDictionary

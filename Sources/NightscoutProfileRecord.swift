@@ -14,7 +14,7 @@ public struct NightscoutProfileRecord: UniquelyIdentifiable {
     public let profiles: [String: NightscoutProfile]
 }
 
-// MARK: - JSON Parsing
+// MARK: - JSON
 
 extension NightscoutProfileRecord: JSONParseable {
     typealias JSONParseType = JSONDictionary

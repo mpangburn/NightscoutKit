@@ -8,7 +8,7 @@
 
 public struct NightscoutSnapshot {
     public let date: Date
-    public let settings: NightscoutSettings
+    public let status: NightscoutStatus
     public let entries: [NightscoutEntry]
     public let treatments: [NightscoutTreatment]
     public let profileRecords: [NightscoutProfileRecord]
@@ -20,16 +20,16 @@ extension NightscoutSnapshot: CustomStringConvertible {
         ===== NIGHTSCOUT SNAPSHOT =====
         \(date)
 
-        ===== SETTINGS =====
-        \(settings)
+        ===== STATUS =====
+        \(status)
 
-        ===== BLOOD GLUCOSE ENTRIES =====
+        ===== ENTRIES =====
         \(entries.map(String.init(describing:)).joined(separator: "\n"))
 
         ===== TREATMENTS =====
         \(treatments.map(String.init(describing:)).joined(separator: "\n"))
 
-        ===== PROFILE STORE SNAPSHOTS =====
+        ===== PROFILE RECORDS =====
         \(profileRecords.map(String.init(describing:)).joined(separator: "\n"))
         """
     }

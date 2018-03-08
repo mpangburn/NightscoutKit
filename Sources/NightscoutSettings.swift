@@ -7,34 +7,40 @@
 //
 
 public struct NightscoutSettings {
-    public let units: BloodGlucoseUnit
     public let title: String
-
-    static let `default` = NightscoutSettings(units: .milligramsPerDeciliter, title: "Nightscout")
+    public let units: BloodGlucoseUnit
+    public let targetBloodGlucoseRange: ClosedRange<Double> // TODO: is this in `units`, or always in mg/dL?
 }
 
-// MARK: - JSON Parsing
+// MARK: - JSON
 
 extension NightscoutSettings: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
-        static let settingsDictionary: JSONKey<JSONDictionary> = "settings"
-        static let unitString: JSONKey<String> = "units"
         static let title: JSONKey<String> = "customTitle"
+        static let unitString: JSONKey<String> = "units"
+        static let thresholdsDictionary: JSONKey<JSONDictionary> = "thresholds"
+        static let bgTargetBottom: JSONKey<Double> = "bgTargetBottom"
+        static let bgTargetTop: JSONKey<Double> = "bgTargetTop"
     }
 
-    static func parse(fromJSON statusJSON: JSONDictionary) -> NightscoutSettings? {
+    private static let defaultTitle = "Nightscout"
+
+    static func parse(fromJSON settingsJSON: JSONDictionary) -> NightscoutSettings? {
         guard
-            let settingsDictionary = statusJSON[Key.settingsDictionary],
-            let units = settingsDictionary[Key.unitString].flatMap(BloodGlucoseUnit.init(rawValue:))
+            let units = settingsJSON[Key.unitString].flatMap(BloodGlucoseUnit.init(rawValue:)),
+            let thresholdsDictionary = settingsJSON[Key.thresholdsDictionary],
+            let bgTargetBottom = thresholdsDictionary[Key.bgTargetBottom],
+            let bgTargetTop = thresholdsDictionary[Key.bgTargetTop]
         else {
             return nil
         }
 
         return NightscoutSettings(
+            title: settingsJSON[Key.title] ?? NightscoutSettings.defaultTitle,
             units: units,
-            title: settingsDictionary[Key.title] ?? NightscoutSettings.default.title
+            targetBloodGlucoseRange: bgTargetBottom...bgTargetTop
         )
     }
 }

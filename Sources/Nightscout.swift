@@ -165,7 +165,7 @@ extension Nightscout {
 extension Nightscout {
     public func snapshot(recentBloodGlucoseEntryCount: Int = 10, recentTreatmentCount: Int = 10, completion: @escaping (NightscoutResult<NightscoutSnapshot>) -> Void) {
         let date = Date()
-        var settings = NightscoutSettings.default
+        var status: NightscoutStatus?
         var entries: [NightscoutEntry] = []
         var treatments: [NightscoutTreatment] = []
         var profileRecords: [NightscoutProfileRecord] = []
@@ -174,10 +174,10 @@ extension Nightscout {
         let snapshotGroup = DispatchGroup()
 
         snapshotGroup.enter()
-        fetchSettings { result in
+        fetchStatus { result in
             switch result {
-            case .success(let fetchedSettings):
-                settings = fetchedSettings
+            case .success(let fetchedStatus):
+                status = fetchedStatus
             case .failure(let err):
                 error = err
             }
@@ -229,11 +229,11 @@ extension Nightscout {
             return
         }
 
-        let snapshot = NightscoutSnapshot(date: date, settings: settings, entries: entries, treatments: treatments, profileRecords: profileRecords)
+        let snapshot = NightscoutSnapshot(date: date, status: status!, entries: entries, treatments: treatments, profileRecords: profileRecords)
         completion(.success(snapshot))
     }
 
-    public func fetchSettings(completion: @escaping (NightscoutResult<NightscoutSettings>) -> Void) {
+    public func fetchStatus(completion: @escaping (NightscoutResult<NightscoutStatus>) -> Void) {
         fetch(from: .status, completion: completion)
     }
 

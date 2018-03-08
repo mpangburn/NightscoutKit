@@ -19,7 +19,7 @@ public struct NightscoutEntry: UniquelyIdentifiable {
     public let device: String?
 }
 
-// MARK: - JSON Parsing
+// MARK: - JSON
 
 extension NightscoutEntry: JSONParseable {
     typealias JSONParseType = JSONDictionary

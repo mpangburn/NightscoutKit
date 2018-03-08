@@ -26,7 +26,7 @@ public struct NightscoutProfile {
     public let timeZone: String // TODO: use TimeZone here
 }
 
-// MARK: - JSON Parsing
+// MARK: - JSON
 
 extension NightscoutProfile: JSONParseable {
     typealias JSONParseType = JSONDictionary
