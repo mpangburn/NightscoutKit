@@ -105,7 +105,7 @@ fileprivate enum ScheduleItemKey {
 }
 
 // TODO: conditional conformance here
-extension NightscoutProfile.ScheduleItem /*: JSONParseable */ where Value: StringParseable {
+extension NightscoutProfile.ScheduleItem /*: JSONParseable */ where Value: LosslessStringConvertible {
     static func parse(fromJSON itemJSON: JSONDictionary) -> NightscoutProfile.ScheduleItem<Value>? {
         guard
             let startTime = itemJSON[ScheduleItemKey.startDateString].flatMap(TimeFormatter.time(from:)),

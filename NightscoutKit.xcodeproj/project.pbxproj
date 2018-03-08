@@ -27,7 +27,6 @@
 		896FF5B52048C77B0054198A /* Nightscout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A62048C77B0054198A /* Nightscout.swift */; };
 		896FF5B62048C77B0054198A /* NightscoutSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A72048C77B0054198A /* NightscoutSettings.swift */; };
 		896FF5BC2048C7A30054198A /* JSONConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5B82048C7A30054198A /* JSONConvertible.swift */; };
-		896FF5BD2048C7A30054198A /* StringParseable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5B92048C7A30054198A /* StringParseable.swift */; };
 		896FF5BE2048C7A30054198A /* UniquelyIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */; };
 		896FF5BF2048C7A30054198A /* PartiallyRawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */; };
 		896FF5C62048C7FC0054198A /* treatments.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5C12048C7FC0054198A /* treatments.json */; };
@@ -77,7 +76,6 @@
 		896FF5A62048C77B0054198A /* Nightscout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Nightscout.swift; sourceTree = "<group>"; };
 		896FF5A72048C77B0054198A /* NightscoutSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NightscoutSettings.swift; sourceTree = "<group>"; };
 		896FF5B82048C7A30054198A /* JSONConvertible.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = JSONConvertible.swift; sourceTree = "<group>"; };
-		896FF5B92048C7A30054198A /* StringParseable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringParseable.swift; sourceTree = "<group>"; };
 		896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UniquelyIdentifiable.swift; sourceTree = "<group>"; };
 		896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PartiallyRawRepresentable.swift; sourceTree = "<group>"; };
 		896FF5C12048C7FC0054198A /* treatments.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = treatments.json; sourceTree = "<group>"; };
@@ -160,6 +158,7 @@
 				89D48E37204FAC0E0066B293 /* AnyJSON.swift */,
 				896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */,
 				896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */,
+				896FB45C20507EB10021107F /* JSONKey.swift */,
 				896FF5A62048C77B0054198A /* Nightscout.swift */,
 				896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */,
 				896FF5A12048C77B0054198A /* NightscoutEntry.swift */,
@@ -170,7 +169,6 @@
 				896FB45E2050BBFC0021107F /* NightscoutStatus.swift */,
 				896FF59E2048C77B0054198A /* NightscoutTreatment.swift */,
 				896FF59F2048C77B0054198A /* TimeFormatter.swift */,
-				896FB45C20507EB10021107F /* JSONKey.swift */,
 				896FF5972048C77A0054198A /* Extensions */,
 				896FF5B72048C7A30054198A /* Protocols */,
 			);
@@ -195,7 +193,6 @@
 				89D48E34204FA3310066B293 /* DataConvertible.swift */,
 				896FF5B82048C7A30054198A /* JSONConvertible.swift */,
 				896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */,
-				896FF5B92048C7A30054198A /* StringParseable.swift */,
 				896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */,
 			);
 			path = Protocols;
@@ -358,7 +355,6 @@
 				896FB4612050CEA90021107F /* NightscoutDeviceStatus.swift in Sources */,
 				896FF5B52048C77B0054198A /* Nightscout.swift in Sources */,
 				896FF5A92048C77B0054198A /* Dictionary.swift in Sources */,
-				896FF5BD2048C7A30054198A /* StringParseable.swift in Sources */,
 				896FF5B22048C77B0054198A /* NightscoutProfile.swift in Sources */,
 				896FF5AA2048C77B0054198A /* URL.swift in Sources */,
 				896FF5B42048C77B0054198A /* BloodGlucoseTrend.swift in Sources */,
