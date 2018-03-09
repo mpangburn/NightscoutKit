@@ -11,7 +11,7 @@
 		896FB45F2050BBFC0021107F /* NightscoutStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45E2050BBFC0021107F /* NightscoutStatus.swift */; };
 		896FB4612050CEA90021107F /* NightscoutDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */; };
 		896FB46D20520F240021107F /* OpenAPSStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB46C20520F240021107F /* OpenAPSStatus.swift */; };
-		896FB46F205222710021107F /* openapsstatus.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FB46E205222710021107F /* openapsstatus.json */; };
+		896FB471205245240021107F /* openapsstatus.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FB470205245240021107F /* openapsstatus.json */; };
 		896FF5862048C7510054198A /* NightscoutKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 896FF57C2048C7510054198A /* NightscoutKit.framework */; };
 		896FF58B2048C7510054198A /* NightscoutKitTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF58A2048C7510054198A /* NightscoutKitTests.swift */; };
 		896FF58D2048C7510054198A /* NightscoutKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 896FF57F2048C7510054198A /* NightscoutKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -60,7 +60,7 @@
 		896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutDeviceStatus.swift; sourceTree = "<group>"; };
 		896FB4682051053E0021107F /* NightscoutUploadKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = NightscoutUploadKit.framework; path = Carthage/Build/iOS/NightscoutUploadKit.framework; sourceTree = "<group>"; };
 		896FB46C20520F240021107F /* OpenAPSStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenAPSStatus.swift; sourceTree = "<group>"; };
-		896FB46E205222710021107F /* openapsstatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = openapsstatus.json; sourceTree = "<group>"; };
+		896FB470205245240021107F /* openapsstatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = openapsstatus.json; sourceTree = "<group>"; };
 		896FF57C2048C7510054198A /* NightscoutKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		896FF57F2048C7510054198A /* NightscoutKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscoutKit.h; sourceTree = "<group>"; };
 		896FF5802048C7510054198A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -219,7 +219,7 @@
 				896FF5C12048C7FC0054198A /* treatments.json */,
 				896FF5C22048C7FC0054198A /* entries.json */,
 				896FF5C32048C7FC0054198A /* profiles.json */,
-				896FB46E205222710021107F /* openapsstatus.json */,
+				896FB470205245240021107F /* openapsstatus.json */,
 				896FF5CE2048CDE50054198A /* nightscouturl */,
 				89D48E32204BCC0D0066B293 /* apisecret */,
 			);
@@ -346,7 +346,7 @@
 				896FF5CF2048CDE50054198A /* nightscouturl in Resources */,
 				896FF5C82048C7FC0054198A /* profiles.json in Resources */,
 				896FF5C72048C7FC0054198A /* entries.json in Resources */,
-				896FB46F205222710021107F /* openapsstatus.json in Resources */,
+				896FB471205245240021107F /* openapsstatus.json in Resources */,
 				896FF5C62048C7FC0054198A /* treatments.json in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

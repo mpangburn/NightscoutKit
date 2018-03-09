@@ -40,46 +40,50 @@ public struct OpenAPSStatus {
         }
 
         struct Suggested {
-            struct PredictedBloodGlucoseValues {
-                let insulinOnBoard: [Int]
-                let zt: [Int] // ??
-                let carbsOnBoard: [Int]?
+            struct State {
+                struct PredictedBloodGlucoseValues {
+                    let insulinOnBoard: [Int]
+                    let zt: [Int] // ??
+                    let carbsOnBoard: [Int]?
+                }
+
+                let temporaryBasal: String // TODO: probably an enum--one possible value is "absolute"
+                let bloodGlucoseValue: Int
+                let tick: Int // ??
+                let eventualBloodGlucoseValue: Int
+                let insulinRequired: Double
+                let reservoir: Double // keyed as a String, likely reservoir remaining?
+                let deliveryDate: Date
+                let sensitivityRatio: Double
+                let predictedBloodGlucoseValues: PredictedBloodGlucoseValues?
+                let carbsOnBoard: Int
+                let insulinOnBoard: Double
             }
 
-            let temporaryBasal: String // TODO: probably an enum--one possible value is "absolute"
-            let bloodGlucoseValue: Int
-            let tick: Int // ??
-            let eventualBloodGlucoseValue: Int
-            let insulinRequired: Double
-            let reservoir: Double // keyed as a String, likely reservoir remaining?
-            let deliveryDate: Date
-            let sensitivityRatio: Double
-            let predictedBloodGlucoseValues: PredictedBloodGlucoseValues?
-            let carbsOnBoard: Int
-            let insulinOnBoard: Double
+            let state: State?
             let reason: String
             let timestamp: Date
         }
 
         struct Enacted {
-            let insulinRequired: Double
-            let bloodGlucoseValue: Int
-            let reservoir: Double // see above note
+            let insulinRequired: Double?
+            let bloodGlucoseValue: Int?
+            let reservoir: Double? // see above note
             let temporaryBasal: String // see above note
             let rate: Double
             let reason: String
-            let insulinOnBoard: Double
-            let sensitivityRatio: Double
-            let carbsOnBoard: Int
-            let eventualBloodGlucoseValue: Int
+            let insulinOnBoard: Double?
+            let sensitivityRatio: Double?
+            let carbsOnBoard: Int?
+            let eventualBloodGlucoseValue: Int?
             let received: Bool
-            let duration: TimeInterval // stored as minutes
-            let tick: Int
+            let duration: TimeInterval
+            let tick: Int?
             let timestamp: Date
             let deliveryDate: Date
         }
 
-        let insulinOnBoard: InsulinOnBoard
+        let insulinOnBoard: InsulinOnBoard?
         let suggested: Suggested
         let enacted: Enacted
     }
@@ -100,7 +104,7 @@ public struct OpenAPSStatus {
         let clock: Date // can't tell if this is stored as ISO8601 or something else
         let reservoir: Double // not in a string, unlike above
         let battery: Battery
-        let status: Status
+        let status: Status?
     }
 
     struct Uploader {
@@ -148,14 +152,17 @@ extension OpenAPSStatus.ClosedLoopStatus: JSONParseable {
 
     static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus? {
         guard
-            let insulinOnboard = json[Key.insulinOnBoard].flatMap(InsulinOnBoard.parse(fromJSON:)),
             let suggested = json[Key.suggested].flatMap(Suggested.parse(fromJSON:)),
             let enacted = json[Key.enacted].flatMap(Enacted.parse(fromJSON:))
         else {
             return nil
         }
 
-        return .init(insulinOnBoard: insulinOnboard, suggested: suggested, enacted: enacted)
+        return .init(
+            insulinOnBoard: json[Key.insulinOnBoard].flatMap(InsulinOnBoard.parse(fromJSON:)),
+            suggested: suggested,
+            enacted: enacted
+        )
     }
 }
 
@@ -255,9 +262,34 @@ extension OpenAPSStatus.ClosedLoopStatus.Suggested: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
+        static let reason: JSONKey<String> = "reason"
+        static let timestamp: JSONKey<String> = "timestamp"
+    }
+
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus.Suggested? {
+        guard
+            let reason = json[Key.reason],
+            let timestamp = json[Key.timestamp].flatMap(TimeFormatter.date(from:))
+        else {
+            return nil
+        }
+
+        return .init(
+            state: State.parse(fromJSON: json),
+            reason: reason,
+            timestamp: timestamp
+        )
+    }
+}
+
+extension OpenAPSStatus.ClosedLoopStatus.Suggested.State: JSONParseable {
+    typealias JSONParseType = JSONDictionary
+
+    private enum Key {
         static let temporaryBasal: JSONKey<String> = "temp"
         static let bloodGlucoseValue: JSONKey<Int> = "bg"
         static let tick: JSONKey<Int> = "tick"
+        static let tickString: JSONKey<String> = "tick" // sometimes tick comes in as a string (e.g. "+3") and sometimes as an int (e.g. -1)
         static let eventualBloodGlucoseValue: JSONKey<Int> = "eventualBG"
         static let insulinRequired: JSONKey<Double> = "insulinReq"
         static let reservoirString: JSONKey<String> = "reservoir"
@@ -266,25 +298,32 @@ extension OpenAPSStatus.ClosedLoopStatus.Suggested: JSONParseable {
         static let predictedBloodGlucoseValues: JSONKey<JSONDictionary> = "predBGs"
         static let carbsOnBoard: JSONKey<Int> = "COB"
         static let insulinOnBoard: JSONKey<Double> = "IOB"
-        static let reason: JSONKey<String> = "reason"
-        static let timestamp: JSONKey<String> = "timestamp"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus.Suggested? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus.Suggested.State? {
         guard
             let temporaryBasal = json[Key.temporaryBasal],
             let bloodGlucoseValue = json[Key.bloodGlucoseValue],
-            let tick = json[Key.tick],
             let eventualBloodGlucoseValue = json[Key.eventualBloodGlucoseValue],
             let insulinRequired = json[Key.insulinRequired],
             let reservoir = json[Key.reservoirString].flatMap(Double.init),
             let deliveryDate = json[Key.deliveryDateString].flatMap(TimeFormatter.date(from:)),
             let sensitivityRatio = json[Key.sensitivityRatio],
             let carbsOnBoard = json[Key.carbsOnBoard],
-            let insulinOnBoard = json[Key.insulinOnBoard],
-            let reason = json[Key.reason],
-            let timestamp = json[Key.timestamp].flatMap(TimeFormatter.date(from:))
+            let insulinOnBoard = json[Key.insulinOnBoard]
         else {
+            return nil
+        }
+
+        guard let tick: Int = {
+            if let tick = json[Key.tick] {
+                return tick
+            } else if let tick = json[Key.tickString].flatMap(Int.init) {
+                return tick
+            } else {
+                return nil
+            }
+        }() else {
             return nil
         }
 
@@ -299,14 +338,12 @@ extension OpenAPSStatus.ClosedLoopStatus.Suggested: JSONParseable {
             sensitivityRatio: sensitivityRatio,
             predictedBloodGlucoseValues: json[Key.predictedBloodGlucoseValues].flatMap(PredictedBloodGlucoseValues.parse(fromJSON:)),
             carbsOnBoard: carbsOnBoard,
-            insulinOnBoard: insulinOnBoard,
-            reason: reason,
-            timestamp: timestamp
+            insulinOnBoard: insulinOnBoard
         )
     }
 }
 
-extension OpenAPSStatus.ClosedLoopStatus.Suggested.PredictedBloodGlucoseValues: JSONParseable {
+extension OpenAPSStatus.ClosedLoopStatus.Suggested.State.PredictedBloodGlucoseValues: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -315,7 +352,7 @@ extension OpenAPSStatus.ClosedLoopStatus.Suggested.PredictedBloodGlucoseValues: 
         static let carbsOnBoard: JSONKey<[Int]> = "COB"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus.Suggested.PredictedBloodGlucoseValues? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus.Suggested.State.PredictedBloodGlucoseValues? {
         guard
             let insulinOnBoard = json[Key.insulinOnBoard],
             let zt = json[Key.zt]
@@ -341,6 +378,7 @@ extension OpenAPSStatus.ClosedLoopStatus.Enacted: JSONParseable {
         static let durationInMinutes: JSONKey<Int> = "duration"
         static let bloodGlucoseValue: JSONKey<Int> = "bg"
         static let tick: JSONKey<Int> = "tick"
+        static let tickString: JSONKey<String> = "tick" // sometimes tick comes in as a string (e.g. "+3") and sometimes as an int (e.g. -1)
         static let eventualBloodGlucoseValue: JSONKey<Int> = "eventualBG"
         static let insulinRequired: JSONKey<Double> = "insulinReq"
         static let reservoirString: JSONKey<String> = "reservoir"
@@ -358,22 +396,40 @@ extension OpenAPSStatus.ClosedLoopStatus.Enacted: JSONParseable {
             let rate = json[Key.rate],
             let received = json[Key.received],
             let duration = json[Key.durationInMinutes].map(Double.init).map(TimeInterval.init(minutes:)),
-            let bloodGlucoseValue = json[Key.bloodGlucoseValue],
-            let tick = json[Key.tick],
-            let eventualBloodGlucoseValue = json[Key.eventualBloodGlucoseValue],
-            let insulinRequired = json[Key.insulinRequired],
-            let reservoir = json[Key.reservoirString].flatMap(Double.init),
             let deliveryDate = json[Key.deliveryDate].flatMap(TimeFormatter.date(from:)),
-            let sensitivityRatio = json[Key.sensitivityRatio],
-            let carbsOnBoard = json[Key.carbsOnBoard],
-            let insulinOnBoard = json[Key.insulinOnBoard],
             let reason = json[Key.reason],
             let timestamp = json[Key.timestamp].flatMap(TimeFormatter.date(from:))
         else {
             return nil
         }
 
-        return .init(insulinRequired: insulinRequired, bloodGlucoseValue: bloodGlucoseValue, reservoir: reservoir, temporaryBasal: temporaryBasal, rate: rate, reason: reason, insulinOnBoard: insulinOnBoard, sensitivityRatio: sensitivityRatio, carbsOnBoard: carbsOnBoard, eventualBloodGlucoseValue: eventualBloodGlucoseValue, received: received, duration: duration, tick: tick, timestamp: timestamp, deliveryDate: deliveryDate)
+        let tick: Int? = {
+            if let tick = json[Key.tick] {
+                return tick
+            } else if let tick = json[Key.tickString].flatMap(Int.init) {
+                return tick
+            } else {
+                return nil
+            }
+        }()
+
+        return .init(
+            insulinRequired: json[Key.insulinRequired],
+            bloodGlucoseValue: json[Key.bloodGlucoseValue],
+            reservoir: json[Key.reservoirString].flatMap(Double.init),
+            temporaryBasal: temporaryBasal,
+            rate: rate,
+            reason: reason,
+            insulinOnBoard: json[Key.insulinOnBoard],
+            sensitivityRatio: json[Key.sensitivityRatio],
+            carbsOnBoard: json[Key.carbsOnBoard],
+            eventualBloodGlucoseValue: json[Key.eventualBloodGlucoseValue],
+            received: received,
+            duration: duration,
+            tick: tick,
+            timestamp: timestamp,
+            deliveryDate: deliveryDate
+        )
     }
 }
 
@@ -391,13 +447,17 @@ extension OpenAPSStatus.Pump: JSONParseable {
         guard
             let clock = json[Key.clock].flatMap(TimeFormatter.date(from:)),
             let battery = json[Key.battery].flatMap(Battery.parse(fromJSON:)),
-            let reservoir = json[Key.reservoir],
-            let status = json[Key.status].flatMap(Status.parse(fromJSON:))
+            let reservoir = json[Key.reservoir]
         else {
             return nil
         }
 
-        return .init(clock: clock, reservoir: reservoir, battery: battery, status: status)
+        return .init(
+            clock: clock,
+            reservoir: reservoir,
+            battery: battery,
+            status: json[Key.status].flatMap(Status.parse(fromJSON:))
+        )
     }
 }
 
