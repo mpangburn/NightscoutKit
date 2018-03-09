@@ -22,7 +22,7 @@ extension AnyJSON: JSONConvertible {
         return AnyJSON(json)
     }
 
-    func json() -> Any {
+    var jsonRepresentation: Any {
         return _json
     }
 }

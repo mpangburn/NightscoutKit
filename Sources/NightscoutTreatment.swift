@@ -120,7 +120,7 @@ extension NightscoutTreatment: JSONParseable {
 }
 
 extension NightscoutTreatment: JSONConvertible {
-    func json() -> JSONDictionary {
+    var jsonRepresentation: JSONDictionary {
         var json: JSONDictionary = [:]
 
         json[Key.id] = id

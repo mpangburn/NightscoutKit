@@ -49,13 +49,13 @@ extension NightscoutProfileRecord: JSONParseable {
 }
 
 extension NightscoutProfileRecord: JSONConvertible {
-    func json() -> JSONDictionary {
+    var jsonRepresentation: JSONDictionary {
         var json: JSONDictionary = [:]
         json[Key.id] = id
         json[Key.defaultProfileName] = defaultProfileName
         json[Key.dateString] = TimeFormatter.string(from: date)
         json[Key.unitString] = units.rawValue
-        json[Key.profileDictionaries] = profiles.mapValues { $0.json() }
+        json[Key.profileDictionaries] = profiles.mapValues { $0.jsonRepresentation }
         return json
     }
 }

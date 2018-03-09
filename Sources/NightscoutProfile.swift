@@ -80,15 +80,15 @@ extension NightscoutProfile: JSONParseable {
 }
 
 extension NightscoutProfile: JSONConvertible {
-    func json() -> JSONDictionary {
+    var jsonRepresentation: JSONDictionary {
         var json: JSONDictionary = [:]
-        json[Key.carbRatioSchedule] = carbRatioSchedule.map { $0.json() }
-        json[Key.sensitivitySchedule] = basalRateSchedule.map { $0.json() }
+        json[Key.carbRatioSchedule] = carbRatioSchedule.map { $0.jsonRepresentation }
+        json[Key.sensitivitySchedule] = basalRateSchedule.map { $0.jsonRepresentation }
 
         let splitTargets = bloodGlucoseTargetSchedule.map { $0.split() }
-        json[Key.sensitivitySchedule] = sensitivitySchedule.map { $0.json() }
-        json[Key.lowTargets] = splitTargets.map { $0.lower.json() }
-        json[Key.highTargets] = splitTargets.map { $0.upper.json() }
+        json[Key.sensitivitySchedule] = sensitivitySchedule.map { $0.jsonRepresentation }
+        json[Key.lowTargets] = splitTargets.map { $0.lower.jsonRepresentation }
+        json[Key.highTargets] = splitTargets.map { $0.upper.jsonRepresentation }
 
         json[Key.activeInsulinDurationInHoursString] = String(activeInsulinDuration.hours)
         json[Key.carbsActivityAbsorptionRateString] = String(carbsActivityAbsorptionRate)
@@ -119,7 +119,7 @@ extension NightscoutProfile.ScheduleItem /*: JSONParseable */ where Value: Lossl
 }
 
 extension NightscoutProfile.ScheduleItem /*: JSONConvertible */ /* where T: StringParseable */ {
-    func json() -> JSONDictionary {
+    var jsonRepresentation: JSONDictionary {
         var json: JSONDictionary = [:]
         json[ScheduleItemKey.startDateString] = TimeFormatter.string(from: startTime)
         json[ScheduleItemKey.valueString] = String(describing: value)

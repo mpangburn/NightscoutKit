@@ -26,12 +26,12 @@ extension JSONParseable {
 /// A type that can be represented as JSON.
 protocol JSONRepresentable: DataRepresentable {
     associatedtype JSONRepresentation
-    func json() -> JSONRepresentation
+    var jsonRepresentation: JSONRepresentation { get }
 }
 
 extension JSONRepresentable {
     func data() throws -> Data {
-        return try JSONSerialization.data(withJSONObject: json(), options: [])
+        return try JSONSerialization.data(withJSONObject: jsonRepresentation, options: [])
     }
 }
 
@@ -47,7 +47,7 @@ extension JSONConvertible {
     }
 
     public var rawValue: RawValue {
-        return json()
+        return jsonRepresentation
     }
 }
 
@@ -72,13 +72,13 @@ extension Array /*: JSONParseable */ where Element: JSONParseable {
 extension Array /*: JSONRepresentable */ where Element: JSONRepresentable {
     typealias JSONRepresentation = [Element.JSONRepresentation]
 
-    func json() -> JSONRepresentation {
-        return map { $0.json() }
+    var jsonRepresentation: JSONRepresentation {
+        return map { $0.jsonRepresentation }
     }
 
     // Can be removed post-conditional conformance
     func data() throws -> Data {
-        return try JSONSerialization.data(withJSONObject: json(), options: [])
+        return try JSONSerialization.data(withJSONObject: jsonRepresentation, options: [])
     }
 }
 

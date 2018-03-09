@@ -54,7 +54,7 @@ extension NightscoutEntry: JSONParseable {
 }
 
 extension NightscoutEntry: JSONConvertible {
-    func json() -> JSONDictionary {
+    var jsonRepresentation: JSONDictionary {
         var json: JSONDictionary = [:]
         json[Key.id] = id
         json[Key.millisecondsSince1970] = Int(date.timeIntervalSince1970.milliseconds)
