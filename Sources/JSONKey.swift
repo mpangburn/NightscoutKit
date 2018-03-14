@@ -31,4 +31,17 @@ extension Dictionary where Key == String, Value == Any {
             self[jsonKey.key] = newValue
         }
     }
+
+    subscript<T: JSONParseable>(parsingFrom jsonKey: JSONKey<T>) -> T? {
+        return (self[jsonKey.key] as? T.JSONParseType).flatMap(T.parse(fromJSON:))
+    }
+
+    subscript<T: JSONConvertible>(convertingFrom jsonKey: JSONKey<T>) -> T? {
+        get {
+            return self[parsingFrom: jsonKey]
+        }
+        set {
+            self[jsonKey.key] = newValue?.jsonRepresentation
+        }
+    }
 }

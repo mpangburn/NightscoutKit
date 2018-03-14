@@ -18,13 +18,13 @@ extension NightscoutStatus: JSONParseable {
 
     private enum Key {
         static let version: JSONKey<String> = "version"
-        static let settingsDictionary: JSONKey<JSONDictionary> = "settings"
+        static let settings: JSONKey<NightscoutSettings> = "settings"
     }
 
     static func parse(fromJSON statusJSON: JSONDictionary) -> NightscoutStatus? {
         guard
             let version = statusJSON[Key.version],
-            let settings = statusJSON[Key.settingsDictionary].flatMap(NightscoutSettings.parse(fromJSON:))
+            let settings = statusJSON[parsingFrom: Key.settings]
         else {
             return nil
         }

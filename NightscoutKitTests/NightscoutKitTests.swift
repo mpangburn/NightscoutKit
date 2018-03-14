@@ -118,6 +118,9 @@ class NightscoutKitTests: XCTestCase {
     func testParseOpenAPSStatusJSON1000Count() {
         let openAPSStatusJSON: [JSONDictionary] = loadFixture("openapsstatus")
         let deviceStatuses = openAPSStatusJSON.flatMap(NightscoutDeviceStatus.parse(fromJSON:))
+//        for case .openAPS(let status) in deviceStatuses.map({ $0.system }).prefix(20) {
+//            print(status)
+//        }
         XCTAssert(openAPSStatusJSON.count == deviceStatuses.count)
     }
 }

@@ -1,13 +1,12 @@
 //
-//  OpenAPSStatus.swift
+//  OpenAPSDeviceStatus.swift
 //  NightscoutKit
 //
 //  Created by Michael Pangburn on 3/8/18.
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-// TODO: heavy renaming in here for Swift conventions
-public struct OpenAPSStatus {
+public struct OpenAPSDeviceStatus {
     public struct ClosedLoopStatus {
         public struct Bolus {
             public let amount: Double
@@ -90,54 +89,54 @@ public struct OpenAPSStatus {
 
 // MARK: - JSON
 
-extension OpenAPSStatus: JSONParseable {
+extension OpenAPSDeviceStatus: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
-        static let closedLoopStatusJSON: JSONKey<JSONDictionary> = "openaps"
-        static let pumpStateJSON: JSONKey<JSONDictionary> = "pump"
-        static let uploaderStateJSON: JSONKey<JSONDictionary> = "uploader"
+        static let closedLoopStatus: JSONKey<ClosedLoopStatus> = "openaps"
+        static let pumpStatus: JSONKey<PumpStatus> = "pump"
+        static let uploaderStatus: JSONKey<UploaderStatus> = "uploader"
     }
 
-    static func parse(fromJSON deviceStatusJSON: JSONDictionary) -> OpenAPSStatus? {
+    static func parse(fromJSON deviceStatusJSON: JSONDictionary) -> OpenAPSDeviceStatus? {
         guard
-            let closedLoopStatus = deviceStatusJSON[Key.closedLoopStatusJSON].flatMap(ClosedLoopStatus.parse(fromJSON:)),
-            let pump = deviceStatusJSON[Key.pumpStateJSON].flatMap(PumpStatus.parse(fromJSON:)),
-            let uploader = deviceStatusJSON[Key.uploaderStateJSON].flatMap(UploaderStatus.parse(fromJSON:))
+            let closedLoopStatus = deviceStatusJSON[parsingFrom: Key.closedLoopStatus],
+            let pumpStatus = deviceStatusJSON[parsingFrom: Key.pumpStatus],
+            let uploaderStatus = deviceStatusJSON[parsingFrom: Key.uploaderStatus]
         else {
             return nil
         }
 
-        return .init(closedLoopStatus: closedLoopStatus, pumpStatus: pump, uploaderStatus: uploader)
+        return .init(closedLoopStatus: closedLoopStatus, pumpStatus: pumpStatus, uploaderStatus: uploaderStatus)
     }
 }
 
-extension OpenAPSStatus.ClosedLoopStatus: JSONParseable {
+extension OpenAPSDeviceStatus.ClosedLoopStatus: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
-        static let activeInsulinContextJSON: JSONKey<JSONDictionary> = "iob"
-        static let suggestedJSON: JSONKey<JSONDictionary> = "suggested"
-        static let enactedJSON: JSONKey<JSONDictionary> = "enacted"
+        static let activeInsulinContext: JSONKey<ActiveInsulinContext> = "iob"
+        static let suggested: JSONKey<Context> = "suggested"
+        static let enacted: JSONKey<Context> = "enacted"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.ClosedLoopStatus? {
         guard
-            let suggested = json[Key.suggestedJSON].flatMap(Context.parse(fromJSON:)),
-            let enacted = json[Key.enactedJSON].flatMap(Context.parse(fromJSON:))
+            let suggested = json[parsingFrom: Key.suggested],
+            let enacted = json[parsingFrom: Key.enacted]
         else {
             return nil
         }
 
         return .init(
-            activeInsulinContext: json[Key.activeInsulinContextJSON].flatMap(ActiveInsulinContext.parse(fromJSON:)),
+            activeInsulinContext: json[parsingFrom: Key.activeInsulinContext],
             suggested: suggested,
             enacted: enacted
         )
     }
 }
 
-extension OpenAPSStatus.ClosedLoopStatus.ActiveInsulinContext: JSONParseable {
+extension OpenAPSDeviceStatus.ClosedLoopStatus.ActiveInsulinContext: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -145,18 +144,18 @@ extension OpenAPSStatus.ClosedLoopStatus.ActiveInsulinContext: JSONParseable {
         static let recentInsulinActivity: JSONKey<Double> = "activity"
         static let basalInsulinOnBoard: JSONKey<Double> = "basaliob"
         static let bolusInsulinOnBoard: JSONKey<Double> = "bolusiob"
-        static let lastTemporaryBasalJSON: JSONKey<JSONDictionary> = "lastTemp"
+        static let lastTemporaryBasal: JSONKey<OpenAPSDeviceStatus.ClosedLoopStatus.TemporaryBasal> = "lastTemp"
         static let timestamp: JSONKey<String> = "timestamp"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus.ActiveInsulinContext? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.ClosedLoopStatus.ActiveInsulinContext? {
         guard
             let insulinOnBoard = json[Key.insulinOnBoard],
             let recentInsulinActivity = json[Key.recentInsulinActivity],
             let basalInsulinOnBoard = json[Key.basalInsulinOnBoard],
             let bolusInsulinOnBoard = json[Key.bolusInsulinOnBoard],
-            let lastBolus = OpenAPSStatus.ClosedLoopStatus.Bolus.parse(fromJSON: json),
-            let lastTemporaryBasal = json[Key.lastTemporaryBasalJSON].flatMap(OpenAPSStatus.ClosedLoopStatus.TemporaryBasal.parse(fromJSON:)),
+            let lastBolus = OpenAPSDeviceStatus.ClosedLoopStatus.Bolus.parse(fromJSON: json),
+            let lastTemporaryBasal = json[parsingFrom: Key.lastTemporaryBasal],
             let timestamp = json[Key.timestamp].flatMap(TimeFormatter.date(from:))
         else {
             return nil
@@ -174,7 +173,7 @@ extension OpenAPSStatus.ClosedLoopStatus.ActiveInsulinContext: JSONParseable {
     }
 }
 
-extension OpenAPSStatus.ClosedLoopStatus.Bolus: JSONParseable {
+extension OpenAPSDeviceStatus.ClosedLoopStatus.Bolus: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -182,7 +181,7 @@ extension OpenAPSStatus.ClosedLoopStatus.Bolus: JSONParseable {
         static let date: JSONKey<Int> = "lastBolusTime"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus.Bolus? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.ClosedLoopStatus.Bolus? {
         guard
             let amount = json[Key.amount],
             let date = json[Key.date].map(TimeInterval.init).map(Date.init(timeIntervalSince1970:))
@@ -194,7 +193,7 @@ extension OpenAPSStatus.ClosedLoopStatus.Bolus: JSONParseable {
     }
 }
 
-extension OpenAPSStatus.ClosedLoopStatus.TemporaryBasal: JSONParseable {
+extension OpenAPSDeviceStatus.ClosedLoopStatus.TemporaryBasal: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -203,24 +202,24 @@ extension OpenAPSStatus.ClosedLoopStatus.TemporaryBasal: JSONParseable {
         static let durationInMinutes: JSONKey<Double> = "duration"
     }
 
-    fileprivate static func parse(fromJSON json: JSONDictionary, withDateStringKey dateStringKey: JSONKey<String>) -> OpenAPSStatus.ClosedLoopStatus.TemporaryBasal? {
+    fileprivate static func parse(fromJSON json: JSONDictionary, withDateStringKey dateStringKey: JSONKey<String>) -> OpenAPSDeviceStatus.ClosedLoopStatus.TemporaryBasal? {
         guard
             let rate = json[Key.rate],
             let startDate = json[dateStringKey].flatMap(TimeFormatter.date(from:)),
             let duration = json[Key.durationInMinutes].map(TimeInterval.init(minutes:))
-            else {
-                return nil
+        else {
+            return nil
         }
 
         return .init(rate: rate, startDate: startDate, duration: duration)
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus.TemporaryBasal? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.ClosedLoopStatus.TemporaryBasal? {
         return parse(fromJSON: json, withDateStringKey: Key.startDateString)
     }
 }
 
-extension OpenAPSStatus.ClosedLoopStatus.Context: JSONParseable {
+extension OpenAPSDeviceStatus.ClosedLoopStatus.Context: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -228,7 +227,7 @@ extension OpenAPSStatus.ClosedLoopStatus.Context: JSONParseable {
         static let timestamp: JSONKey<String> = "timestamp"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus.Context? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.ClosedLoopStatus.Context? {
         guard
             let reason = json[Key.reason],
             let timestamp = json[Key.timestamp].flatMap(TimeFormatter.date(from:))
@@ -244,7 +243,7 @@ extension OpenAPSStatus.ClosedLoopStatus.Context: JSONParseable {
     }
 }
 
-extension OpenAPSStatus.ClosedLoopStatus.Context.State: JSONParseable {
+extension OpenAPSDeviceStatus.ClosedLoopStatus.Context.State: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -255,12 +254,12 @@ extension OpenAPSStatus.ClosedLoopStatus.Context.State: JSONParseable {
         static let deliveryDateString: JSONKey<String> = "deliverAt"
         static let received: JSONKey<Bool> = "recieved" // yes, "received" really is misspelled
         static let sensitivityRatio: JSONKey<Double> = "sensitivityRatio"
-        static let predictedBloodGlucoseValuesJSON: JSONKey<JSONDictionary> = "predBGs"
+        static let predictedBloodGlucoseValuesJSON: JSONKey<PredictedBloodGlucoseValues> = "predBGs"
         static let carbsOnBoard: JSONKey<Int> = "COB"
         static let insulinOnBoard: JSONKey<Double> = "IOB"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus.Context.State? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.ClosedLoopStatus.Context.State? {
         guard
             let bloodGlucoseValue = json[Key.bloodGlucoseValue],
             let predictedEventualBloodGlucoseValue = json[Key.predictedEventualBloodGlucoseValue],
@@ -287,17 +286,17 @@ extension OpenAPSStatus.ClosedLoopStatus.Context.State: JSONParseable {
             bloodGlucoseValue: bloodGlucoseValue,
             deltaFromLastBloodGlucoseValue: deltaFromLastBloodGlucoseValue,
             predictedEventualBloodGlucoseValue: predictedEventualBloodGlucoseValue,
-            temporaryBasal: OpenAPSStatus.ClosedLoopStatus.TemporaryBasal.parse(fromJSON: json, withDateStringKey: Key.deliveryDateString),
+            temporaryBasal: OpenAPSDeviceStatus.ClosedLoopStatus.TemporaryBasal.parse(fromJSON: json, withDateStringKey: Key.deliveryDateString),
             received: json[Key.received] ?? false,
             sensitivityRatio: sensitivityRatio,
-            predictedBloodGlucoseValues: json[Key.predictedBloodGlucoseValuesJSON].flatMap(PredictedBloodGlucoseValues.parse(fromJSON:)),
+            predictedBloodGlucoseValues: json[parsingFrom: Key.predictedBloodGlucoseValuesJSON],
             carbsOnBoard: carbsOnBoard,
             insulinOnBoard: insulinOnBoard
         )
     }
 }
 
-extension OpenAPSStatus.ClosedLoopStatus.Context.State.PredictedBloodGlucoseValues: JSONParseable {
+extension OpenAPSDeviceStatus.ClosedLoopStatus.Context.State.PredictedBloodGlucoseValues: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -306,7 +305,7 @@ extension OpenAPSStatus.ClosedLoopStatus.Context.State.PredictedBloodGlucoseValu
         static let basedOnCarbAbsorption: JSONKey<[Int]> = "COB"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.ClosedLoopStatus.Context.State.PredictedBloodGlucoseValues? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.ClosedLoopStatus.Context.State.PredictedBloodGlucoseValues? {
         guard
             let basedOnInsulinOnBoard = json[Key.basedOnInsulinOnBoard],
             let withZeroBasal = json[Key.withZeroBasal]
@@ -322,20 +321,20 @@ extension OpenAPSStatus.ClosedLoopStatus.Context.State.PredictedBloodGlucoseValu
     }
 }
 
-extension OpenAPSStatus.PumpStatus: JSONParseable {
+extension OpenAPSDeviceStatus.PumpStatus: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
         static let clockDateString: JSONKey<String> = "clock"
-        static let batteryJSON: JSONKey<JSONDictionary> = "battery"
+        static let battery: JSONKey<Battery> = "battery"
         static let reservoirInsulinRemaining: JSONKey<Double> = "reservoir"
-        static let stateJSON: JSONKey<JSONDictionary> = "status"
+        static let state: JSONKey<State> = "status"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.PumpStatus? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.PumpStatus? {
         guard
             let clockDate = json[Key.clockDateString].flatMap(TimeFormatter.date(from:)),
-            let battery = json[Key.batteryJSON].flatMap(Battery.parse(fromJSON:)),
+            let battery = json[parsingFrom: Key.battery],
             let reservoirInsulinRemaining = json[Key.reservoirInsulinRemaining]
         else {
             return nil
@@ -345,12 +344,12 @@ extension OpenAPSStatus.PumpStatus: JSONParseable {
             clockDate: clockDate,
             reservoirInsulinRemaining: reservoirInsulinRemaining,
             battery: battery,
-            state: json[Key.stateJSON].flatMap(State.parse(fromJSON:))
+            state: json[parsingFrom: Key.state]
         )
     }
 }
 
-extension OpenAPSStatus.PumpStatus.Battery: JSONParseable {
+extension OpenAPSDeviceStatus.PumpStatus.Battery: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -358,7 +357,7 @@ extension OpenAPSStatus.PumpStatus.Battery: JSONParseable {
         static let voltage: JSONKey<Double> = "voltage"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.PumpStatus.Battery? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.PumpStatus.Battery? {
         guard let status = json[Key.status], let voltage = json[Key.voltage] else {
             return nil
         }
@@ -367,7 +366,7 @@ extension OpenAPSStatus.PumpStatus.Battery: JSONParseable {
     }
 }
 
-extension OpenAPSStatus.PumpStatus.State: JSONParseable {
+extension OpenAPSDeviceStatus.PumpStatus.State: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -377,7 +376,7 @@ extension OpenAPSStatus.PumpStatus.State: JSONParseable {
         static let timestamp: JSONKey<String> = "timestamp"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.PumpStatus.State? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.PumpStatus.State? {
         guard
             let stateDescription = json[Key.stateDescription],
             let isBolusing = json[Key.isBolusing],
@@ -391,7 +390,7 @@ extension OpenAPSStatus.PumpStatus.State: JSONParseable {
     }
 }
 
-extension OpenAPSStatus.UploaderStatus: JSONParseable {
+extension OpenAPSDeviceStatus.UploaderStatus: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -399,7 +398,7 @@ extension OpenAPSStatus.UploaderStatus: JSONParseable {
         static let batteryPercentage: JSONKey<Int> = "battery"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSStatus.UploaderStatus? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.UploaderStatus? {
         guard let batteryVoltage = json[Key.batteryVoltage], let batteryPercentage = json[Key.batteryPercentage] else {
             return nil
         }
