@@ -7,15 +7,15 @@
 //
 
 public struct NightscoutDeviceStatus: UniquelyIdentifiable {
-    public enum System {
-        case loop
+    enum System {
+        case loop(status: LoopDeviceStatus)
         case openAPS(status: OpenAPSDeviceStatus)
     }
 
     public let id: String
     public let device: String
     public let date: Date
-    public let system: System
+    let system: System
 }
 
 // MARK: - JSON
@@ -41,7 +41,10 @@ extension NightscoutDeviceStatus: JSONParseable {
         let system: System
         switch device {
         case _ where device.hasPrefix("loop"):
-            system = .loop
+            guard let status = LoopDeviceStatus.parse(fromJSON: deviceStatusJSON) else {
+                return nil
+            }
+            system = .loop(status: status)
         case _ where device.hasPrefix("openaps"):
             guard let status = OpenAPSDeviceStatus.parse(fromJSON: deviceStatusJSON) else {
                 return nil

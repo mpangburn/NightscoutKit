@@ -206,7 +206,7 @@ extension OpenAPSDeviceStatus.ClosedLoopStatus.TemporaryBasal: JSONParseable {
         guard
             let rate = json[Key.rate],
             let startDate = json[convertingDateFrom: dateStringKey],
-            let duration = json[Key.durationInMinutes].map(TimeInterval.init(minutes:))
+            let duration = json[Key.durationInMinutes].map(TimeInterval.minutes)
         else {
             return nil
         }
