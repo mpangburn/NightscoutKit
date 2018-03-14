@@ -36,12 +36,21 @@ extension Dictionary where Key == String, Value == Any {
         return (self[jsonKey.key] as? T.JSONParseType).flatMap(T.parse(fromJSON:))
     }
 
-    subscript<T: JSONConvertible>(convertingFrom jsonKey: JSONKey<T>) -> T? {
+    subscript<T: RawRepresentable>(convertingFrom jsonKey: JSONKey<T>) -> T? {
         get {
-            return self[parsingFrom: jsonKey]
+            return (self[jsonKey.key] as? T.RawValue).flatMap(T.init(rawValue:))
         }
         set {
-            self[jsonKey.key] = newValue?.jsonRepresentation
+            self[jsonKey.key] = newValue?.rawValue
+        }
+    }
+
+    subscript(convertingDateFrom dateStringKey: JSONKey<String>) -> Date? {
+        get {
+            return self[dateStringKey].flatMap(TimeFormatter.date(from:))
+        }
+        set {
+            self[dateStringKey] = newValue.map(TimeFormatter.string(from:))
         }
     }
 }

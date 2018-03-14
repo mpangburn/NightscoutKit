@@ -58,12 +58,12 @@ extension NightscoutEntry: JSONConvertible {
         var json: JSONDictionary = [:]
         json[Key.id] = id
         json[Key.millisecondsSince1970] = Int(date.timeIntervalSince1970.milliseconds)
-        json[Key.dateString] = TimeFormatter.string(from: date)
+        json[convertingDateFrom: Key.dateString] = date
         json[Key.typeString] = source.simpleRawValue
         json[source.simpleRawValue] = glucoseValue
 
         if case .sensor(trend: let trend) = source {
-            json[Source.Key.direction] = trend.rawValue
+            json[convertingFrom: Source.Key.trend] = trend
         }
 
         if let device = device {
@@ -78,7 +78,7 @@ extension NightscoutEntry.Source: JSONParseable {
     typealias JSONParseType = JSONDictionary
     
     fileprivate enum Key {
-        static let direction: JSONKey<String> = "direction"
+        static let trend: JSONKey<BloodGlucoseTrend> = "direction"
     }
 
     static func parse(fromJSON entryJSON: JSONDictionary) -> NightscoutEntry.Source? {
@@ -89,7 +89,7 @@ extension NightscoutEntry.Source: JSONParseable {
         if let simpleGlucoseSource = NightscoutEntry.Source(simpleRawValue: typeString) {
             return simpleGlucoseSource
         } else {
-            let trend = entryJSON[Key.direction].flatMap(BloodGlucoseTrend.init(rawValue:)) ?? .unknown
+            let trend = entryJSON[convertingFrom: Key.trend] ?? .unknown
             return .sensor(trend: trend)
         }
     }

@@ -23,7 +23,7 @@ extension NightscoutProfileRecord: JSONParseable {
         static let id: JSONKey<String> = "_id"
         static let defaultProfileName: JSONKey<String> = "defaultProfile"
         static let dateString: JSONKey<String> = "startDate"
-        static let unitString: JSONKey<String> = "units"
+        static let units: JSONKey<BloodGlucoseUnit> = "units"
         static let profileDictionaries: JSONKey<[String: JSONDictionary]> = "store"
     }
 
@@ -31,8 +31,8 @@ extension NightscoutProfileRecord: JSONParseable {
         guard
             let id = profileJSON[Key.id],
             let defaultProfileName = profileJSON[Key.defaultProfileName],
-            let recordDate = profileJSON[Key.dateString].flatMap(TimeFormatter.date(from:)),
-            let units = profileJSON[Key.unitString].flatMap(BloodGlucoseUnit.init(rawValue:)),
+            let recordDate = profileJSON[convertingDateFrom: Key.dateString],
+            let units = profileJSON[convertingFrom: Key.units],
             let profileDictionaries = profileJSON[Key.profileDictionaries]
         else {
             return nil
@@ -53,8 +53,8 @@ extension NightscoutProfileRecord: JSONConvertible {
         var json: JSONDictionary = [:]
         json[Key.id] = id
         json[Key.defaultProfileName] = defaultProfileName
-        json[Key.dateString] = TimeFormatter.string(from: date)
-        json[Key.unitString] = units.rawValue
+        json[convertingDateFrom: Key.dateString] = date
+        json[convertingFrom: Key.units] = units
         json[Key.profileDictionaries] = profiles.mapValues { $0.jsonRepresentation }
         return json
     }

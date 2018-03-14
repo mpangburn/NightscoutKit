@@ -19,7 +19,7 @@ extension NightscoutSettings: JSONParseable {
 
     private enum Key {
         static let title: JSONKey<String> = "customTitle"
-        static let unitString: JSONKey<String> = "units"
+        static let units: JSONKey<BloodGlucoseUnit> = "units"
         static let thresholdsDictionary: JSONKey<JSONDictionary> = "thresholds"
         static let bgTargetBottom: JSONKey<Double> = "bgTargetBottom"
         static let bgTargetTop: JSONKey<Double> = "bgTargetTop"
@@ -29,7 +29,7 @@ extension NightscoutSettings: JSONParseable {
 
     static func parse(fromJSON settingsJSON: JSONDictionary) -> NightscoutSettings? {
         guard
-            let units = settingsJSON[Key.unitString].flatMap(BloodGlucoseUnit.init(rawValue:)),
+            let units = settingsJSON[convertingFrom: Key.units],
             let thresholdsDictionary = settingsJSON[Key.thresholdsDictionary],
             let bgTargetBottom = thresholdsDictionary[Key.bgTargetBottom],
             let bgTargetTop = thresholdsDictionary[Key.bgTargetTop]

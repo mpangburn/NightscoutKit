@@ -33,7 +33,7 @@ extension NightscoutDeviceStatus: JSONParseable {
         guard
             let id = deviceStatusJSON[Key.id],
             let device = deviceStatusJSON[Key.device],
-            let date = deviceStatusJSON[Key.dateString].flatMap(TimeFormatter.date(from:))
+            let date = deviceStatusJSON[convertingDateFrom: Key.dateString]
         else {
             return nil
         }

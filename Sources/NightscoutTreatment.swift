@@ -79,8 +79,8 @@ extension NightscoutTreatment: JSONParseable {
         static let dateString: JSONKey<String> = "created_at"
         static let duration: JSONKey<Double> = "duration"
         static let glucoseValue: JSONKey<Double> = "glucose"
-        static let unitString: JSONKey<String> = "units"
-        static let glucoseSourceString: JSONKey<String> = "glucoseType"
+        static let units: JSONKey<BloodGlucoseUnit> = "units"
+        static let glucoseSource: JSONKey<GlucoseSource> = "glucoseType"
         static let insulinGiven: JSONKey<Double> = "insulin"
         static let carbsConsumed: JSONKey<Int> = "carbs"
         static let creator: JSONKey<String> = "enteredBy"
@@ -91,15 +91,15 @@ extension NightscoutTreatment: JSONParseable {
         guard
             let id = treatmentJSON[Key.id],
             let eventType = EventType.parse(fromJSON: treatmentJSON),
-            let date = treatmentJSON[Key.dateString].flatMap(TimeFormatter.date(from:))
+            let date = treatmentJSON[convertingDateFrom: Key.dateString]
         else {
             return nil
         }
 
         let glucose: GlucoseMeasurement?
         if let glucoseValue = treatmentJSON[Key.glucoseValue],
-            let units = treatmentJSON[Key.unitString].flatMap(BloodGlucoseUnit.init(rawValue:)),
-            let glucoseSource = treatmentJSON[Key.glucoseSourceString].flatMap(GlucoseSource.init(rawValue:)) {
+            let units = treatmentJSON[convertingFrom: Key.units],
+            let glucoseSource = treatmentJSON[convertingFrom: Key.glucoseSource] {
                 glucose = GlucoseMeasurement(value: glucoseValue, units: units, source: glucoseSource)
         } else {
             glucose = nil
@@ -126,7 +126,7 @@ extension NightscoutTreatment: JSONConvertible {
         json[Key.id] = id
         json[Key.eventTypeString] = eventType.simpleRawValue
         json[Key.duration] = duration.minutes
-        json[Key.dateString] = TimeFormatter.string(from: date)
+        json[convertingDateFrom: Key.dateString] = date
         json[Key.creator] = creator
         json[Key.notes] = notes
 
@@ -154,8 +154,8 @@ extension NightscoutTreatment: JSONConvertible {
 
         if let glucose = glucose {
             json[Key.glucoseValue] = glucose.value
-            json[Key.unitString] = glucose.units.rawValue
-            json[Key.glucoseSourceString] = glucose.source.rawValue
+            json[convertingFrom: Key.units] = glucose.units
+            json[convertingFrom: Key.glucoseSource] = glucose.source
         }
 
         json[Key.carbsConsumed] = carbsConsumed

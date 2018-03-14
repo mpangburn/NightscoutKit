@@ -67,6 +67,7 @@ extension NightscoutProfile: JSONParseable {
             bloodGlucoseTargetSchedule.append(targetScheduleItem)
         }
 
+        // TODO: minor JSON parsing cleanup in this file once ScheduleItem can conditionally conform to JSONParseable/JSONConvertible
         return NightscoutProfile(
             carbRatioSchedule: carbRatioDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),
             basalRateSchedule: basalRateDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),

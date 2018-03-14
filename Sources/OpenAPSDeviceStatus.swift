@@ -145,7 +145,7 @@ extension OpenAPSDeviceStatus.ClosedLoopStatus.ActiveInsulinContext: JSONParseab
         static let basalInsulinOnBoard: JSONKey<Double> = "basaliob"
         static let bolusInsulinOnBoard: JSONKey<Double> = "bolusiob"
         static let lastTemporaryBasal: JSONKey<OpenAPSDeviceStatus.ClosedLoopStatus.TemporaryBasal> = "lastTemp"
-        static let timestamp: JSONKey<String> = "timestamp"
+        static let timestampString: JSONKey<String> = "timestamp"
     }
 
     static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.ClosedLoopStatus.ActiveInsulinContext? {
@@ -156,7 +156,7 @@ extension OpenAPSDeviceStatus.ClosedLoopStatus.ActiveInsulinContext: JSONParseab
             let bolusInsulinOnBoard = json[Key.bolusInsulinOnBoard],
             let lastBolus = OpenAPSDeviceStatus.ClosedLoopStatus.Bolus.parse(fromJSON: json),
             let lastTemporaryBasal = json[parsingFrom: Key.lastTemporaryBasal],
-            let timestamp = json[Key.timestamp].flatMap(TimeFormatter.date(from:))
+            let timestamp = json[convertingDateFrom: Key.timestampString]
         else {
             return nil
         }
@@ -205,7 +205,7 @@ extension OpenAPSDeviceStatus.ClosedLoopStatus.TemporaryBasal: JSONParseable {
     fileprivate static func parse(fromJSON json: JSONDictionary, withDateStringKey dateStringKey: JSONKey<String>) -> OpenAPSDeviceStatus.ClosedLoopStatus.TemporaryBasal? {
         guard
             let rate = json[Key.rate],
-            let startDate = json[dateStringKey].flatMap(TimeFormatter.date(from:)),
+            let startDate = json[convertingDateFrom: dateStringKey],
             let duration = json[Key.durationInMinutes].map(TimeInterval.init(minutes:))
         else {
             return nil
@@ -224,13 +224,13 @@ extension OpenAPSDeviceStatus.ClosedLoopStatus.Context: JSONParseable {
 
     private enum Key {
         static let reason: JSONKey<String> = "reason"
-        static let timestamp: JSONKey<String> = "timestamp"
+        static let timestampString: JSONKey<String> = "timestamp"
     }
 
     static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.ClosedLoopStatus.Context? {
         guard
             let reason = json[Key.reason],
-            let timestamp = json[Key.timestamp].flatMap(TimeFormatter.date(from:))
+            let timestamp = json[convertingDateFrom: Key.timestampString]
         else {
             return nil
         }
@@ -333,7 +333,7 @@ extension OpenAPSDeviceStatus.PumpStatus: JSONParseable {
 
     static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.PumpStatus? {
         guard
-            let clockDate = json[Key.clockDateString].flatMap(TimeFormatter.date(from:)),
+            let clockDate = json[convertingDateFrom: Key.clockDateString],
             let battery = json[parsingFrom: Key.battery],
             let reservoirInsulinRemaining = json[Key.reservoirInsulinRemaining]
         else {
@@ -358,7 +358,10 @@ extension OpenAPSDeviceStatus.PumpStatus.Battery: JSONParseable {
     }
 
     static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.PumpStatus.Battery? {
-        guard let status = json[Key.status], let voltage = json[Key.voltage] else {
+        guard
+            let status = json[Key.status],
+            let voltage = json[Key.voltage]
+        else {
             return nil
         }
 
@@ -373,7 +376,7 @@ extension OpenAPSDeviceStatus.PumpStatus.State: JSONParseable {
         static let stateDescription: JSONKey<String> = "status"
         static let isBolusing: JSONKey<Bool> = "bolusing"
         static let isSuspended: JSONKey<Bool> = "suspended"
-        static let timestamp: JSONKey<String> = "timestamp"
+        static let timestampString: JSONKey<String> = "timestamp"
     }
 
     static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.PumpStatus.State? {
@@ -381,7 +384,7 @@ extension OpenAPSDeviceStatus.PumpStatus.State: JSONParseable {
             let stateDescription = json[Key.stateDescription],
             let isBolusing = json[Key.isBolusing],
             let isSuspended = json[Key.isSuspended],
-            let timestamp = json[Key.timestamp].flatMap(TimeFormatter.date(from:))
+            let timestamp = json[convertingDateFrom: Key.timestampString]
         else {
             return nil
         }
@@ -399,7 +402,10 @@ extension OpenAPSDeviceStatus.UploaderStatus: JSONParseable {
     }
 
     static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.UploaderStatus? {
-        guard let batteryVoltage = json[Key.batteryVoltage], let batteryPercentage = json[Key.batteryPercentage] else {
+        guard
+            let batteryVoltage = json[Key.batteryVoltage],
+            let batteryPercentage = json[Key.batteryPercentage]
+        else {
             return nil
         }
 
