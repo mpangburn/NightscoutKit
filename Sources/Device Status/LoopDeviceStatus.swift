@@ -9,79 +9,151 @@
 // This structure is pulled pretty much directly from Pete Schwamb's NightscoutUploadKit:
 // https://github.com/ps2/rileylink_ios/tree/master/NightscoutUploadKit
 // NightscoutUploadKit could be introduced as a dependency, but it has some reliance
-// on HealthKit, which can't be supported if NightscoutKit is to support all Apple platforms
+// on HealthKit, which can't be supported if NightscoutKit is to support all Apple platforms.
+
+/// Describes the status of the devices of a Loop closed loop system.
 public struct LoopDeviceStatus {
+    /// Describes the status of insulin on board.
     public struct InsulinOnBoardStatus: InsulinOnBoardStatusProtocol {
+        /// The date at which the status of the insulin on board was recorded.
         public let timestamp: Date
+
+        /// The total insulin on board in units (U),
+        /// equal to the sum of the basal and bolus insulin on board.
         public let insulinOnBoard: Double?
+
+        /// The basal insulin on board in units (U).
         public let basalInsulinOnBoard: Double?
     }
 
+    /// Describes the status of a Loop closed loop.
     public struct LoopStatus: ClosedLoopStatusProtocol {
+        /// Describes the status of carbs on board.
         public struct CarbsOnBoardStatus {
+            /// The date at which the carbs on board were recorded.
             public let timestamp: Date
-            public let carbsOnBoard: Double
+
+            /// The carbs on board in grams (g).
+            public let carbsOnBoard: Double // TODO: why is this a Double?
         }
 
+        /// Describes the context of predicted blood glucose values based on the status of a closed loop.
         public struct PredictedBloodGlucoseValuesContext {
+            /// The reference date from which the predicted glucose values are projected forward.
             public let startDate: Date
+
+            /// The predicted glucose values.
+            /// The first member represents the predicted glucose value at the start date,
+            /// and each subsequent member represents the predicted glucose five minutes after the previous.
             public let values: [Int]
+
+            /// The projected carbs on board.
+            /// The first member represents the carbs on board at the start date,
+            /// and each subsequent member represents the carbs on board five minutes after the previous.
             public let carbsOnBoard: [Int]?
+
+            /// The projected insulin on board.
+            /// The first member represents the insulin on board at the start date,
+            /// and each subsequent member represents the insulin on board five minutes after the previous.
             public let insulinOnBoard: [Int]?
 
+            /// The array of predicted blood glucose values from the context.
+            /// Maps each value in `values` to its prediction date.
             public var predictedBloodGlucoseValues: [PredictedBloodGlucoseValue] {
-                return Array<PredictedBloodGlucoseValue>(mgdlValues: values, everyFiveMinutesBeginningAt: startDate)
+                return .init(mgdlValues: values, everyFiveMinutesBeginningAt: startDate)
             }
         }
 
+        /// Describes a temporary basal.
         public struct TemporaryBasal: TemporaryBasalProtocol {
+            /// The start date of the temporary basal.
             public let startDate: Date
+
+            /// The basal rate in units per hour (U/hr).
             public let rate: Double
+
+            /// The duration of the temporary basal.
             public let duration: TimeInterval
         }
 
+        /// Describes the enacted closed loop.
         public struct LoopEnacted {
+            /// The enacted temporary basal.
             public let temporaryBasal: TemporaryBasal
+
+            /// A boolean value describing whether or not the loop was received by the pump.
             public let received: Bool
         }
 
+        /// Describes the status of a RileyLink radio adapter.
         public struct RileyLinkStatus {
+            /// Describes the connection state of a RileyLink.
             public enum State: String {
                 case connected = "connected"
                 case connecting = "connecting"
                 case disconnected = "disconnected"
             }
 
+            /// The name of the RileyLink.
             public let name: String
+
+            /// The connection state of the RileyLink.
             public let state: State
+
+            /// The date at which the RileyLink was last idle.
             public let lastIdleDate: Date?
+
+            /// The firmware version of the RileyLink.
             public let version: String?
+
+            /// The received signal strength indicator (RSSI) of the RileyLink.
             public let rssi: Double?
         }
 
+        /// The name of the Loop device.
         public let name: String
+
+        /// The version of Loop in use.
         public let version: String
+
+        /// The date at which the status was recorded.
         public let timestamp: Date
+
+        /// The status of the insulin on board (IOB).
         public let insulinOnBoardStatus: InsulinOnBoardStatus?
+
+        /// The carbs on board in grams (g).
         public let carbsOnBoardStatus: CarbsOnBoardStatus?
+
+        /// An array of predicted glucose value curves based on the current data.
         public let predictedBloodGlucoseValuesContext: PredictedBloodGlucoseValuesContext?
+
+        /// The temporary basal recommended by the loop.
         public let recommendedTemporaryBasal: TemporaryBasal?
+
+        /// The bolus recommended by the loop.
         public let recommendedBolus: Double?
+
+        /// The loop currently enacted.
         public let loopEnacted: LoopEnacted?
+
+        /// The statuses of the RileyLinks in communication with the loop.
         public let rileyLinkStatuses: [RileyLinkStatus]?
+
+        /// A string describing the reason the loop failed.
         public let failureReason: String?
 
+        /// The carbs on board in grams (g).
         public var carbsOnBoard: Int? {
-            guard let carbsOnBoard = carbsOnBoardStatus?.carbsOnBoard else {
-                return nil
-            }
-            return Int(carbsOnBoard)
+            return carbsOnBoardStatus.map { Int($0.carbsOnBoard) }
         }
 
+        /// The enacted temporary basal.
         public var enactedTemporaryBasal: TemporaryBasal? {
             return loopEnacted?.temporaryBasal
         }
 
+        /// An array of predicted glucose value curves based on currently available data.
         public var predictedBloodGlucoseCurves: [[PredictedBloodGlucoseValue]]? {
             guard let predictedGlucoseValues = predictedBloodGlucoseValuesContext?.predictedBloodGlucoseValues else {
                 return nil
@@ -90,41 +162,88 @@ public struct LoopDeviceStatus {
         }
     }
 
+    /// Describes the status of the insulin pump in communication with Loop.
     public struct PumpStatus: PumpStatusProtocol {
+        /// Describes the battery status of the pump.
         public struct BatteryStatus: BatteryStatusProtocol {
+            /// The percentage of battery remaining.
             public let percentage: Int?
+
+            /// The voltage of the battery.
             public let voltage: Double?
+
+            /// The status of the battery.
             public let status: BatteryIndicator?
         }
 
+        /// The date of the pump clock.
         public let clockDate: Date
+
+        /// The pump ID number.
         public let pumpID: String
+
+        /// The status of the insulin on board.
         public let insulinOnBoardStatus: InsulinOnBoardStatus?
+
+        /// The status of the pump battery.
         public let batteryStatus: BatteryStatus?
+
+        /// A boolean value representing whether the pump is currently suspended.
         public let isSuspended: Bool?
+
+        /// A boolean value representing whether the pump is currently bolusing.
         public let isBolusing: Bool?
+
+        /// The reservoir insulin remaining in units (U).
         public let reservoirInsulinRemaining: Double?
     }
 
+    /// Describes the status of the device uploading Loop data to Nightscout.
     public struct UploaderStatus: UploaderStatusProtocol {
+        /// The date at which the device status was recorded.
         public let timestamp: Date
+
+        /// The name of the device.
         public let name: String
+
+        /// The percentage of battery remaining of the uploading device.
         public let batteryPercentage: Int?
     }
 
+    /// Describes a radio adapter in communication with Loop.
     public struct RadioAdapter {
+        /// The description of the radio adapter hardware.
         public let hardwareDescription: String
+
+        /// The frequency of the radio adapter.
         public let frequency: Double?
+
+        /// The name of the radio adapter.
         public let name: String?
+
+        /// The date at which the radio adapter was last tuned.
         public let lastTunedDate: Date?
+
+        /// The firmware version of the radio adapter.
         public let firmwareVersion: String
+
+        /// The received signal strength indicator (RSSI) of the radio adapter.
         public let rssi: Int?
+
+        /// The received signal strength indicator (RSSI) of the pump with which the radio adapter is in communication.
         public let pumpRSSI: Int?
     }
 
+    /// The status of the closed loop.
     public let loopStatus: LoopStatus?
+
+    /// The status of the insulin pump used in the loop.
     public let pumpStatus: PumpStatus?
+
+    /// The status of the device uploading the loop status.
     public let uploaderStatus: UploaderStatus?
+
+    /// The status of the radio adapter used in the communication of the loop.
     public let radioAdapter: RadioAdapter?
 }
 

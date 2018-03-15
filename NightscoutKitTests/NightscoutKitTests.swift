@@ -93,7 +93,7 @@ class NightscoutKitTests: XCTestCase {
         XCTAssert(treatment.glucose == expectedTreatment.glucose)
         XCTAssert(treatment.insulinGiven == expectedTreatment.insulinGiven)
         XCTAssert(treatment.carbsConsumed == expectedTreatment.carbsConsumed)
-        XCTAssert(treatment.creator == expectedTreatment.creator)
+        XCTAssert(treatment.recorder == expectedTreatment.recorder)
         XCTAssert(treatment.notes == expectedTreatment.notes)
     }
 

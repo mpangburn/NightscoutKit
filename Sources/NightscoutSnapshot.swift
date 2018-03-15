@@ -11,7 +11,7 @@
 /// as well as the status of Nightscout site.
 public struct NightscoutSnapshot {
     /// The date at which the snapshot was taken.
-    public let date: Date
+    public let timestamp: Date
 
     /// The status of the Nightscout site.
     public let status: NightscoutStatus
@@ -33,7 +33,7 @@ extension NightscoutSnapshot: CustomStringConvertible {
     public var description: String {
         return """
         ===== NIGHTSCOUT SNAPSHOT =====
-        \(date)
+        \(timestamp)
 
         ===== STATUS =====
         \(status)

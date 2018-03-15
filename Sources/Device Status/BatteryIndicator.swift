@@ -6,6 +6,7 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+/// Indicates the status of a battery.
 public enum BatteryIndicator: String {
     case low = "low"
     case normal = "normal"

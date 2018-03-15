@@ -173,7 +173,7 @@ extension Nightscout {
 
 extension Nightscout {
     public func snapshot(recentBloodGlucoseEntryCount: Int = 10, recentTreatmentCount: Int = 10, recentDeviceStatusCount: Int = 10, completion: @escaping (NightscoutResult<NightscoutSnapshot>) -> Void) {
-        let date = Date()
+        let timestamp = Date()
         var status: NightscoutStatus?
         var deviceStatuses: [NightscoutDeviceStatus] = []
         var entries: [NightscoutEntry] = []
@@ -250,7 +250,7 @@ extension Nightscout {
             return
         }
 
-        let snapshot = NightscoutSnapshot(date: date, status: status!, entries: entries, treatments: treatments, profileRecords: profileRecords, deviceStatuses: deviceStatuses)
+        let snapshot = NightscoutSnapshot(timestamp: timestamp, status: status!, entries: entries, treatments: treatments, profileRecords: profileRecords, deviceStatuses: deviceStatuses)
         completion(.success(snapshot))
     }
 

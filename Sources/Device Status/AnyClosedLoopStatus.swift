@@ -6,6 +6,7 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+/// A type-erased closed loop status.
 public struct AnyClosedLoopStatus: ClosedLoopStatusProtocol {
     public struct InsulinOnBoardStatus: InsulinOnBoardStatusProtocol {
         public let timestamp: Date

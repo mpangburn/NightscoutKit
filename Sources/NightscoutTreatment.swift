@@ -6,7 +6,10 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+/// A Nightscout treatment.
+/// This type stores the event type and its details.
 public struct NightscoutTreatment: UniquelyIdentifiable {
+    /// An event type describing a treatment.
     public enum EventType {
         case bloodGlucoseCheck
         case bolus(type: BolusType)
@@ -23,6 +26,7 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
         case unknown(String)
     }
 
+    /// The type of a bolus—snack, meal, correction, or combo.
     public enum BolusType {
         case snack
         case meal
@@ -30,34 +34,60 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
         case combo(totalInsulin: Double, percentageUpFront: Int)
     }
 
+    /// The type of a temporary basal—percentage, absolute, or the notification that a temporary basal ended.
     public enum TemporaryBasalType {
         case percentage(Int)
         case absolute(rate: Double)
         case ended
     }
 
+    /// The source of a glucose measurement—meter or sensor.
     public enum GlucoseSource: String {
         case meter = "Finger"
         case sensor = "Sensor"
     }
 
+    /// A glucose measurement.
+    /// This type contains the glucose value, units of measurement, and source.
     public struct GlucoseMeasurement {
+        /// The value of the glucose measurement in `units`.
         public let value: Double
+
+        /// The blood glucose units of measurement.
         public let units: BloodGlucoseUnit
+
+        /// The source of the measurement.
         public let source: GlucoseSource
     }
 
+    /// The treatment's unique, internally assigned identifier.
     public let id: String
+
+    /// The event type describing the treatment.
     public let eventType: EventType
+
+    /// The date at which the treatment occurred.
     public let date: Date
+
+    /// The duration of the treatment.
     public let duration: TimeInterval
+
+    /// The glucose measurement at the time of the treatment.
     public let glucose: GlucoseMeasurement?
+
+    /// The insulin given at the time of the treatment in units (U).
     public let insulinGiven: Double? // units
-    public let carbsConsumed: Int? // grams
-    public let creator: String?
+
+    /// The carbs consumed at the time of the treatment in grams (g).
+    public let carbsConsumed: Int?
+
+    /// The name of the individual who entered the treatment.
+    public let recorder: String?
+
+    /// The notes entered with the treatment.
     public let notes: String?
 
-    public init(eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?, insulinGiven: Double?, carbsConsumed: Int?, creator: String?, notes: String?) {
+    public init(eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?, insulinGiven: Double?, carbsConsumed: Int?, recorder: String?, notes: String?) {
         self.init(
             id: IdentifierFactory.makeID(),
             eventType: eventType,
@@ -66,12 +96,12 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
             glucose: glucose,
             insulinGiven: insulinGiven,
             carbsConsumed: carbsConsumed,
-            creator: creator,
+            recorder: recorder,
             notes: notes
         )
     }
 
-    init(id: String, eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?, insulinGiven: Double?, carbsConsumed: Int?, creator: String?, notes: String?) {
+    init(id: String, eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?, insulinGiven: Double?, carbsConsumed: Int?, recorder: String?, notes: String?) {
         self.id = id
         self.eventType = eventType
         self.date = date
@@ -79,7 +109,7 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
         self.glucose = glucose
         self.insulinGiven = insulinGiven
         self.carbsConsumed = carbsConsumed
-        self.creator = creator
+        self.recorder = recorder
         self.notes = notes
     }
 }
@@ -109,7 +139,7 @@ extension NightscoutTreatment: JSONParseable {
         static let glucoseSource: JSONKey<GlucoseSource> = "glucoseType"
         static let insulinGiven: JSONKey<Double> = "insulin"
         static let carbsConsumed: JSONKey<Int> = "carbs"
-        static let creator: JSONKey<String> = "enteredBy"
+        static let recorder: JSONKey<String> = "enteredBy"
         static let notes: JSONKey<String> = "notes"
     }
 
@@ -139,7 +169,7 @@ extension NightscoutTreatment: JSONParseable {
             glucose: glucose,
             insulinGiven: treatmentJSON[Key.insulinGiven],
             carbsConsumed: treatmentJSON[Key.carbsConsumed],
-            creator: treatmentJSON[Key.creator],
+            recorder: treatmentJSON[Key.recorder],
             notes: treatmentJSON[Key.notes]
         )
     }
@@ -153,7 +183,7 @@ extension NightscoutTreatment: JSONConvertible {
         json[Key.eventTypeString] = eventType.simpleRawValue
         json[Key.duration] = duration.minutes
         json[convertingDateFrom: Key.dateString] = date
-        json[Key.creator] = creator
+        json[Key.recorder] = recorder
         json[Key.notes] = notes
 
         switch eventType {

@@ -6,8 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-/// A type that can be uniquely identified by an id string.
+/// A type that can be uniquely identified by a string.
 public protocol UniquelyIdentifiable: Hashable {
+    /// A string that uniquely identifies the instance.
     var id: String { get }
 }
 
