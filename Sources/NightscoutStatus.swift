@@ -6,8 +6,13 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+/// The status of a Nightscout site.
+/// This type stores data such as the Nightscout version and the user's settings.
 public struct NightscoutStatus {
+    /// The version of Nightscout in use.
     public let version: String
+
+    /// The user's Nightscout settings.
     public let settings: NightscoutSettings
 }
 

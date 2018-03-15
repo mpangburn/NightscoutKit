@@ -6,9 +6,16 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+/// Nightscout settings. This type stores data such as the title of the user's Nightscout site,
+/// their preferred blood glucose units, and their target blood glucose range as displayed in the Nightscout graph.
 public struct NightscoutSettings {
+    /// The title of the user's Nightscout site.
     public let title: String
-    public let units: BloodGlucoseUnit
+
+    /// The user's preferred blood glucose units.
+    public let bloodGlucoseUnits: BloodGlucoseUnit
+
+    /// The user's target blood glucose range as displayed in the Nightscout graph.
     public let targetBloodGlucoseRange: ClosedRange<Double> // TODO: is this in `units`, or always in mg/dL?
 }
 
@@ -39,7 +46,7 @@ extension NightscoutSettings: JSONParseable {
 
         return NightscoutSettings(
             title: settingsJSON[Key.title] ?? NightscoutSettings.defaultTitle,
-            units: units,
+            bloodGlucoseUnits: units,
             targetBloodGlucoseRange: bgTargetBottom...bgTargetTop
         )
     }

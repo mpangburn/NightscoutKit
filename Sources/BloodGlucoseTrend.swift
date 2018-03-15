@@ -6,6 +6,7 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+/// Represents the rate of change of a blood glucose value.
 public enum BloodGlucoseTrend: String {
     case doubleUp = "DoubleUp"
     case singleUp = "SingleUp"
@@ -16,6 +17,11 @@ public enum BloodGlucoseTrend: String {
     case doubleDown = "DoubleDown"
     case unknown = "NONE"
 
+    /// A symbol representing the trend.
+    /// ```
+    /// let trend: BloodGlucoseTrend = .fortyFiveUp
+    /// print(trend.symbol) // prints "↗"
+    /// ```
     public var symbol: String {
         switch self {
         case .doubleUp:

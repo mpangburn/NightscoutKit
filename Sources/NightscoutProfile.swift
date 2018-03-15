@@ -6,33 +6,72 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+/// A Nightscout profile.
+/// This type stores data such as a user's carb ratio, basal rate, insulin sensitivity, and blood glucose target schedules; duration of active insulin (DIA); and carb absorption rate during activity.
 public struct NightscoutProfile {
+    /// A generic daily schedule item.
     public struct ScheduleItem<Value> {
-        let startTime: TimeInterval // referenced to midnight
+        /// The time interval since midnight at which the item is scheduled.
+        let startTime: TimeInterval
+
+        /// The value of schedule item.
         let value: Value
     }
 
-    public typealias CarbRatioSchedule = [ScheduleItem<Int>] // g/unit
-    public typealias BasalRateSchedule = [ScheduleItem<Double>] // units/hr
-    public typealias InsulinSensitivitySchedule = [ScheduleItem<Double>] // <BG unit>/unit
-    public typealias BloodGlucoseTargetSchedule = [ScheduleItem<ClosedRange<Double>>] // <BG unit>...<BG unit>
+    /// A carb ratio schedule.
+    /// Schedule item are specified in grams per unit of insulin (g/U).
+    public typealias CarbRatioSchedule = [ScheduleItem<Int>]
 
+    /// A basal rate schedule.
+    /// Schedule items are specified in units of insulin per hour (U/hr).
+    public typealias BasalRateSchedule = [ScheduleItem<Double>]
+
+    /// An insulin sensitivity schedule.
+    /// Schedule items are specified in <blood glucose unit> per hour.
+    /// Blood glucose units are contextualized by the `NightscoutProfileRecord` containing the profile.
+    public typealias InsulinSensitivitySchedule = [ScheduleItem<Double>]
+
+    /// A blood glucose target schedule.
+    /// Schedule items are specified in <blood glucose unit>...<blood glucose unit>.
+    /// Blood glucose units are contextualized by the `NightscoutProfileRecord` containing the profile.
+    public typealias BloodGlucoseTargetSchedule = [ScheduleItem<ClosedRange<Double>>]
+
+    /// The profile's carb ratio schedule.
+    /// Schedule item are specified in grams per unit of insulin (g/U).
     public let carbRatioSchedule: CarbRatioSchedule
+
+    /// The profile's basal rate schedule.
+    /// Schedule items are specified in units of insulin per hour (U/hr).
     public let basalRateSchedule: BasalRateSchedule
+
+    /// The profile's insulin sensitivity schedule.
+    /// Schedule items are specified in <blood glucose unit> per hour.
+    /// Blood glucose units are contextualized by the `NightscoutProfileRecord` containing this profile.
     public let sensitivitySchedule: InsulinSensitivitySchedule
+
+    /// The profile's blood glucose target schedule.
+    /// Schedule items are specified in <blood glucose unit>...<blood glucose unit>.
+    /// Blood glucose units are contextualized by the `NightscoutProfileRecord` containing this profile.
     public let bloodGlucoseTargetSchedule: BloodGlucoseTargetSchedule
-    public let activeInsulinDuration: TimeInterval // DIA
-    public let carbsActivityAbsorptionRate: Int // g/hour
-    public let timeZone: String // TODO: use TimeZone here
+
+    /// The length of time for which insulin is active after entering the body; also known as the duration of active insulin (DIA).
+    public let activeInsulinDuration: TimeInterval
+
+    /// The rate at which carbs are absorbed during activity.
+    /// Units are specified in grams per hour (g/hr).
+    public let carbAbsorptionRateDuringActivity: Int
+
+    /// A string representing the time zone for which the profile was designed.
+    public let timeZone: String // TODO: use `TimeZone` here
 
     public init(carbRatioSchedule: CarbRatioSchedule, basalRateSchedule: BasalRateSchedule, sensitivitySchedule: InsulinSensitivitySchedule,
-                bloodGlucoseTargetSchedule: BloodGlucoseTargetSchedule, activeInsulinDuration: TimeInterval, carbsActivityAbsorptionRate: Int, timeZone: String) {
+                bloodGlucoseTargetSchedule: BloodGlucoseTargetSchedule, activeInsulinDuration: TimeInterval, carbAbsorptionRateDuringActivity: Int, timeZone: String) {
         self.carbRatioSchedule = carbRatioSchedule
         self.basalRateSchedule = basalRateSchedule
         self.sensitivitySchedule = sensitivitySchedule
         self.bloodGlucoseTargetSchedule = bloodGlucoseTargetSchedule
         self.activeInsulinDuration = activeInsulinDuration
-        self.carbsActivityAbsorptionRate = carbsActivityAbsorptionRate
+        self.carbAbsorptionRateDuringActivity = carbAbsorptionRateDuringActivity
         self.timeZone = timeZone
     }
 }
@@ -49,7 +88,7 @@ extension NightscoutProfile: JSONParseable {
         static let lowTargets: JSONKey<[JSONDictionary]> = "target_low"
         static let highTargets: JSONKey<[JSONDictionary]> = "target_high"
         static let activeInsulinDurationInHoursString: JSONKey<String> = "dia"
-        static let carbsActivityAbsorptionRateString: JSONKey<String>  = "carbs_hr"
+        static let carbAbsorptionRateDuringActivityString: JSONKey<String>  = "carbs_hr"
         static let timeZone: JSONKey<String>  = "timezone"
     }
 
@@ -61,7 +100,7 @@ extension NightscoutProfile: JSONParseable {
             let lowTargetDictionaries = profileJSON[Key.lowTargets],
             let highTargetDictionaries = profileJSON[Key.highTargets],
             let activeInsulinDurationInHours = profileJSON[Key.activeInsulinDurationInHoursString].flatMap(Double.init),
-            let carbsActivityAbsorptionRate = profileJSON[Key.carbsActivityAbsorptionRateString].flatMap(Int.init),
+            let carbsAbsorptionRateDuringActivity = profileJSON[Key.carbAbsorptionRateDuringActivityString].flatMap(Int.init),
             let timeZone = profileJSON[Key.timeZone]
         else {
             return nil
@@ -85,7 +124,7 @@ extension NightscoutProfile: JSONParseable {
             sensitivitySchedule: sensitivityDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),
             bloodGlucoseTargetSchedule: bloodGlucoseTargetSchedule,
             activeInsulinDuration: .hours(activeInsulinDurationInHours),
-            carbsActivityAbsorptionRate: carbsActivityAbsorptionRate,
+            carbAbsorptionRateDuringActivity: carbsAbsorptionRateDuringActivity,
             timeZone: timeZone
         )
     }
@@ -103,7 +142,7 @@ extension NightscoutProfile: JSONConvertible {
         json[Key.highTargets] = splitTargets.map { $0.upper.jsonRepresentation }
 
         json[Key.activeInsulinDurationInHoursString] = String(activeInsulinDuration.hours)
-        json[Key.carbsActivityAbsorptionRateString] = String(carbsActivityAbsorptionRate)
+        json[Key.carbAbsorptionRateDuringActivityString] = String(carbAbsorptionRateDuringActivity)
         json[Key.timeZone] = timeZone
 
         return json

@@ -6,6 +6,7 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+/// Represents a unit of concentration for measuring blood glucose.
 public enum BloodGlucoseUnit: String {
     case milligramsPerDeciliter = "mg/dl"
     case millimolesPerLiter = "mmol"

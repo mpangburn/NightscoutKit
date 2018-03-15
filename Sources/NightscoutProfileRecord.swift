@@ -6,22 +6,44 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+/// A Nightscout profile record.
+/// This type stores data such as the user's profiles and the blood glucose units used in specifying details of these profiles.
 public struct NightscoutProfileRecord: UniquelyIdentifiable {
+    /// The profile record's unique, internally assigned identifier.
     public let id: String
+
+    /// The name of the default profile.
+    /// If the `profiles` dictionary does not contain this key, the profile record is malformed.
     public let defaultProfileName: String
+
+    /// The date at which this profile record was last validated by the user.
     public let date: Date
-    public let units: BloodGlucoseUnit
+
+    /// The blood glucose units used in creating the profiles' blood glucose target and insulin sensitivity schedules.
+    public let bloodGlucoseUnits: BloodGlucoseUnit
+
+    /// A dictionary containing the profiles, keyed by the profile names.
     public let profiles: [String: NightscoutProfile]
 
-    public init(defaultProfileName: String, date: Date, units: BloodGlucoseUnit, profiles: [String: NightscoutProfile]) {
-        self.init(id: IdentifierFactory.makeID(), defaultProfileName: defaultProfileName, date: date, units: units, profiles: profiles)
+    /// The record's default profile. If the `profiles` dictionary does not contain the `defaultProfileName` key,
+    /// this property will return the first entry in the `profiles` dictionary.
+    /// An empty `profiles` dictionary can result only from a programmer error, so accessing this property
+    /// in such a case will result in a crash.
+    public var defaultProfile: NightscoutProfile {
+        let defaultProfile = profiles[defaultProfileName]
+        assert(defaultProfile != nil)
+        return defaultProfile ?? profiles.first!.value
     }
 
-    init(id: String, defaultProfileName: String, date: Date, units: BloodGlucoseUnit, profiles: [String: NightscoutProfile]) {
+    public init(defaultProfileName: String, date: Date, bloodGlucoseUnits: BloodGlucoseUnit, profiles: [String: NightscoutProfile]) {
+        self.init(id: IdentifierFactory.makeID(), defaultProfileName: defaultProfileName, date: date, bloodGlucoseUnits: bloodGlucoseUnits, profiles: profiles)
+    }
+
+    init(id: String, defaultProfileName: String, date: Date, bloodGlucoseUnits: BloodGlucoseUnit, profiles: [String: NightscoutProfile]) {
         self.id = id
         self.defaultProfileName = defaultProfileName
         self.date = date
-        self.units = units
+        self.bloodGlucoseUnits = bloodGlucoseUnits
         self.profiles = profiles
     }
 }
@@ -50,12 +72,17 @@ extension NightscoutProfileRecord: JSONParseable {
             return nil
         }
 
+        let profiles = profileDictionaries.compactMapValues(NightscoutProfile.parse)
+        guard !profiles.isEmpty else {
+            return nil
+        }
+
         return NightscoutProfileRecord(
             id: id,
             defaultProfileName: defaultProfileName,
             date: recordDate,
-            units: units,
-            profiles: profileDictionaries.compactMapValues(NightscoutProfile.parse)
+            bloodGlucoseUnits: units,
+            profiles: profiles
         )
     }
 }
@@ -66,7 +93,7 @@ extension NightscoutProfileRecord: JSONConvertible {
         json[Key.id] = id
         json[Key.defaultProfileName] = defaultProfileName
         json[convertingDateFrom: Key.dateString] = date
-        json[convertingFrom: Key.units] = units
+        json[convertingFrom: Key.units] = bloodGlucoseUnits
         json[Key.profileDictionaries] = profiles.mapValues { $0.jsonRepresentation }
         return json
     }

@@ -76,7 +76,7 @@ class NightscoutKitTests: XCTestCase {
             insulinGiven: nil,
             carbsConsumed: 25,
             creator: "loop://Michael's iPhone",
-            notes: ""
+            notes: nil
         )
 
         XCTAssert(treatment.id == expectedTreatment.id)

@@ -6,16 +6,28 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+/// A Nightscout blood glucose entry.
+/// This type stores data such as the glucose value (in mg/dL), its source (sensor or meter), the date at which the data was recorded, and the device from which the data was obtained.
 public struct NightscoutEntry: UniquelyIdentifiable {
+    /// The source of a blood glucose entry.
     public enum Source {
         case sensor(trend: BloodGlucoseTrend)
         case meter
     }
 
+    /// The entry's unique, internally assigned identifier.
     public let id: String
-    public let glucoseValue: Int // Nightscout stores all BGs internally in mg/dL
+
+    /// The entry's glucose value in mg/dL.
+    public let glucoseValue: Int
+
+    /// The source of the blood glucose entry.
     public let source: Source
+
+    /// The date at which the entry was recorded.
     public let date: Date
+
+    /// The device from which the entry data was obtained.
     public let device: String?
 
     public init(glucoseValue: Int, source: Source, date: Date, device: String?) {
