@@ -10,7 +10,7 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
     public enum EventType {
         case bloodGlucoseCheck
         case bolus(type: BolusType)
-        case tempBasal(type: TempBasalType)
+        case temporaryBasal(type: TemporaryBasalType)
         case carbCorrection
         case announcement, note, question
         case exercise
@@ -30,7 +30,7 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
         case combo(totalInsulin: Double, percentageUpFront: Int)
     }
 
-    public enum TempBasalType {
+    public enum TemporaryBasalType {
         case percentage(Int)
         case absolute(rate: Double)
         case ended
@@ -54,8 +54,34 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
     public let glucose: GlucoseMeasurement?
     public let insulinGiven: Double? // units
     public let carbsConsumed: Int? // grams
-    public let creator: String
-    public let notes: String
+    public let creator: String?
+    public let notes: String?
+
+    public init(eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?, insulinGiven: Double?, carbsConsumed: Int?, creator: String?, notes: String?) {
+        self.init(
+            id: IdentifierFactory.makeID(),
+            eventType: eventType,
+            date: date,
+            duration: duration,
+            glucose: glucose,
+            insulinGiven: insulinGiven,
+            carbsConsumed: carbsConsumed,
+            creator: creator,
+            notes: notes
+        )
+    }
+
+    init(id: String, eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?, insulinGiven: Double?, carbsConsumed: Int?, creator: String?, notes: String?) {
+        self.id = id
+        self.eventType = eventType
+        self.date = date
+        self.duration = duration
+        self.glucose = glucose
+        self.insulinGiven = insulinGiven
+        self.carbsConsumed = carbsConsumed
+        self.creator = creator
+        self.notes = notes
+    }
 }
 
 // MARK: - Equatable
@@ -113,8 +139,8 @@ extension NightscoutTreatment: JSONParseable {
             glucose: glucose,
             insulinGiven: treatmentJSON[Key.insulinGiven],
             carbsConsumed: treatmentJSON[Key.carbsConsumed],
-            creator: treatmentJSON[Key.creator] ?? "",
-            notes: treatmentJSON[Key.notes] ?? ""
+            creator: treatmentJSON[Key.creator],
+            notes: treatmentJSON[Key.notes]
         )
     }
 }
@@ -135,12 +161,12 @@ extension NightscoutTreatment: JSONConvertible {
             json[BolusType.Key.totalInsulinString] = String(totalInsulin)
             json[BolusType.Key.percentageUpFrontString] = String(percentageUpFront)
             json[BolusType.Key.percentageOverTimeString] = String(100 - percentageUpFront)
-        case .tempBasal(type: let type):
+        case .temporaryBasal(type: let type):
             switch type {
             case .percentage(let percentage):
-                json[TempBasalType.Key.percentage] = percentage
+                json[TemporaryBasalType.Key.percentage] = percentage
             case .absolute(rate: let rate):
-                json[TempBasalType.Key.absolute] = rate
+                json[TemporaryBasalType.Key.absolute] = rate
             case .ended:
                 break
             }
@@ -181,8 +207,8 @@ extension NightscoutTreatment.EventType: JSONParseable {
             return simpleEventType
         } else if let bolusType = NightscoutTreatment.BolusType.parse(fromJSON: treatmentJSON) {
             return .bolus(type: bolusType)
-        } else if let tempBasalType = NightscoutTreatment.TempBasalType.parse(fromJSON: treatmentJSON) {
-            return .tempBasal(type: tempBasalType)
+        } else if let tempBasalType = NightscoutTreatment.TemporaryBasalType.parse(fromJSON: treatmentJSON) {
+            return .temporaryBasal(type: tempBasalType)
         } else if eventTypeString == "Profile Switch" {
             guard let profileName = treatmentJSON[Key.profileName] else {
                 return nil
@@ -209,7 +235,7 @@ extension NightscoutTreatment.EventType: PartiallyRawRepresentable {
             return "BG Check"
         case .bolus(type: let type):
             return type.simpleRawValue
-        case .tempBasal(type: _):
+        case .temporaryBasal(type: _):
             return "Temp Basal"
         case .carbCorrection:
             return "Carb Correction"
@@ -297,7 +323,7 @@ extension NightscoutTreatment.BolusType: PartiallyRawRepresentable {
     }
 }
 
-extension NightscoutTreatment.TempBasalType: JSONParseable {
+extension NightscoutTreatment.TemporaryBasalType: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     fileprivate enum Key {
@@ -305,7 +331,7 @@ extension NightscoutTreatment.TempBasalType: JSONParseable {
         static let absolute = "absolute"
     }
 
-    static func parse(fromJSON treatmentJSON: JSONDictionary) -> NightscoutTreatment.TempBasalType? {
+    static func parse(fromJSON treatmentJSON: JSONDictionary) -> NightscoutTreatment.TemporaryBasalType? {
         guard let eventTypeString = treatmentJSON[NightscoutTreatment.Key.eventTypeString], eventTypeString == "Temp Basal" else {
             return nil
         }
@@ -327,7 +353,7 @@ extension NightscoutTreatment.EventType: CustomStringConvertible {
         switch self {
         case .bolus(type: let type):
             return type.description
-        case .tempBasal(type: let type):
+        case .temporaryBasal(type: let type):
             return type.description
         case .profileSwitch(profileName: let profileName):
             return "Profile Switch (\(profileName))"
@@ -350,7 +376,7 @@ extension NightscoutTreatment.BolusType: CustomStringConvertible {
     }
 }
 
-extension NightscoutTreatment.TempBasalType: CustomStringConvertible {
+extension NightscoutTreatment.TemporaryBasalType: CustomStringConvertible {
     public var description: String {
         switch self {
         case .percentage(let percentage):

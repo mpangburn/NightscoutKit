@@ -11,7 +11,7 @@ public struct NightscoutDeviceStatus: UniquelyIdentifiable {
         case loop(status: LoopDeviceStatus)
         case openAPS(status: OpenAPSDeviceStatus)
 
-        public var closedLoopStatus: AnyClosedLoopStatus? {
+        public var loopStatus: AnyClosedLoopStatus? {
             switch self {
             case .loop(status: let status):
                 return status.loopStatus.map(AnyClosedLoopStatus.init)
@@ -65,21 +65,16 @@ extension NightscoutDeviceStatus: JSONParseable {
             return nil
         }
 
-        let system: ClosedLoopSystem?
+        let closedLoopSystem: ClosedLoopSystem?
         switch device {
         case _ where device.hasPrefix("loop"):
-            system = LoopDeviceStatus.parse(fromJSON: deviceStatusJSON).map(ClosedLoopSystem.loop)
+            closedLoopSystem = LoopDeviceStatus.parse(fromJSON: deviceStatusJSON).map(ClosedLoopSystem.loop)
         case _ where device.hasPrefix("openaps"):
-            system = OpenAPSDeviceStatus.parse(fromJSON: deviceStatusJSON).map(ClosedLoopSystem.openAPS)
+            closedLoopSystem = OpenAPSDeviceStatus.parse(fromJSON: deviceStatusJSON).map(ClosedLoopSystem.openAPS)
         default:
-            system = nil
+            closedLoopSystem = nil
         }
 
-        return NightscoutDeviceStatus(
-            id: id,
-            device: device,
-            date: date,
-            closedLoopSystem: system
-        )
+        return NightscoutDeviceStatus(id: id, device: device, date: date, closedLoopSystem: closedLoopSystem)
     }
 }

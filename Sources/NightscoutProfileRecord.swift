@@ -12,6 +12,18 @@ public struct NightscoutProfileRecord: UniquelyIdentifiable {
     public let date: Date
     public let units: BloodGlucoseUnit
     public let profiles: [String: NightscoutProfile]
+
+    public init(defaultProfileName: String, date: Date, units: BloodGlucoseUnit, profiles: [String: NightscoutProfile]) {
+        self.init(id: IdentifierFactory.makeID(), defaultProfileName: defaultProfileName, date: date, units: units, profiles: profiles)
+    }
+
+    init(id: String, defaultProfileName: String, date: Date, units: BloodGlucoseUnit, profiles: [String: NightscoutProfile]) {
+        self.id = id
+        self.defaultProfileName = defaultProfileName
+        self.date = date
+        self.units = units
+        self.profiles = profiles
+    }
 }
 
 // MARK: - JSON

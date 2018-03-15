@@ -24,6 +24,17 @@ public struct NightscoutProfile {
     public let activeInsulinDuration: TimeInterval // DIA
     public let carbsActivityAbsorptionRate: Int // g/hour
     public let timeZone: String // TODO: use TimeZone here
+
+    public init(carbRatioSchedule: CarbRatioSchedule, basalRateSchedule: BasalRateSchedule, sensitivitySchedule: InsulinSensitivitySchedule,
+                bloodGlucoseTargetSchedule: BloodGlucoseTargetSchedule, activeInsulinDuration: TimeInterval, carbsActivityAbsorptionRate: Int, timeZone: String) {
+        self.carbRatioSchedule = carbRatioSchedule
+        self.basalRateSchedule = basalRateSchedule
+        self.sensitivitySchedule = sensitivitySchedule
+        self.bloodGlucoseTargetSchedule = bloodGlucoseTargetSchedule
+        self.activeInsulinDuration = activeInsulinDuration
+        self.carbsActivityAbsorptionRate = carbsActivityAbsorptionRate
+        self.timeZone = timeZone
+    }
 }
 
 // MARK: - JSON

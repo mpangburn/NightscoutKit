@@ -17,6 +17,18 @@ public struct NightscoutEntry: UniquelyIdentifiable {
     public let source: Source
     public let date: Date
     public let device: String?
+
+    public init(glucoseValue: Int, source: Source, date: Date, device: String?) {
+        self.init(id: IdentifierFactory.makeID(), glucoseValue: glucoseValue, source: source, date: date, device: device)
+    }
+
+    init(id: String, glucoseValue: Int, source: Source, date: Date, device: String?) {
+        self.id = id
+        self.glucoseValue = glucoseValue
+        self.source = source
+        self.date = date
+        self.device = device
+    }
 }
 
 // MARK: - JSON
