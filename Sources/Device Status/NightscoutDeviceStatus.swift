@@ -6,11 +6,14 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+/// Describes the status of a device in communication with Nightscout.
 public struct NightscoutDeviceStatus: UniquelyIdentifiable {
+    /// Describes a closed loop system uploading data to Nightscout.
     public enum ClosedLoopSystem {
         case loop(status: LoopDeviceStatus)
         case openAPS(status: OpenAPSDeviceStatus)
 
+        /// The status of the closed loop.
         public var loopStatus: AnyClosedLoopStatus? {
             switch self {
             case .loop(status: let status):
@@ -20,6 +23,7 @@ public struct NightscoutDeviceStatus: UniquelyIdentifiable {
             }
         }
 
+        /// The status of the insulin pump used in the loop.
         public var pumpStatus: AnyPumpStatus? {
             switch self {
             case .loop(status: let status):
@@ -29,6 +33,7 @@ public struct NightscoutDeviceStatus: UniquelyIdentifiable {
             }
         }
 
+        /// The status of the device uploading the loop status.
         public var uploaderStatus: UploaderStatusProtocol? {
             switch self {
             case .loop(status: let status):
@@ -39,9 +44,16 @@ public struct NightscoutDeviceStatus: UniquelyIdentifiable {
         }
     }
 
+    /// The device status's unique, internally assigned identifier.
     public let id: String
+
+    /// The device in communication with Nightscout.
     public let device: String
+
+    /// The date at which the device status was recorded.
     public let date: Date
+
+    /// The closed loop system in communication with Nightscout.
     public let closedLoopSystem: ClosedLoopSystem?
 }
 

@@ -60,7 +60,7 @@ public struct LoopDeviceStatus {
             /// The array of predicted blood glucose values from the context.
             /// Maps each value in `values` to its prediction date.
             public var predictedBloodGlucoseValues: [PredictedBloodGlucoseValue] {
-                return .init(mgdlValues: values, everyFiveMinutesBeginningAt: startDate)
+                return .init(values: values, everyFiveMinutesBeginningAt: startDate)
             }
         }
 
@@ -122,7 +122,7 @@ public struct LoopDeviceStatus {
         /// The status of the insulin on board (IOB).
         public let insulinOnBoardStatus: InsulinOnBoardStatus?
 
-        /// The carbs on board in grams (g).
+        /// The status of the carbs on board (COB).
         public let carbsOnBoardStatus: CarbsOnBoardStatus?
 
         /// An array of predicted glucose value curves based on the current data.

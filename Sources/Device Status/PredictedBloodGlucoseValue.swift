@@ -6,16 +6,20 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+// Describes a predicted blood glucose value.
 public struct PredictedBloodGlucoseValue {
-    public let mgdlValue: Int
+    /// The predicted glucose value in milligrams per deciliter (mg/dL).
+    public let value: Int
+
+    /// The date at which the glucose value is predicted.
     public let date: Date
 }
 
 extension Array where Element == PredictedBloodGlucoseValue {
-    init(mgdlValues: [Int], everyFiveMinutesBeginningAt startDate: Date) {
-        self = mgdlValues.enumerated().map { index, value in
+    init(values: [Int], everyFiveMinutesBeginningAt startDate: Date) {
+        self = values.enumerated().map { index, value in
             let predictionDate = startDate + .minutes(5 * Double(index))
-            return PredictedBloodGlucoseValue(mgdlValue: value, date: predictionDate)
+            return PredictedBloodGlucoseValue(value: value, date: predictionDate)
         }
     }
 }

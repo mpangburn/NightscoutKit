@@ -18,7 +18,7 @@ public struct NightscoutEntry: UniquelyIdentifiable {
     /// The entry's unique, internally assigned identifier.
     public let id: String
 
-    /// The entry's glucose value in mg/dL.
+    /// The entry's glucose value in milligrams per deciliter (mg/dL).
     public let glucoseValue: Int
 
     /// The source of the blood glucose entry.
