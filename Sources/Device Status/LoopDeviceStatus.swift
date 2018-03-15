@@ -9,115 +9,123 @@
 // This structure is pulled pretty much directly from Pete Schwamb's NightscoutUploadKit:
 // https://github.com/ps2/rileylink_ios/tree/master/NightscoutUploadKit
 // NightscoutUploadKit could be introduced as a dependency, but it has some reliance
-// on HealthKit, which can't be supported if NightscoutKit is to support macOS
-struct LoopDeviceStatus {
-    struct InsulinOnBoardStatus {
-        let timestamp: Date
-        let insulinOnBoard: Double?
-        let basalInsulinOnBoard: Double?
-
-        var bolusInsulinOnBoard: Double? {
-            guard let insulinOnBoard = insulinOnBoard, let basalInsulinOnBoard = basalInsulinOnBoard else {
-                return nil
-            }
-
-            return insulinOnBoard - basalInsulinOnBoard
-        }
+// on HealthKit, which can't be supported if NightscoutKit is to support all Apple platforms
+public struct LoopDeviceStatus {
+    public struct InsulinOnBoardStatus: InsulinOnBoardStatusProtocol {
+        public let timestamp: Date
+        public let insulinOnBoard: Double?
+        public let basalInsulinOnBoard: Double?
     }
 
-    struct LoopStatus {
-        struct CarbsOnBoardStatus {
-            let timestamp: Date
-            let carbsOnBoard: Double
+    public struct LoopStatus: ClosedLoopStatusProtocol {
+        public struct CarbsOnBoardStatus {
+            public let timestamp: Date
+            public let carbsOnBoard: Double
         }
 
-        struct PredictedBloodGlucoseValues {
-            let startDate: Date
-            let values: [Int]
-            let carbsOnBoard: [Int]?
-            let insulinOnBoard: [Int]?
+        public struct PredictedBloodGlucoseValuesContext {
+            public let startDate: Date
+            public let values: [Int]
+            public let carbsOnBoard: [Int]?
+            public let insulinOnBoard: [Int]?
+
+            public var predictedBloodGlucoseValues: [PredictedBloodGlucoseValue] {
+                return Array<PredictedBloodGlucoseValue>(mgdlValues: values, everyFiveMinutesBeginningAt: startDate)
+            }
         }
 
-        struct TemporaryBasal {
-            let startDate: Date
-            let rate: Double
-            let duration: TimeInterval
+        public struct TemporaryBasal: TemporaryBasalProtocol {
+            public let startDate: Date
+            public let rate: Double
+            public let duration: TimeInterval
         }
 
-        struct LoopEnacted {
-            let timestamp: Date
-            let rate: Double
-            let duration: TimeInterval
-            let received: Bool
+        public struct LoopEnacted {
+            public let temporaryBasal: TemporaryBasal
+            public let received: Bool
         }
 
-        struct RileyLinkStatus {
-            enum State: String {
+        public struct RileyLinkStatus {
+            public enum State: String {
                 case connected = "connected"
                 case connecting = "connecting"
                 case disconnected = "disconnected"
             }
 
-            let name: String
-            let state: State
-            let lastIdleDate: Date?
-            let version: String?
-            let rssi: Double?
+            public let name: String
+            public let state: State
+            public let lastIdleDate: Date?
+            public let version: String?
+            public let rssi: Double?
         }
 
-        let name: String
-        let version: String
-        let timestamp: Date
-        let insulinOnBoardStatus: InsulinOnBoardStatus?
-        let carbsOnBoardStatus: CarbsOnBoardStatus?
-        let predictedBloodGlucoseValue: PredictedBloodGlucoseValues?
-        let recommendedBolus: Double?
-        let loopEnacted: LoopEnacted?
-        let rileyLinkStatuses: [RileyLinkStatus]?
-        let failureReason: String?
-    }
+        public let name: String
+        public let version: String
+        public let timestamp: Date
+        public let insulinOnBoardStatus: InsulinOnBoardStatus?
+        public let carbsOnBoardStatus: CarbsOnBoardStatus?
+        public let predictedBloodGlucoseValuesContext: PredictedBloodGlucoseValuesContext?
+        public let recommendedTemporaryBasal: TemporaryBasal?
+        public let recommendedBolus: Double?
+        public let loopEnacted: LoopEnacted?
+        public let rileyLinkStatuses: [RileyLinkStatus]?
+        public let failureReason: String?
 
-    struct PumpStatus {
-        struct BatteryStatus {
-            enum BatteryIndicator: String {
-                case low = "low"
-                case normal = "normal"
+        public var carbsOnBoard: Int? {
+            guard let carbsOnBoard = carbsOnBoardStatus?.carbsOnBoard else {
+                return nil
             }
-
-            let percent: Int?
-            let voltage: Double?
-            let status: BatteryIndicator?
+            return Int(carbsOnBoard)
         }
 
-        let clockDate: Date
-        let pumpID: String
-        let insulinOnBoardStatus: InsulinOnBoardStatus?
-        let batteryStatus: BatteryStatus?
-        let isSuspended: Bool
-        let isBolusing: Bool
-        let reservoirInsulinRemaining: Double?
+        public var enactedTemporaryBasal: TemporaryBasal? {
+            return loopEnacted?.temporaryBasal
+        }
+
+        public var predictedBloodGlucoseCurves: [[PredictedBloodGlucoseValue]]? {
+            guard let predictedGlucoseValues = predictedBloodGlucoseValuesContext?.predictedBloodGlucoseValues else {
+                return nil
+            }
+            return [predictedGlucoseValues]
+        }
     }
 
-    struct UploaderStatus {
-        let timestamp: Date
-        let name: String
-        let battery: Int?
+    public struct PumpStatus: PumpStatusProtocol {
+        public struct BatteryStatus: BatteryStatusProtocol {
+            public let percentage: Int?
+            public let voltage: Double?
+            public let status: BatteryIndicator?
+        }
+
+        public let clockDate: Date
+        public let pumpID: String
+        public let insulinOnBoardStatus: InsulinOnBoardStatus?
+        public let batteryStatus: BatteryStatus?
+        public let isSuspended: Bool?
+        public let isBolusing: Bool?
+        public let reservoirInsulinRemaining: Double?
     }
 
-    struct RadioAdapter {
-        let hardwareDescription: String
-        let frequency: Double?
-        let name: String?
-        let lastTunedDate: Date?
-        let firmwareVersion: String
-        let rssi: Int?
-        let pumpRSSI: Int?
+    public struct UploaderStatus: UploaderStatusProtocol {
+        public let timestamp: Date
+        public let name: String
+        public let batteryPercentage: Int?
     }
 
-    let loopStatus: LoopStatus?
-    let pumpStatus: PumpStatus?
-    let uploaderStatus: UploaderStatus?
-    let radioAdapter: RadioAdapter?
+    public struct RadioAdapter {
+        public let hardwareDescription: String
+        public let frequency: Double?
+        public let name: String?
+        public let lastTunedDate: Date?
+        public let firmwareVersion: String
+        public let rssi: Int?
+        public let pumpRSSI: Int?
+    }
+
+    public let loopStatus: LoopStatus?
+    public let pumpStatus: PumpStatus?
+    public let uploaderStatus: UploaderStatus?
+    public let radioAdapter: RadioAdapter?
 }
 
 // MARK: - JSON
@@ -151,7 +159,7 @@ extension LoopDeviceStatus.LoopStatus: JSONParseable {
         static let timestampString: JSONKey<String> = "timestamp"
         static let insulinOnBoardStatus: JSONKey<LoopDeviceStatus.InsulinOnBoardStatus> = "iob"
         static let carbsOnBoardStatus: JSONKey<CarbsOnBoardStatus> = "cob"
-        static let predictedBloodGlucoseValue: JSONKey<PredictedBloodGlucoseValues> = "predicted"
+        static let predictedBloodGlucoseValue: JSONKey<PredictedBloodGlucoseValuesContext> = "predicted"
         static let recommendedTemporaryBasal: JSONKey<TemporaryBasal> = "recommendedTempBasal"
         static let recommendedBolus: JSONKey<Double> = "recommendedBolus"
         static let loopEnacted: JSONKey<LoopEnacted> = "enacted"
@@ -175,7 +183,8 @@ extension LoopDeviceStatus.LoopStatus: JSONParseable {
             timestamp: timestamp,
             insulinOnBoardStatus: json[parsingFrom: Key.insulinOnBoardStatus],
             carbsOnBoardStatus: json[parsingFrom: Key.carbsOnBoardStatus],
-            predictedBloodGlucoseValue: json[parsingFrom: Key.predictedBloodGlucoseValue],
+            predictedBloodGlucoseValuesContext: json[parsingFrom: Key.predictedBloodGlucoseValue],
+            recommendedTemporaryBasal: json[parsingFrom: Key.recommendedTemporaryBasal],
             recommendedBolus: json[Key.recommendedBolus],
             loopEnacted: json[parsingFrom: Key.loopEnacted],
             rileyLinkStatuses: json[Key.rileyLinkStatuses]?.flatMap(RileyLinkStatus.parse(fromJSON:)),
@@ -226,7 +235,7 @@ extension LoopDeviceStatus.LoopStatus.CarbsOnBoardStatus: JSONParseable {
     }
 }
 
-extension LoopDeviceStatus.LoopStatus.PredictedBloodGlucoseValues: JSONParseable {
+extension LoopDeviceStatus.LoopStatus.PredictedBloodGlucoseValuesContext: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -236,7 +245,7 @@ extension LoopDeviceStatus.LoopStatus.PredictedBloodGlucoseValues: JSONParseable
         static let insulinOnBoard: JSONKey<[Int]> = "IOB"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> LoopDeviceStatus.LoopStatus.PredictedBloodGlucoseValues? {
+    static func parse(fromJSON json: JSONDictionary) -> LoopDeviceStatus.LoopStatus.PredictedBloodGlucoseValuesContext? {
         guard
             let startDate = json[convertingDateFrom: Key.startDateString],
             let values = json[Key.values]
@@ -279,23 +288,18 @@ extension LoopDeviceStatus.LoopStatus.LoopEnacted: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
-        static let timestampString: JSONKey<String> = "timestamp"
-        static let rate: JSONKey<Double> = "rate"
-        static let durationInMinutes: JSONKey<Double> = "duration"
         static let received: JSONKey<Bool> = "received"
     }
 
     static func parse(fromJSON json: JSONDictionary) -> LoopDeviceStatus.LoopStatus.LoopEnacted? {
         guard
-            let timestamp = json[convertingDateFrom: Key.timestampString],
-            let rate = json[Key.rate],
-            let duration = json[Key.durationInMinutes].map(TimeInterval.minutes),
-            let received = json[Key.received]
+            let received = json[Key.received],
+            let temporaryBasal = LoopDeviceStatus.LoopStatus.TemporaryBasal.parse(fromJSON: json)
         else {
             return nil
         }
 
-        return .init(timestamp: timestamp, rate: rate, duration: duration, received: received)
+        return .init(temporaryBasal: temporaryBasal, received: received)
     }
 }
 
@@ -354,8 +358,8 @@ extension LoopDeviceStatus.PumpStatus: JSONParseable {
             pumpID: pumpID,
             insulinOnBoardStatus: json[parsingFrom: Key.insulinOnBoardStatus],
             batteryStatus: json[parsingFrom: Key.batteryStatus],
-            isSuspended: json[Key.isSuspended] ?? false,
-            isBolusing: json[Key.isBolusing] ?? false,
+            isSuspended: json[Key.isSuspended],
+            isBolusing: json[Key.isBolusing],
             reservoirInsulinRemaining: json[Key.reservoirInsulinRemaining]
         )
     }
@@ -365,14 +369,14 @@ extension LoopDeviceStatus.PumpStatus.BatteryStatus: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
-        static let percent: JSONKey<Int> = "percent"
+        static let percentage: JSONKey<Int> = "percent"
         static let voltage: JSONKey<Double> = "voltage"
         static let status: JSONKey<BatteryIndicator> = "status"
     }
 
     static func parse(fromJSON json: JSONDictionary) -> LoopDeviceStatus.PumpStatus.BatteryStatus? {
         return .init(
-            percent: json[Key.percent],
+            percentage: json[Key.percentage],
             voltage: json[Key.voltage],
             status: json[convertingFrom: Key.status]
         )
@@ -385,7 +389,7 @@ extension LoopDeviceStatus.UploaderStatus: JSONParseable {
     private enum Key {
         static let timestampString: JSONKey<String> = "timestamp"
         static let name: JSONKey<String> = "name"
-        static let battery: JSONKey<Int> = "battery"
+        static let batteryPercentage: JSONKey<Int> = "battery"
     }
 
     static func parse(fromJSON json: JSONDictionary) -> LoopDeviceStatus.UploaderStatus? {
@@ -399,7 +403,7 @@ extension LoopDeviceStatus.UploaderStatus: JSONParseable {
         return .init(
             timestamp: timestamp,
             name: name,
-            battery: json[Key.battery]
+            batteryPercentage: json[Key.batteryPercentage]
         )
     }
 }
