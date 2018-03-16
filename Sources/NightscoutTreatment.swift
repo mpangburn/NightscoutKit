@@ -161,7 +161,7 @@ extension NightscoutTreatment: JSONParseable {
             glucose = nil
         }
 
-        return NightscoutTreatment(
+        return .init(
             id: id,
             eventType: eventType,
             date: date,

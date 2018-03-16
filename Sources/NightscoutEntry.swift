@@ -67,7 +67,7 @@ extension NightscoutEntry: JSONParseable {
             return nil
         }
 
-        return NightscoutEntry(
+        return .init(
             id: id,
             glucoseValue: glucoseValue,
             source: source,

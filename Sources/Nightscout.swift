@@ -492,8 +492,6 @@ extension Nightscout {
         }
     }
 
-    // TODO: result return values for uploading?
-
     /// Uploads the blood glucose entries.
     /// - Parameter entries: The blood glucose entries to upload.
     /// - Parameter completion: The completion handler to be called upon completing the operation.

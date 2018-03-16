@@ -77,7 +77,7 @@ extension NightscoutProfileRecord: JSONParseable {
             return nil
         }
 
-        return NightscoutProfileRecord(
+        return .init(
             id: id,
             defaultProfileName: defaultProfileName,
             date: recordDate,

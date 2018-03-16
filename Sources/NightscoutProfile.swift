@@ -118,7 +118,7 @@ extension NightscoutProfile: JSONParseable {
         }
 
         // TODO: minor JSON parsing cleanup in this file once ScheduleItem can conditionally conform to JSONParseable/JSONConvertible
-        return NightscoutProfile(
+        return .init(
             carbRatioSchedule: carbRatioDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),
             basalRateSchedule: basalRateDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),
             sensitivitySchedule: sensitivityDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),
@@ -165,7 +165,7 @@ extension NightscoutProfile.ScheduleItem /*: JSONParseable */ where Value: Lossl
             return nil
         }
         
-        return NightscoutProfile.ScheduleItem(startTime: startTime, value: value)
+        return .init(startTime: startTime, value: value)
     }
 }
 

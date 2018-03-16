@@ -44,7 +44,7 @@ extension NightscoutSettings: JSONParseable {
             return nil
         }
 
-        return NightscoutSettings(
+        return .init(
             title: settingsJSON[Key.title] ?? NightscoutSettings.defaultTitle,
             bloodGlucoseUnits: units,
             targetBloodGlucoseRange: bgTargetBottom...bgTargetTop

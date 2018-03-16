@@ -34,7 +34,7 @@ extension NightscoutStatus: JSONParseable {
             return nil
         }
 
-        return NightscoutStatus(
+        return .init(
             version: version,
             settings: settings
         )
