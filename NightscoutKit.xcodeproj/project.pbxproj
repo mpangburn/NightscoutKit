@@ -47,11 +47,8 @@
 		896FF5C82048C7FC0054198A /* profiles.json in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5C32048C7FC0054198A /* profiles.json */; };
 		896FF5C92048C7FC0054198A /* XCTestCase.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5C52048C7FC0054198A /* XCTestCase.swift */; };
 		896FF5CB2048C9DC0054198A /* NightscoutSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */; };
-		896FF5CD2048CC160054198A /* NightscoutKitLiveTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5CC2048CC160054198A /* NightscoutKitLiveTests.swift */; };
-		896FF5CF2048CDE50054198A /* nightscouturl in Resources */ = {isa = PBXBuildFile; fileRef = 896FF5CE2048CDE50054198A /* nightscouturl */; };
 		896FF5D2204BB9810054198A /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5D1204BB9810054198A /* String.swift */; };
 		897162232058A21E005D5030 /* LoopDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897162222058A21E005D5030 /* LoopDeviceStatus.swift */; };
-		89D48E33204BCC0D0066B293 /* apisecret in Resources */ = {isa = PBXBuildFile; fileRef = 89D48E32204BCC0D0066B293 /* apisecret */; };
 		89D48E36204FA3980066B293 /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E34204FA3310066B293 /* DataConvertible.swift */; };
 		89D48E39204FAC6A0066B293 /* AnyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E37204FAC0E0066B293 /* AnyJSON.swift */; };
 		89F4C6A12058C0D000C14F93 /* loopdevicestatus.json in Resources */ = {isa = PBXBuildFile; fileRef = 89F4C6A02058C0D000C14F93 /* loopdevicestatus.json */; };
@@ -112,12 +109,9 @@
 		896FF5C32048C7FC0054198A /* profiles.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = profiles.json; sourceTree = "<group>"; };
 		896FF5C52048C7FC0054198A /* XCTestCase.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = XCTestCase.swift; sourceTree = "<group>"; };
 		896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutSnapshot.swift; sourceTree = "<group>"; };
-		896FF5CC2048CC160054198A /* NightscoutKitLiveTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutKitLiveTests.swift; sourceTree = "<group>"; };
-		896FF5CE2048CDE50054198A /* nightscouturl */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = nightscouturl; sourceTree = "<group>"; };
 		896FF5D1204BB9810054198A /* String.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = String.swift; sourceTree = "<group>"; };
 		897162222058A21E005D5030 /* LoopDeviceStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoopDeviceStatus.swift; sourceTree = "<group>"; };
 		89D48E31204BBE200066B293 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
-		89D48E32204BCC0D0066B293 /* apisecret */ = {isa = PBXFileReference; lastKnownFileType = text; path = apisecret; sourceTree = "<group>"; };
 		89D48E34204FA3310066B293 /* DataConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConvertible.swift; sourceTree = "<group>"; };
 		89D48E37204FAC0E0066B293 /* AnyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSON.swift; sourceTree = "<group>"; };
 		89F4C6A02058C0D000C14F93 /* loopdevicestatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loopdevicestatus.json; sourceTree = "<group>"; };
@@ -218,7 +212,6 @@
 				896FF5C42048C7FC0054198A /* Extensions */,
 				896FF5C02048C7FC0054198A /* Fixtures */,
 				896FF58A2048C7510054198A /* NightscoutKitTests.swift */,
-				896FF5CC2048CC160054198A /* NightscoutKitLiveTests.swift */,
 				896FF58C2048C7510054198A /* Info.plist */,
 			);
 			path = NightscoutKitTests;
@@ -267,8 +260,6 @@
 				896FF5C32048C7FC0054198A /* profiles.json */,
 				896FB470205245240021107F /* openapsstatus.json */,
 				89F4C6A02058C0D000C14F93 /* loopdevicestatus.json */,
-				896FF5CE2048CDE50054198A /* nightscouturl */,
-				89D48E32204BCC0D0066B293 /* apisecret */,
 			);
 			path = Fixtures;
 			sourceTree = "<group>";
@@ -389,8 +380,6 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				89D48E33204BCC0D0066B293 /* apisecret in Resources */,
-				896FF5CF2048CDE50054198A /* nightscouturl in Resources */,
 				896FF5C82048C7FC0054198A /* profiles.json in Resources */,
 				896FF5C72048C7FC0054198A /* entries.json in Resources */,
 				896FB471205245240021107F /* openapsstatus.json in Resources */,
@@ -451,7 +440,6 @@
 			files = (
 				896FF5C92048C7FC0054198A /* XCTestCase.swift in Sources */,
 				896FF58B2048C7510054198A /* NightscoutKitTests.swift in Sources */,
-				896FF5CD2048CC160054198A /* NightscoutKitLiveTests.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
