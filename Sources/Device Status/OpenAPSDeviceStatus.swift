@@ -76,6 +76,8 @@ public struct OpenAPSDeviceStatus {
                     /// The first member represents the predicted glucose value at the start date,
                     /// and each subsequent member represents the predicted glucose five minutes after the previous.
                     public let basedOnCarbAbsorption: [Int]?
+
+                    // TODO: UAM
                 }
 
                 /// The blood glucose value at the date the state was recorded.

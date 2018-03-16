@@ -75,7 +75,7 @@ class NightscoutKitTests: XCTestCase {
             glucose: nil,
             insulinGiven: nil,
             carbsConsumed: 25,
-            creator: "loop://Michael's iPhone",
+            recorder: "loop://Michael's iPhone",
             notes: nil
         )
 
