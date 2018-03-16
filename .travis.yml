@@ -1,5 +1,4 @@
 language: objective-c
 osx_image: xcode9.2
-xcode_sdk: iphonesimulator11
-xcode_project: NightscoutKit.xcodeproj
-xcode_scheme: NightscoutKit
+script:
+- xcodebuild -project NightscoutKit.xcodeproj -scheme NightscoutKit -sdk iphonesimulator11.0 build -destination name="iPhone SE" test
