@@ -77,7 +77,10 @@ public struct OpenAPSDeviceStatus {
                     /// and each subsequent member represents the predicted glucose five minutes after the previous.
                     public let basedOnCarbAbsorption: [Int]?
 
-                    // TODO: UAM
+                    /// The predicted glucose values based on an unannounced meal.
+                    /// The first member represents the predicted glucose value at the start date,
+                    /// and each subsequent member represents the predicted glucose five minutes after the previous.
+                    public let basedOnUnannouncedMeal: [Int]?
                 }
 
                 /// The blood glucose value at the date the state was recorded.
@@ -120,7 +123,7 @@ public struct OpenAPSDeviceStatus {
             /// The predicted blood glucose curves based on the state of the closed loop.
             public var predictedBloodGlucoseCurves: [[PredictedBloodGlucoseValue]]? {
                 let predictionCurves = state?.predictedBloodGlucoseValues.map {
-                    [$0.basedOnInsulinOnBoard, $0.withZeroBasal, $0.basedOnCarbAbsorption].flatMap { $0 }
+                    [$0.basedOnInsulinOnBoard, $0.withZeroBasal, $0.basedOnCarbAbsorption, $0.basedOnUnannouncedMeal].flatMap { $0 }
                 }
                 return predictionCurves?.map {
                     Array<PredictedBloodGlucoseValue>(values: $0, everyFiveMinutesBeginningAt: timestamp)
@@ -428,6 +431,7 @@ extension OpenAPSDeviceStatus.LoopStatus.Context.State.PredictedBloodGlucoseValu
         static let basedOnInsulinOnBoard: JSONKey<[Int]> = "IOB"
         static let withZeroBasal: JSONKey<[Int]> = "ZT"
         static let basedOnCarbAbsorption: JSONKey<[Int]> = "COB"
+        static let basedOnUnannouncedMeal: JSONKey<[Int]> = "UAM"
     }
 
     static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.LoopStatus.Context.State.PredictedBloodGlucoseValues? {
@@ -441,7 +445,8 @@ extension OpenAPSDeviceStatus.LoopStatus.Context.State.PredictedBloodGlucoseValu
         return .init(
             basedOnInsulinOnBoard: basedOnInsulinOnBoard,
             withZeroBasal: withZeroBasal,
-            basedOnCarbAbsorption: json[Key.basedOnCarbAbsorption]
+            basedOnCarbAbsorption: json[Key.basedOnCarbAbsorption],
+            basedOnUnannouncedMeal: json[Key.basedOnUnannouncedMeal]
         )
     }
 }
