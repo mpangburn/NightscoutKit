@@ -8,7 +8,7 @@ let package = Package(
         .library(name: "NightscoutKit", targets: ["NightscoutKit"])
     ],
     dependencies: [
-        .package(url: "CCommonCrypto", .branch("master"))
+        .package(url: "https://github.com/mpangburn/CCommonCrypto", .branch("master"))
     ],
     targets: [
         .target(

@@ -4,7 +4,7 @@
 [![MIT](https://img.shields.io/packagist/l/doctrine/orm.svg)](https://github.com/mpangburn/NightscoutKit/blob/master/LICENSE)
 [![@pangburnout](https://img.shields.io/badge/contact-@pangburnout-blue.svg?style=flat)](https://twitter.com/pangburnout)
 
-A Swift wrapper around the [Nightscout](https://github.com/nightscout/cgm-remote-monitor/) REST API.
+A Swift wrapper around the [Nightscout](https://github.com/nightscout/cgm-remote-monitor/) REST API built for iOS, macOS, watchOS, and tvOS applications.
 
 NightscoutKit supports the following operations: 
 
