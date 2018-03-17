@@ -5,3 +5,4 @@ script:
   - xcrun xcodebuild -project NightscoutKit.xcodeproj -scheme NightscoutKit-macOS 
   - xcrun xcodebuild -project NightscoutKit.xcodeproj -scheme NightscoutKit-watchOS
   - xcrun xcodebuild -project NightscoutKit.xcodeproj -scheme NightscoutKit-tvOS
+  - swift build -Xswiftc "-target" -Xswiftc "x86_64-apple-macosx10.12"
