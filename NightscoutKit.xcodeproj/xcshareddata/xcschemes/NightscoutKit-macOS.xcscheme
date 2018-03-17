@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "896FF57B2048C7510054198A"
+               BlueprintIdentifier = "892BE668205CED65009493EE"
                BuildableName = "NightscoutKit.framework"
-               BlueprintName = "NightscoutKit"
+               BlueprintName = "NightscoutKit-macOS"
                ReferencedContainer = "container:NightscoutKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -29,23 +29,13 @@
       language = ""
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
-         <TestableReference
-            skipped = "NO">
-            <BuildableReference
-               BuildableIdentifier = "primary"
-               BlueprintIdentifier = "896FF5842048C7510054198A"
-               BuildableName = "NightscoutKitTests.xctest"
-               BlueprintName = "NightscoutKitTests"
-               ReferencedContainer = "container:NightscoutKit.xcodeproj">
-            </BuildableReference>
-         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "896FF57B2048C7510054198A"
+            BlueprintIdentifier = "892BE668205CED65009493EE"
             BuildableName = "NightscoutKit.framework"
-            BlueprintName = "NightscoutKit"
+            BlueprintName = "NightscoutKit-macOS"
             ReferencedContainer = "container:NightscoutKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -66,9 +56,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "896FF57B2048C7510054198A"
+            BlueprintIdentifier = "892BE668205CED65009493EE"
             BuildableName = "NightscoutKit.framework"
-            BlueprintName = "NightscoutKit"
+            BlueprintName = "NightscoutKit-macOS"
             ReferencedContainer = "container:NightscoutKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -84,9 +74,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "896FF57B2048C7510054198A"
+            BlueprintIdentifier = "892BE668205CED65009493EE"
             BuildableName = "NightscoutKit.framework"
-            BlueprintName = "NightscoutKit"
+            BlueprintName = "NightscoutKit-macOS"
             ReferencedContainer = "container:NightscoutKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

@@ -7,6 +7,116 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		892BE671205CED7E009493EE /* NightscoutKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 896FF57F2048C7510054198A /* NightscoutKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		892BE672205CED7F009493EE /* NightscoutKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 896FF57F2048C7510054198A /* NightscoutKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		892BE673205CEE10009493EE /* BloodGlucoseTrend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */; };
+		892BE674205CEE10009493EE /* BloodGlucoseUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */; };
+		892BE675205CEE10009493EE /* IdentifierFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE80205A1FB0003D74F8 /* IdentifierFactory.swift */; };
+		892BE676205CEE10009493EE /* Nightscout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A62048C77B0054198A /* Nightscout.swift */; };
+		892BE677205CEE10009493EE /* NightscoutEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A12048C77B0054198A /* NightscoutEntry.swift */; };
+		892BE678205CEE10009493EE /* NightscoutProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A32048C77B0054198A /* NightscoutProfile.swift */; };
+		892BE679205CEE10009493EE /* NightscoutProfileRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A42048C77B0054198A /* NightscoutProfileRecord.swift */; };
+		892BE67A205CEE10009493EE /* NightscoutSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A72048C77B0054198A /* NightscoutSettings.swift */; };
+		892BE67B205CEE10009493EE /* NightscoutSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */; };
+		892BE67C205CEE10009493EE /* NightscoutStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45E2050BBFC0021107F /* NightscoutStatus.swift */; };
+		892BE67D205CEE10009493EE /* NightscoutTreatment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59E2048C77B0054198A /* NightscoutTreatment.swift */; };
+		892BE67E205CEE10009493EE /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59F2048C77B0054198A /* TimeFormatter.swift */; };
+		892BE67F205CEE10009493EE /* UniquelyIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */; };
+		892BE680205CEE10009493EE /* AnyClosedLoopStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7E205A0A9D003D74F8 /* AnyClosedLoopStatus.swift */; };
+		892BE681205CEE10009493EE /* AnyPumpStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE722059EB0F003D74F8 /* AnyPumpStatus.swift */; };
+		892BE682205CEE10009493EE /* BatteryIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE6C2059E7C6003D74F8 /* BatteryIndicator.swift */; };
+		892BE683205CEE10009493EE /* BatteryStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE6E2059E849003D74F8 /* BatteryStatusProtocol.swift */; };
+		892BE684205CEE10009493EE /* ClosedLoopStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7C205A09F0003D74F8 /* ClosedLoopStatusProtocol.swift */; };
+		892BE685205CEE10009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7A205A0662003D74F8 /* InsulinOnBoardStatusProtocol.swift */; };
+		892BE686205CEE10009493EE /* LoopDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897162222058A21E005D5030 /* LoopDeviceStatus.swift */; };
+		892BE687205CEE10009493EE /* NightscoutDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */; };
+		892BE688205CEE10009493EE /* OpenAPSDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB46C20520F240021107F /* OpenAPSDeviceStatus.swift */; };
+		892BE689205CEE10009493EE /* PredictedBloodGlucoseValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE762059F069003D74F8 /* PredictedBloodGlucoseValue.swift */; };
+		892BE68A205CEE10009493EE /* PumpStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE702059EA35003D74F8 /* PumpStatusProtocol.swift */; };
+		892BE68B205CEE10009493EE /* TemporaryBasalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE78205A0286003D74F8 /* TemporaryBasalProtocol.swift */; };
+		892BE68C205CEE10009493EE /* UploaderStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE742059EC7D003D74F8 /* UploaderStatusProtocol.swift */; };
+		892BE68D205CEE10009493EE /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5982048C77A0054198A /* Array.swift */; };
+		892BE68E205CEE10009493EE /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5992048C77A0054198A /* Dictionary.swift */; };
+		892BE68F205CEE10009493EE /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5D1204BB9810054198A /* String.swift */; };
+		892BE690205CEE10009493EE /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59C2048C77A0054198A /* TimeInterval.swift */; };
+		892BE691205CEE10009493EE /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59A2048C77A0054198A /* URL.swift */; };
+		892BE692205CEE10009493EE /* AnyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E37204FAC0E0066B293 /* AnyJSON.swift */; };
+		892BE693205CEE10009493EE /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E34204FA3310066B293 /* DataConvertible.swift */; };
+		892BE694205CEE10009493EE /* JSONConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5B82048C7A30054198A /* JSONConvertible.swift */; };
+		892BE695205CEE10009493EE /* JSONKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45C20507EB10021107F /* JSONKey.swift */; };
+		892BE696205CEE10009493EE /* PartiallyRawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */; };
+		892BE697205CEE11009493EE /* BloodGlucoseTrend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */; };
+		892BE698205CEE11009493EE /* BloodGlucoseUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */; };
+		892BE699205CEE11009493EE /* IdentifierFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE80205A1FB0003D74F8 /* IdentifierFactory.swift */; };
+		892BE69A205CEE11009493EE /* Nightscout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A62048C77B0054198A /* Nightscout.swift */; };
+		892BE69B205CEE11009493EE /* NightscoutEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A12048C77B0054198A /* NightscoutEntry.swift */; };
+		892BE69C205CEE11009493EE /* NightscoutProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A32048C77B0054198A /* NightscoutProfile.swift */; };
+		892BE69D205CEE11009493EE /* NightscoutProfileRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A42048C77B0054198A /* NightscoutProfileRecord.swift */; };
+		892BE69E205CEE11009493EE /* NightscoutSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A72048C77B0054198A /* NightscoutSettings.swift */; };
+		892BE69F205CEE11009493EE /* NightscoutSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */; };
+		892BE6A0205CEE11009493EE /* NightscoutStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45E2050BBFC0021107F /* NightscoutStatus.swift */; };
+		892BE6A1205CEE11009493EE /* NightscoutTreatment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59E2048C77B0054198A /* NightscoutTreatment.swift */; };
+		892BE6A2205CEE11009493EE /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59F2048C77B0054198A /* TimeFormatter.swift */; };
+		892BE6A3205CEE11009493EE /* UniquelyIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */; };
+		892BE6A4205CEE11009493EE /* AnyClosedLoopStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7E205A0A9D003D74F8 /* AnyClosedLoopStatus.swift */; };
+		892BE6A5205CEE11009493EE /* AnyPumpStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE722059EB0F003D74F8 /* AnyPumpStatus.swift */; };
+		892BE6A6205CEE11009493EE /* BatteryIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE6C2059E7C6003D74F8 /* BatteryIndicator.swift */; };
+		892BE6A7205CEE11009493EE /* BatteryStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE6E2059E849003D74F8 /* BatteryStatusProtocol.swift */; };
+		892BE6A8205CEE11009493EE /* ClosedLoopStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7C205A09F0003D74F8 /* ClosedLoopStatusProtocol.swift */; };
+		892BE6A9205CEE11009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7A205A0662003D74F8 /* InsulinOnBoardStatusProtocol.swift */; };
+		892BE6AA205CEE11009493EE /* LoopDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897162222058A21E005D5030 /* LoopDeviceStatus.swift */; };
+		892BE6AB205CEE11009493EE /* NightscoutDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */; };
+		892BE6AC205CEE11009493EE /* OpenAPSDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB46C20520F240021107F /* OpenAPSDeviceStatus.swift */; };
+		892BE6AD205CEE11009493EE /* PredictedBloodGlucoseValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE762059F069003D74F8 /* PredictedBloodGlucoseValue.swift */; };
+		892BE6AE205CEE11009493EE /* PumpStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE702059EA35003D74F8 /* PumpStatusProtocol.swift */; };
+		892BE6AF205CEE11009493EE /* TemporaryBasalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE78205A0286003D74F8 /* TemporaryBasalProtocol.swift */; };
+		892BE6B0205CEE11009493EE /* UploaderStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE742059EC7D003D74F8 /* UploaderStatusProtocol.swift */; };
+		892BE6B1205CEE11009493EE /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5982048C77A0054198A /* Array.swift */; };
+		892BE6B2205CEE11009493EE /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5992048C77A0054198A /* Dictionary.swift */; };
+		892BE6B3205CEE11009493EE /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5D1204BB9810054198A /* String.swift */; };
+		892BE6B4205CEE11009493EE /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59C2048C77A0054198A /* TimeInterval.swift */; };
+		892BE6B5205CEE11009493EE /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59A2048C77A0054198A /* URL.swift */; };
+		892BE6B6205CEE11009493EE /* AnyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E37204FAC0E0066B293 /* AnyJSON.swift */; };
+		892BE6B7205CEE11009493EE /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E34204FA3310066B293 /* DataConvertible.swift */; };
+		892BE6B8205CEE11009493EE /* JSONConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5B82048C7A30054198A /* JSONConvertible.swift */; };
+		892BE6B9205CEE11009493EE /* JSONKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45C20507EB10021107F /* JSONKey.swift */; };
+		892BE6BA205CEE11009493EE /* PartiallyRawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */; };
+		892BE6BB205CEE11009493EE /* BloodGlucoseTrend.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */; };
+		892BE6BC205CEE11009493EE /* BloodGlucoseUnit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */; };
+		892BE6BD205CEE11009493EE /* IdentifierFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE80205A1FB0003D74F8 /* IdentifierFactory.swift */; };
+		892BE6BE205CEE11009493EE /* Nightscout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A62048C77B0054198A /* Nightscout.swift */; };
+		892BE6BF205CEE11009493EE /* NightscoutEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A12048C77B0054198A /* NightscoutEntry.swift */; };
+		892BE6C0205CEE11009493EE /* NightscoutProfile.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A32048C77B0054198A /* NightscoutProfile.swift */; };
+		892BE6C1205CEE11009493EE /* NightscoutProfileRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A42048C77B0054198A /* NightscoutProfileRecord.swift */; };
+		892BE6C2205CEE11009493EE /* NightscoutSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5A72048C77B0054198A /* NightscoutSettings.swift */; };
+		892BE6C3205CEE11009493EE /* NightscoutSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */; };
+		892BE6C4205CEE11009493EE /* NightscoutStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45E2050BBFC0021107F /* NightscoutStatus.swift */; };
+		892BE6C5205CEE11009493EE /* NightscoutTreatment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59E2048C77B0054198A /* NightscoutTreatment.swift */; };
+		892BE6C6205CEE11009493EE /* TimeFormatter.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59F2048C77B0054198A /* TimeFormatter.swift */; };
+		892BE6C7205CEE11009493EE /* UniquelyIdentifiable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */; };
+		892BE6C8205CEE11009493EE /* AnyClosedLoopStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7E205A0A9D003D74F8 /* AnyClosedLoopStatus.swift */; };
+		892BE6C9205CEE11009493EE /* AnyPumpStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE722059EB0F003D74F8 /* AnyPumpStatus.swift */; };
+		892BE6CA205CEE11009493EE /* BatteryIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE6C2059E7C6003D74F8 /* BatteryIndicator.swift */; };
+		892BE6CB205CEE11009493EE /* BatteryStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE6E2059E849003D74F8 /* BatteryStatusProtocol.swift */; };
+		892BE6CC205CEE11009493EE /* ClosedLoopStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7C205A09F0003D74F8 /* ClosedLoopStatusProtocol.swift */; };
+		892BE6CD205CEE11009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7A205A0662003D74F8 /* InsulinOnBoardStatusProtocol.swift */; };
+		892BE6CE205CEE11009493EE /* LoopDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 897162222058A21E005D5030 /* LoopDeviceStatus.swift */; };
+		892BE6CF205CEE11009493EE /* NightscoutDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */; };
+		892BE6D0205CEE11009493EE /* OpenAPSDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB46C20520F240021107F /* OpenAPSDeviceStatus.swift */; };
+		892BE6D1205CEE11009493EE /* PredictedBloodGlucoseValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE762059F069003D74F8 /* PredictedBloodGlucoseValue.swift */; };
+		892BE6D2205CEE11009493EE /* PumpStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE702059EA35003D74F8 /* PumpStatusProtocol.swift */; };
+		892BE6D3205CEE11009493EE /* TemporaryBasalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE78205A0286003D74F8 /* TemporaryBasalProtocol.swift */; };
+		892BE6D4205CEE11009493EE /* UploaderStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE742059EC7D003D74F8 /* UploaderStatusProtocol.swift */; };
+		892BE6D5205CEE11009493EE /* Array.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5982048C77A0054198A /* Array.swift */; };
+		892BE6D6205CEE11009493EE /* Dictionary.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5992048C77A0054198A /* Dictionary.swift */; };
+		892BE6D7205CEE11009493EE /* String.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5D1204BB9810054198A /* String.swift */; };
+		892BE6D8205CEE11009493EE /* TimeInterval.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59C2048C77A0054198A /* TimeInterval.swift */; };
+		892BE6D9205CEE11009493EE /* URL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF59A2048C77A0054198A /* URL.swift */; };
+		892BE6DA205CEE11009493EE /* AnyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E37204FAC0E0066B293 /* AnyJSON.swift */; };
+		892BE6DB205CEE11009493EE /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E34204FA3310066B293 /* DataConvertible.swift */; };
+		892BE6DC205CEE11009493EE /* JSONConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5B82048C7A30054198A /* JSONConvertible.swift */; };
+		892BE6DD205CEE11009493EE /* JSONKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45C20507EB10021107F /* JSONKey.swift */; };
+		892BE6DE205CEE11009493EE /* PartiallyRawRepresentable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FF5BB2048C7A30054198A /* PartiallyRawRepresentable.swift */; };
 		892FBE6D2059E7C6003D74F8 /* BatteryIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE6C2059E7C6003D74F8 /* BatteryIndicator.swift */; };
 		892FBE6F2059E849003D74F8 /* BatteryStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE6E2059E849003D74F8 /* BatteryStatusProtocol.swift */; };
 		892FBE712059EA35003D74F8 /* PumpStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE702059EA35003D74F8 /* PumpStatusProtocol.swift */; };
@@ -18,6 +128,7 @@
 		892FBE7D205A09F0003D74F8 /* ClosedLoopStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7C205A09F0003D74F8 /* ClosedLoopStatusProtocol.swift */; };
 		892FBE7F205A0A9D003D74F8 /* AnyClosedLoopStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7E205A0A9D003D74F8 /* AnyClosedLoopStatus.swift */; };
 		892FBE81205A1FB0003D74F8 /* IdentifierFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE80205A1FB0003D74F8 /* IdentifierFactory.swift */; };
+		89667317205CEC4600C65985 /* NightscoutKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 896FF57F2048C7510054198A /* NightscoutKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		896FB45D20507EB10021107F /* JSONKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45C20507EB10021107F /* JSONKey.swift */; };
 		896FB45F2050BBFC0021107F /* NightscoutStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45E2050BBFC0021107F /* NightscoutStatus.swift */; };
 		896FB4612050CEA90021107F /* NightscoutDeviceStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */; };
@@ -65,6 +176,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		892BE65C205CED57009493EE /* NightscoutKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		892BE65F205CED57009493EE /* Info-tvOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-tvOS.plist"; sourceTree = "<group>"; };
+		892BE669205CED65009493EE /* NightscoutKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		892BE66C205CED65009493EE /* Info-macOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-macOS.plist"; sourceTree = "<group>"; };
 		892FBE6C2059E7C6003D74F8 /* BatteryIndicator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryIndicator.swift; sourceTree = "<group>"; };
 		892FBE6E2059E849003D74F8 /* BatteryStatusProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BatteryStatusProtocol.swift; sourceTree = "<group>"; };
 		892FBE702059EA35003D74F8 /* PumpStatusProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PumpStatusProtocol.swift; sourceTree = "<group>"; };
@@ -84,7 +199,7 @@
 		896FB470205245240021107F /* openapsstatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = openapsstatus.json; sourceTree = "<group>"; };
 		896FF57C2048C7510054198A /* NightscoutKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		896FF57F2048C7510054198A /* NightscoutKit.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NightscoutKit.h; sourceTree = "<group>"; };
-		896FF5802048C7510054198A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		896FF5802048C7510054198A /* Info-iOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-iOS.plist"; sourceTree = "<group>"; };
 		896FF5852048C7510054198A /* NightscoutKitTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = NightscoutKitTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		896FF58A2048C7510054198A /* NightscoutKitTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutKitTests.swift; sourceTree = "<group>"; };
 		896FF58C2048C7510054198A /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -114,10 +229,26 @@
 		89D48E31204BBE200066B293 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		89D48E34204FA3310066B293 /* DataConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConvertible.swift; sourceTree = "<group>"; };
 		89D48E37204FAC0E0066B293 /* AnyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSON.swift; sourceTree = "<group>"; };
+		89E63F35205CE9B600C458AA /* NightscoutKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		89E63F38205CE9B600C458AA /* Info-watchOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
 		89F4C6A02058C0D000C14F93 /* loopdevicestatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loopdevicestatus.json; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
+		892BE658205CED57009493EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		892BE665205CED65009493EE /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		896FF5782048C7510054198A /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
@@ -130,6 +261,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				896FF5862048C7510054198A /* NightscoutKit.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		89E63F31205CE9B600C458AA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -193,6 +331,9 @@
 			children = (
 				896FF57C2048C7510054198A /* NightscoutKit.framework */,
 				896FF5852048C7510054198A /* NightscoutKitTests.xctest */,
+				89E63F35205CE9B600C458AA /* NightscoutKit.framework */,
+				892BE65C205CED57009493EE /* NightscoutKit.framework */,
+				892BE669205CED65009493EE /* NightscoutKit.framework */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -201,7 +342,10 @@
 			isa = PBXGroup;
 			children = (
 				896FF57F2048C7510054198A /* NightscoutKit.h */,
-				896FF5802048C7510054198A /* Info.plist */,
+				896FF5802048C7510054198A /* Info-iOS.plist */,
+				892BE66C205CED65009493EE /* Info-macOS.plist */,
+				892BE65F205CED57009493EE /* Info-tvOS.plist */,
+				89E63F38205CE9B600C458AA /* Info-watchOS.plist */,
 			);
 			path = NightscoutKit;
 			sourceTree = "<group>";
@@ -283,6 +427,22 @@
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
+		892BE659205CED57009493EE /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				892BE671205CED7E009493EE /* NightscoutKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		892BE666205CED65009493EE /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				892BE672205CED7F009493EE /* NightscoutKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		896FF5792048C7510054198A /* Headers */ = {
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
@@ -291,12 +451,56 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		89E63F32205CE9B600C458AA /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				89667317205CEC4600C65985 /* NightscoutKit.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		896FF57B2048C7510054198A /* NightscoutKit */ = {
+		892BE65B205CED57009493EE /* NightscoutKit-tvOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 896FF5902048C7510054198A /* Build configuration list for PBXNativeTarget "NightscoutKit" */;
+			buildConfigurationList = 892BE661205CED57009493EE /* Build configuration list for PBXNativeTarget "NightscoutKit-tvOS" */;
+			buildPhases = (
+				892BE657205CED57009493EE /* Sources */,
+				892BE658205CED57009493EE /* Frameworks */,
+				892BE659205CED57009493EE /* Headers */,
+				892BE65A205CED57009493EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "NightscoutKit-tvOS";
+			productName = "NightscoutKit-tvOS";
+			productReference = 892BE65C205CED57009493EE /* NightscoutKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		892BE668205CED65009493EE /* NightscoutKit-macOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 892BE66E205CED65009493EE /* Build configuration list for PBXNativeTarget "NightscoutKit-macOS" */;
+			buildPhases = (
+				892BE664205CED65009493EE /* Sources */,
+				892BE665205CED65009493EE /* Frameworks */,
+				892BE666205CED65009493EE /* Headers */,
+				892BE667205CED65009493EE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "NightscoutKit-macOS";
+			productName = "NightscoutKit-macOS";
+			productReference = 892BE669205CED65009493EE /* NightscoutKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		896FF57B2048C7510054198A /* NightscoutKit-iOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 896FF5902048C7510054198A /* Build configuration list for PBXNativeTarget "NightscoutKit-iOS" */;
 			buildPhases = (
 				896FF5772048C7510054198A /* Sources */,
 				896FF5782048C7510054198A /* Frameworks */,
@@ -307,7 +511,7 @@
 			);
 			dependencies = (
 			);
-			name = NightscoutKit;
+			name = "NightscoutKit-iOS";
 			productName = NightscoutKit;
 			productReference = 896FF57C2048C7510054198A /* NightscoutKit.framework */;
 			productType = "com.apple.product-type.framework";
@@ -330,6 +534,24 @@
 			productReference = 896FF5852048C7510054198A /* NightscoutKitTests.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
+		89E63F34205CE9B600C458AA /* NightscoutKit-watchOS */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 89E63F3C205CE9B600C458AA /* Build configuration list for PBXNativeTarget "NightscoutKit-watchOS" */;
+			buildPhases = (
+				89E63F30205CE9B600C458AA /* Sources */,
+				89E63F31205CE9B600C458AA /* Frameworks */,
+				89E63F32205CE9B600C458AA /* Headers */,
+				89E63F33205CE9B600C458AA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "NightscoutKit-watchOS";
+			productName = "NightscoutKit-watchOS";
+			productReference = 89E63F35205CE9B600C458AA /* NightscoutKit.framework */;
+			productType = "com.apple.product-type.framework";
+		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
@@ -340,11 +562,23 @@
 				LastUpgradeCheck = 0920;
 				ORGANIZATIONNAME = "Michael Pangburn";
 				TargetAttributes = {
+					892BE65B205CED57009493EE = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					892BE668205CED65009493EE = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
 					896FF57B2048C7510054198A = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
 					896FF5842048C7510054198A = {
+						CreatedOnToolsVersion = 9.2;
+						ProvisioningStyle = Automatic;
+					};
+					89E63F34205CE9B600C458AA = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
@@ -362,13 +596,30 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				896FF57B2048C7510054198A /* NightscoutKit */,
+				896FF57B2048C7510054198A /* NightscoutKit-iOS */,
+				892BE668205CED65009493EE /* NightscoutKit-macOS */,
+				89E63F34205CE9B600C458AA /* NightscoutKit-watchOS */,
+				892BE65B205CED57009493EE /* NightscoutKit-tvOS */,
 				896FF5842048C7510054198A /* NightscoutKitTests */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
+		892BE65A205CED57009493EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		892BE667205CED65009493EE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		896FF57A2048C7510054198A /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -388,9 +639,102 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		89E63F33205CE9B600C458AA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
+		892BE657205CED57009493EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				892BE6D7205CEE11009493EE /* String.swift in Sources */,
+				892BE6D8205CEE11009493EE /* TimeInterval.swift in Sources */,
+				892BE6BB205CEE11009493EE /* BloodGlucoseTrend.swift in Sources */,
+				892BE6C6205CEE11009493EE /* TimeFormatter.swift in Sources */,
+				892BE6D0205CEE11009493EE /* OpenAPSDeviceStatus.swift in Sources */,
+				892BE6D2205CEE11009493EE /* PumpStatusProtocol.swift in Sources */,
+				892BE6C7205CEE11009493EE /* UniquelyIdentifiable.swift in Sources */,
+				892BE6DC205CEE11009493EE /* JSONConvertible.swift in Sources */,
+				892BE6CC205CEE11009493EE /* ClosedLoopStatusProtocol.swift in Sources */,
+				892BE6C0205CEE11009493EE /* NightscoutProfile.swift in Sources */,
+				892BE6D3205CEE11009493EE /* TemporaryBasalProtocol.swift in Sources */,
+				892BE6DA205CEE11009493EE /* AnyJSON.swift in Sources */,
+				892BE6CD205CEE11009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */,
+				892BE6D5205CEE11009493EE /* Array.swift in Sources */,
+				892BE6C3205CEE11009493EE /* NightscoutSnapshot.swift in Sources */,
+				892BE6DD205CEE11009493EE /* JSONKey.swift in Sources */,
+				892BE6DB205CEE11009493EE /* DataConvertible.swift in Sources */,
+				892BE6CE205CEE11009493EE /* LoopDeviceStatus.swift in Sources */,
+				892BE6BD205CEE11009493EE /* IdentifierFactory.swift in Sources */,
+				892BE6C8205CEE11009493EE /* AnyClosedLoopStatus.swift in Sources */,
+				892BE6BC205CEE11009493EE /* BloodGlucoseUnit.swift in Sources */,
+				892BE6D1205CEE11009493EE /* PredictedBloodGlucoseValue.swift in Sources */,
+				892BE6CF205CEE11009493EE /* NightscoutDeviceStatus.swift in Sources */,
+				892BE6C9205CEE11009493EE /* AnyPumpStatus.swift in Sources */,
+				892BE6CA205CEE11009493EE /* BatteryIndicator.swift in Sources */,
+				892BE6D9205CEE11009493EE /* URL.swift in Sources */,
+				892BE6CB205CEE11009493EE /* BatteryStatusProtocol.swift in Sources */,
+				892BE6C2205CEE11009493EE /* NightscoutSettings.swift in Sources */,
+				892BE6BF205CEE11009493EE /* NightscoutEntry.swift in Sources */,
+				892BE6C5205CEE11009493EE /* NightscoutTreatment.swift in Sources */,
+				892BE6BE205CEE11009493EE /* Nightscout.swift in Sources */,
+				892BE6D4205CEE11009493EE /* UploaderStatusProtocol.swift in Sources */,
+				892BE6D6205CEE11009493EE /* Dictionary.swift in Sources */,
+				892BE6C1205CEE11009493EE /* NightscoutProfileRecord.swift in Sources */,
+				892BE6DE205CEE11009493EE /* PartiallyRawRepresentable.swift in Sources */,
+				892BE6C4205CEE11009493EE /* NightscoutStatus.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		892BE664205CED65009493EE /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				892BE68F205CEE10009493EE /* String.swift in Sources */,
+				892BE690205CEE10009493EE /* TimeInterval.swift in Sources */,
+				892BE673205CEE10009493EE /* BloodGlucoseTrend.swift in Sources */,
+				892BE67E205CEE10009493EE /* TimeFormatter.swift in Sources */,
+				892BE688205CEE10009493EE /* OpenAPSDeviceStatus.swift in Sources */,
+				892BE68A205CEE10009493EE /* PumpStatusProtocol.swift in Sources */,
+				892BE67F205CEE10009493EE /* UniquelyIdentifiable.swift in Sources */,
+				892BE694205CEE10009493EE /* JSONConvertible.swift in Sources */,
+				892BE684205CEE10009493EE /* ClosedLoopStatusProtocol.swift in Sources */,
+				892BE678205CEE10009493EE /* NightscoutProfile.swift in Sources */,
+				892BE68B205CEE10009493EE /* TemporaryBasalProtocol.swift in Sources */,
+				892BE692205CEE10009493EE /* AnyJSON.swift in Sources */,
+				892BE685205CEE10009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */,
+				892BE68D205CEE10009493EE /* Array.swift in Sources */,
+				892BE67B205CEE10009493EE /* NightscoutSnapshot.swift in Sources */,
+				892BE695205CEE10009493EE /* JSONKey.swift in Sources */,
+				892BE693205CEE10009493EE /* DataConvertible.swift in Sources */,
+				892BE686205CEE10009493EE /* LoopDeviceStatus.swift in Sources */,
+				892BE675205CEE10009493EE /* IdentifierFactory.swift in Sources */,
+				892BE680205CEE10009493EE /* AnyClosedLoopStatus.swift in Sources */,
+				892BE674205CEE10009493EE /* BloodGlucoseUnit.swift in Sources */,
+				892BE689205CEE10009493EE /* PredictedBloodGlucoseValue.swift in Sources */,
+				892BE687205CEE10009493EE /* NightscoutDeviceStatus.swift in Sources */,
+				892BE681205CEE10009493EE /* AnyPumpStatus.swift in Sources */,
+				892BE682205CEE10009493EE /* BatteryIndicator.swift in Sources */,
+				892BE691205CEE10009493EE /* URL.swift in Sources */,
+				892BE683205CEE10009493EE /* BatteryStatusProtocol.swift in Sources */,
+				892BE67A205CEE10009493EE /* NightscoutSettings.swift in Sources */,
+				892BE677205CEE10009493EE /* NightscoutEntry.swift in Sources */,
+				892BE67D205CEE10009493EE /* NightscoutTreatment.swift in Sources */,
+				892BE676205CEE10009493EE /* Nightscout.swift in Sources */,
+				892BE68C205CEE10009493EE /* UploaderStatusProtocol.swift in Sources */,
+				892BE68E205CEE10009493EE /* Dictionary.swift in Sources */,
+				892BE679205CEE10009493EE /* NightscoutProfileRecord.swift in Sources */,
+				892BE696205CEE10009493EE /* PartiallyRawRepresentable.swift in Sources */,
+				892BE67C205CEE10009493EE /* NightscoutStatus.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 		896FF5772048C7510054198A /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -443,17 +787,154 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
+		89E63F30205CE9B600C458AA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				892BE6B3205CEE11009493EE /* String.swift in Sources */,
+				892BE6B4205CEE11009493EE /* TimeInterval.swift in Sources */,
+				892BE697205CEE11009493EE /* BloodGlucoseTrend.swift in Sources */,
+				892BE6A2205CEE11009493EE /* TimeFormatter.swift in Sources */,
+				892BE6AC205CEE11009493EE /* OpenAPSDeviceStatus.swift in Sources */,
+				892BE6AE205CEE11009493EE /* PumpStatusProtocol.swift in Sources */,
+				892BE6A3205CEE11009493EE /* UniquelyIdentifiable.swift in Sources */,
+				892BE6B8205CEE11009493EE /* JSONConvertible.swift in Sources */,
+				892BE6A8205CEE11009493EE /* ClosedLoopStatusProtocol.swift in Sources */,
+				892BE69C205CEE11009493EE /* NightscoutProfile.swift in Sources */,
+				892BE6AF205CEE11009493EE /* TemporaryBasalProtocol.swift in Sources */,
+				892BE6B6205CEE11009493EE /* AnyJSON.swift in Sources */,
+				892BE6A9205CEE11009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */,
+				892BE6B1205CEE11009493EE /* Array.swift in Sources */,
+				892BE69F205CEE11009493EE /* NightscoutSnapshot.swift in Sources */,
+				892BE6B9205CEE11009493EE /* JSONKey.swift in Sources */,
+				892BE6B7205CEE11009493EE /* DataConvertible.swift in Sources */,
+				892BE6AA205CEE11009493EE /* LoopDeviceStatus.swift in Sources */,
+				892BE699205CEE11009493EE /* IdentifierFactory.swift in Sources */,
+				892BE6A4205CEE11009493EE /* AnyClosedLoopStatus.swift in Sources */,
+				892BE698205CEE11009493EE /* BloodGlucoseUnit.swift in Sources */,
+				892BE6AD205CEE11009493EE /* PredictedBloodGlucoseValue.swift in Sources */,
+				892BE6AB205CEE11009493EE /* NightscoutDeviceStatus.swift in Sources */,
+				892BE6A5205CEE11009493EE /* AnyPumpStatus.swift in Sources */,
+				892BE6A6205CEE11009493EE /* BatteryIndicator.swift in Sources */,
+				892BE6B5205CEE11009493EE /* URL.swift in Sources */,
+				892BE6A7205CEE11009493EE /* BatteryStatusProtocol.swift in Sources */,
+				892BE69E205CEE11009493EE /* NightscoutSettings.swift in Sources */,
+				892BE69B205CEE11009493EE /* NightscoutEntry.swift in Sources */,
+				892BE6A1205CEE11009493EE /* NightscoutTreatment.swift in Sources */,
+				892BE69A205CEE11009493EE /* Nightscout.swift in Sources */,
+				892BE6B0205CEE11009493EE /* UploaderStatusProtocol.swift in Sources */,
+				892BE6B2205CEE11009493EE /* Dictionary.swift in Sources */,
+				892BE69D205CEE11009493EE /* NightscoutProfileRecord.swift in Sources */,
+				892BE6BA205CEE11009493EE /* PartiallyRawRepresentable.swift in Sources */,
+				892BE6A0205CEE11009493EE /* NightscoutStatus.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin PBXTargetDependency section */
 		896FF5882048C7510054198A /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 896FF57B2048C7510054198A /* NightscoutKit */;
+			target = 896FF57B2048C7510054198A /* NightscoutKit-iOS */;
 			targetProxy = 896FF5872048C7510054198A /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
+		892BE662205CED57009493EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "NightscoutKit/Info-tvOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mpangburn.$(PROJECT_NAME)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Debug;
+		};
+		892BE663205CED57009493EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "NightscoutKit/Info-tvOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mpangburn.$(PROJECT_NAME)";
+				SDKROOT = appletvos;
+				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 3;
+				TVOS_DEPLOYMENT_TARGET = 11.2;
+			};
+			name = Release;
+		};
+		892BE66F205CED65009493EE /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "NightscoutKit/Info-macOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mpangburn.$(PROJECT_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Debug;
+		};
+		892BE670205CED65009493EE /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_IDENTITY = "Mac Developer";
+				CODE_SIGN_STYLE = Automatic;
+				COMBINE_HIDPI_IMAGES = YES;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = "";
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				FRAMEWORK_VERSION = A;
+				INFOPLIST_FILE = "NightscoutKit/Info-macOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/Frameworks";
+				MACOSX_DEPLOYMENT_TARGET = 10.13;
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mpangburn.$(PROJECT_NAME)";
+				SDKROOT = macosx;
+				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_VERSION = 4.0;
+			};
+			name = Release;
+		};
 		896FF58E2048C7510054198A /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -506,6 +987,7 @@
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(PROJECT_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
 				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
@@ -559,6 +1041,7 @@
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				IPHONEOS_DEPLOYMENT_TARGET = 11.2;
 				MTL_ENABLE_DEBUG_INFO = NO;
+				PRODUCT_NAME = "$(PROJECT_NAME)";
 				SDKROOT = iphoneos;
 				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
 				VALIDATE_PRODUCT = YES;
@@ -578,11 +1061,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = NightscoutKit/Info.plist;
+				INFOPLIST_FILE = "NightscoutKit/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKit;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = " ${SRCROOT}/CCommonCrypto";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -602,11 +1084,10 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = NightscoutKit/Info.plist;
+				INFOPLIST_FILE = "NightscoutKit/Info-iOS.plist";
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKit;
-				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_INCLUDE_PATHS = " ${SRCROOT}/CCommonCrypto";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
@@ -645,9 +1126,77 @@
 			};
 			name = Release;
 		};
+		89E63F3A205CE9B600C458AA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "NightscoutKit/Info-watchOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mpangburn.$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(PROJECT_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 4.2;
+			};
+			name = Debug;
+		};
+		89E63F3B205CE9B600C458AA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = "NightscoutKit/Info-watchOS.plist";
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_BUNDLE_IDENTIFIER = "com.mpangburn.$(PROJECT_NAME)";
+				PRODUCT_NAME = "$(PROJECT_NAME)";
+				SDKROOT = watchos;
+				SKIP_INSTALL = YES;
+				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_VERSION = 4.0;
+				TARGETED_DEVICE_FAMILY = 4;
+				WATCHOS_DEPLOYMENT_TARGET = 4.2;
+			};
+			name = Release;
+		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
+		892BE661205CED57009493EE /* Build configuration list for PBXNativeTarget "NightscoutKit-tvOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				892BE662205CED57009493EE /* Debug */,
+				892BE663205CED57009493EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		892BE66E205CED65009493EE /* Build configuration list for PBXNativeTarget "NightscoutKit-macOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				892BE66F205CED65009493EE /* Debug */,
+				892BE670205CED65009493EE /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
 		896FF5762048C7510054198A /* Build configuration list for PBXProject "NightscoutKit" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
@@ -657,7 +1206,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		896FF5902048C7510054198A /* Build configuration list for PBXNativeTarget "NightscoutKit" */ = {
+		896FF5902048C7510054198A /* Build configuration list for PBXNativeTarget "NightscoutKit-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				896FF5912048C7510054198A /* Debug */,
@@ -671,6 +1220,15 @@
 			buildConfigurations = (
 				896FF5942048C7510054198A /* Debug */,
 				896FF5952048C7510054198A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		89E63F3C205CE9B600C458AA /* Build configuration list for PBXNativeTarget "NightscoutKit-watchOS" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89E63F3A205CE9B600C458AA /* Debug */,
+				89E63F3B205CE9B600C458AA /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
