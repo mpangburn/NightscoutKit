@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A Nightscout profile record.
 /// This type stores data such as the user's profiles and the blood glucose units used in specifying details of these profiles.
 public struct NightscoutProfileRecord: UniquelyIdentifiable {

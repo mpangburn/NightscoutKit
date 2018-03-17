@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 extension TimeInterval {
     // MARK: - days
 

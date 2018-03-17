@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A Nightscout treatment.
 /// This type stores the event type and its details.
 public struct NightscoutTreatment: UniquelyIdentifiable {

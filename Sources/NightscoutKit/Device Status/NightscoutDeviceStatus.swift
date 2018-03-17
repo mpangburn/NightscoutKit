@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// Describes the status of a device in communication with Nightscout.
 public struct NightscoutDeviceStatus: UniquelyIdentifiable {
     /// Describes a closed loop system uploading data to Nightscout.

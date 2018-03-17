@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A type-erased pump status.
 public struct AnyPumpStatus: PumpStatusProtocol {
     public struct BatteryStatus: BatteryStatusProtocol {

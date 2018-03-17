@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A snapshot of a user's Nightscout data.
 /// This type stores data such as recent blood glucose entries, treatments, profile records, and device statuses,
 /// as well as the status of Nightscout site.

@@ -6,6 +6,10 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
+/// Describes the device statuses of an OpenAPS closed loop system.
 public struct OpenAPSDeviceStatus {
     /// Describes the status of an OpenAPS closed loop.
     public struct LoopStatus: ClosedLoopStatusProtocol {

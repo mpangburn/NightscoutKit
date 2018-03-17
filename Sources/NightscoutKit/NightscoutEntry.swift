@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A Nightscout blood glucose entry.
 /// This type stores data such as the glucose value (in mg/dL), its source (sensor or meter), the date at which the data was recorded, and the device from which the data was obtained.
 public struct NightscoutEntry: UniquelyIdentifiable, BloodGlucoseUnitConvertible {

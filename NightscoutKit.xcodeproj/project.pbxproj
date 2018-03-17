@@ -274,6 +274,29 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		892BE6E4205D000C009493EE /* NightscoutKit */ = {
+			isa = PBXGroup;
+			children = (
+				896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */,
+				896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */,
+				892FBE80205A1FB0003D74F8 /* IdentifierFactory.swift */,
+				896FF5A62048C77B0054198A /* Nightscout.swift */,
+				896FF5A12048C77B0054198A /* NightscoutEntry.swift */,
+				896FF5A32048C77B0054198A /* NightscoutProfile.swift */,
+				896FF5A42048C77B0054198A /* NightscoutProfileRecord.swift */,
+				896FF5A72048C77B0054198A /* NightscoutSettings.swift */,
+				896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */,
+				896FB45E2050BBFC0021107F /* NightscoutStatus.swift */,
+				896FF59E2048C77B0054198A /* NightscoutTreatment.swift */,
+				896FF59F2048C77B0054198A /* TimeFormatter.swift */,
+				896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */,
+				892FBE6B2059E6C2003D74F8 /* Device Status */,
+				896FF5972048C77A0054198A /* Extensions */,
+				892FBE6A2059E6AC003D74F8 /* JSON Parsing */,
+			);
+			path = NightscoutKit;
+			sourceTree = "<group>";
+		};
 		892FBE6A2059E6AC003D74F8 /* JSON Parsing */ = {
 			isa = PBXGroup;
 			children = (
@@ -364,22 +387,7 @@
 		896FF5962048C7640054198A /* Sources */ = {
 			isa = PBXGroup;
 			children = (
-				896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */,
-				896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */,
-				892FBE80205A1FB0003D74F8 /* IdentifierFactory.swift */,
-				896FF5A62048C77B0054198A /* Nightscout.swift */,
-				896FF5A12048C77B0054198A /* NightscoutEntry.swift */,
-				896FF5A32048C77B0054198A /* NightscoutProfile.swift */,
-				896FF5A42048C77B0054198A /* NightscoutProfileRecord.swift */,
-				896FF5A72048C77B0054198A /* NightscoutSettings.swift */,
-				896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */,
-				896FB45E2050BBFC0021107F /* NightscoutStatus.swift */,
-				896FF59E2048C77B0054198A /* NightscoutTreatment.swift */,
-				896FF59F2048C77B0054198A /* TimeFormatter.swift */,
-				896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */,
-				892FBE6B2059E6C2003D74F8 /* Device Status */,
-				896FF5972048C77A0054198A /* Extensions */,
-				892FBE6A2059E6AC003D74F8 /* JSON Parsing */,
+				892BE6E4205D000C009493EE /* NightscoutKit */,
 			);
 			path = Sources;
 			sourceTree = "<group>";

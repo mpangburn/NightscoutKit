@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 // TODO: It makes logical sense to store blood glucose units in the profile,
 // but doing so would break the JSON parsing structure.
 
