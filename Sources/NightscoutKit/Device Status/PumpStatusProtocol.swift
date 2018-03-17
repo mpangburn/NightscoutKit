@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A type describing the status of an insulin pump.
 public protocol PumpStatusProtocol {
     /// Describes the battery status of the pump.

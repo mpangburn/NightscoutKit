@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 extension URL {
     func appendingPathComponents(_ pathComponents: String...) -> URL {
         var base = self

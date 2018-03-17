@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A type-erased closed loop status.
 public struct AnyClosedLoopStatus: ClosedLoopStatusProtocol {
     public struct InsulinOnBoardStatus: InsulinOnBoardStatusProtocol {

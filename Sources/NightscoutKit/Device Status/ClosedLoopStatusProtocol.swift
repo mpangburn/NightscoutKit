@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A type describing the status of a closed loop.
 public protocol ClosedLoopStatusProtocol {
     /// Describes the status of insulin on board.

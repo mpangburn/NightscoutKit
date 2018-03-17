@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 enum IdentifierFactory {
     private static let idLength = 24
     private static let hexadecimalCharacters = Array("0123456789abcdef")

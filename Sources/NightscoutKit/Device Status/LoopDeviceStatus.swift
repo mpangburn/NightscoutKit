@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 // This structure is pulled pretty much directly from Pete Schwamb's NightscoutUploadKit:
 // https://github.com/ps2/rileylink_ios/tree/master/NightscoutUploadKit
 // NightscoutUploadKit could be introduced as a dependency, but it has some reliance

@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A key into a JSON dictionary with an associated phantom type.
 /// Increases type safety in parsing and recreating JSON.
 struct JSONKey<T> {

@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 // Describes a predicted blood glucose value.
 public struct PredictedBloodGlucoseValue {
     /// The predicted glucose value in milligrams per deciliter (mg/dL).

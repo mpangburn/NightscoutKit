@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A type describing the status of insulin on board.
 public protocol InsulinOnBoardStatusProtocol {
     /// The date at which the status of the insulin on board was recorded.

@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A type that can be parsed from data.
 protocol DataParseable {
     static func parse(fromData data: Data) throws -> Self?
