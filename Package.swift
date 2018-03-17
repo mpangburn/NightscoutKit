@@ -11,5 +11,14 @@
 import PackageDescription
 
 let package = Package(
-    name: "NightscoutKit"
+    name: "NightscoutKit",
+    products: [
+        .library(name: "NightscoutKit", targets: ["NightscoutKit"])
+    ],
+    targets: [
+        .target(
+            name: "NightscoutKit",
+            dependencies: []
+        )
+    ]
 )
