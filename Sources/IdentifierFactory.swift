@@ -11,13 +11,13 @@ enum IdentifierFactory {
     private static let hexadecimalCharacters = Array("0123456789abcdef")
 
     static func makeID() -> String {
-        return String.randomString(ofLength: idLength, consistingOfCharactersIn: hexadecimalCharacters)
+        return .randomString(ofLength: idLength, consistingOfCharactersIn: hexadecimalCharacters)
     }
 }
 
 fileprivate extension String {
     static func randomString<C: RandomAccessCollection>(ofLength length: Int, consistingOfCharactersIn characters: C) -> String where C.Element == Character, C.Index == Int {
-        precondition(length >= 0)
+        precondition(length >= 0 && characters.count > 0)
         return String((0..<length).map { _ in characters.random()! })
     }
 }

@@ -28,6 +28,7 @@ class NightscoutKitTests: XCTestCase {
         let expectedEntry = NightscoutEntry(
             id: "5a8a0764dc13514404097ed7",
             glucoseValue: 145,
+            units: .milligramsPerDeciliter,
             source: .sensor(trend: .flat),
             date: TimeFormatter.date(from: "2018-02-18T23:06:17.000Z")!,
             device: "share2"

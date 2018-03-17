@@ -49,7 +49,7 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
 
     /// A glucose measurement.
     /// This type contains the glucose value, units of measurement, and source.
-    public struct GlucoseMeasurement {
+    public struct GlucoseMeasurement: BloodGlucoseUnitConvertible {
         /// The value of the glucose measurement in `units`.
         public let value: Double
 
@@ -58,6 +58,14 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
 
         /// The source of the measurement.
         public let source: GlucoseSource
+
+        /// Returns a glucose measureent converted to the specified blood glucose units.
+        /// - Parameter units: The blood glucose units to which to convert.
+        /// - Returns: An glucose measurement converted to the specified blood glucose units.
+        public func converted(toUnits units: BloodGlucoseUnit) -> GlucoseMeasurement {
+            let convertedGlucoseValue = BloodGlucoseUnit.convert(value, from: self.units, to: units)
+            return .init(value: convertedGlucoseValue, units: units, source: source)
+        }
     }
 
     /// The treatment's unique, internally assigned identifier.
@@ -87,7 +95,18 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
     /// The notes entered with the treatment.
     public let notes: String?
 
-    public init(eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?, insulinGiven: Double?, carbsConsumed: Int?, recorder: String?, notes: String?) {
+    /// Creates a new treatment.
+    /// - Parameter eventType: The event type describing the treatment.
+    /// - Parameter date: The date at which the treatment occurred.
+    /// - Parameter duration: The duration of the treatment.
+    /// - Parameter glucose: The glucose measurement at the time of the treatment.
+    /// - Parameter insulinGiven: The insulin given at the time of the treatment in units (U).
+    /// - Parameter carbsConsumed: The carbs consumed at the time of the treatment in grams (g).
+    /// - Parameter recorder: The name of the individual who entered the treatment.
+    /// - Parameter notes: The notes entered with the treatment.
+    /// - Returns: A new treatment.
+    public init(eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?,
+                insulinGiven: Double?, carbsConsumed: Int?, recorder: String?, notes: String?) {
         self.init(
             id: IdentifierFactory.makeID(),
             eventType: eventType,
@@ -101,7 +120,8 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
         )
     }
 
-    init(id: String, eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?, insulinGiven: Double?, carbsConsumed: Int?, recorder: String?, notes: String?) {
+    init(id: String, eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?,
+         insulinGiven: Double?, carbsConsumed: Int?, recorder: String?, notes: String?) {
         self.id = id
         self.eventType = eventType
         self.date = date

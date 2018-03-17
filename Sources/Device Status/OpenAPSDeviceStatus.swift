@@ -61,7 +61,7 @@ public struct OpenAPSDeviceStatus {
             /// Describes the state of an OpenAPS closed loop.
             public struct State {
                 /// Describes the predicted glucose values based on the state of the closed loop.
-                public struct PredictedBloodGlucoseValues {
+                public struct PredictedBloodGlucoseCurves {
                     /// The predicted glucose values based only on the insulin on board.
                     /// The first member represents the predicted glucose value at the start date,
                     /// and each subsequent member represents the predicted glucose five minutes after the previous.
@@ -81,6 +81,14 @@ public struct OpenAPSDeviceStatus {
                     /// The first member represents the predicted glucose value at the start date,
                     /// and each subsequent member represents the predicted glucose five minutes after the previous.
                     public let basedOnUnannouncedMeal: [Int]?
+
+                    /// An array containing all of the blood glucose prediction curves.
+                    /// Within each prediction curve, the first member represents the predicted glucose value at the start date,
+                    /// and each subsequent member represents the predicted glucose five minutes after the previous.
+                    public var all: [[Int]] {
+                        return [basedOnInsulinOnBoard,
+                                withZeroBasal, basedOnCarbAbsorption, basedOnUnannouncedMeal].flatMap { $0 }
+                    }
                 }
 
                 /// The blood glucose value at the date the state was recorded.
@@ -102,7 +110,7 @@ public struct OpenAPSDeviceStatus {
                 public let sensitivityRatio: Double
 
                 /// The predicted blood glucose values based on the state of the closed loop.
-                public let predictedBloodGlucoseValues: PredictedBloodGlucoseValues?
+                public let predictedBloodGlucoseCurves: PredictedBloodGlucoseCurves?
 
                 /// The carbs on board in grams (g).
                 public let carbsOnBoard: Int
@@ -122,10 +130,7 @@ public struct OpenAPSDeviceStatus {
 
             /// The predicted blood glucose curves based on the state of the closed loop.
             public var predictedBloodGlucoseCurves: [[PredictedBloodGlucoseValue]]? {
-                let predictionCurves = state?.predictedBloodGlucoseValues.map {
-                    [$0.basedOnInsulinOnBoard, $0.withZeroBasal, $0.basedOnCarbAbsorption, $0.basedOnUnannouncedMeal].flatMap { $0 }
-                }
-                return predictionCurves?.map {
+                return state?.predictedBloodGlucoseCurves?.all.map {
                     Array<PredictedBloodGlucoseValue>(values: $0, everyFiveMinutesBeginningAt: timestamp)
                 }
             }
@@ -382,7 +387,7 @@ extension OpenAPSDeviceStatus.LoopStatus.Context.State: JSONParseable {
         static let deliveryDateString: JSONKey<String> = "deliverAt"
         static let received: JSONKey<Bool> = "recieved" // yes, "received" really is misspelled
         static let sensitivityRatio: JSONKey<Double> = "sensitivityRatio"
-        static let predictedBloodGlucoseValuesJSON: JSONKey<PredictedBloodGlucoseValues> = "predBGs"
+        static let predictedBloodGlucoseCurves: JSONKey<PredictedBloodGlucoseCurves> = "predBGs"
         static let carbsOnBoard: JSONKey<Int> = "COB"
         static let insulinOnBoard: JSONKey<Double> = "IOB"
     }
@@ -417,14 +422,14 @@ extension OpenAPSDeviceStatus.LoopStatus.Context.State: JSONParseable {
             temporaryBasal: OpenAPSDeviceStatus.LoopStatus.TemporaryBasal.parse(fromJSON: json, withDateStringKey: Key.deliveryDateString),
             received: json[Key.received] ?? false,
             sensitivityRatio: sensitivityRatio,
-            predictedBloodGlucoseValues: json[parsingFrom: Key.predictedBloodGlucoseValuesJSON],
+            predictedBloodGlucoseCurves: json[parsingFrom: Key.predictedBloodGlucoseCurves],
             carbsOnBoard: carbsOnBoard,
             insulinOnBoard: insulinOnBoard
         )
     }
 }
 
-extension OpenAPSDeviceStatus.LoopStatus.Context.State.PredictedBloodGlucoseValues: JSONParseable {
+extension OpenAPSDeviceStatus.LoopStatus.Context.State.PredictedBloodGlucoseCurves: JSONParseable {
     typealias JSONParseType = JSONDictionary
 
     private enum Key {
@@ -434,7 +439,7 @@ extension OpenAPSDeviceStatus.LoopStatus.Context.State.PredictedBloodGlucoseValu
         static let basedOnUnannouncedMeal: JSONKey<[Int]> = "UAM"
     }
 
-    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.LoopStatus.Context.State.PredictedBloodGlucoseValues? {
+    static func parse(fromJSON json: JSONDictionary) -> OpenAPSDeviceStatus.LoopStatus.Context.State.PredictedBloodGlucoseCurves? {
         guard
             let basedOnInsulinOnBoard = json[Key.basedOnInsulinOnBoard],
             let withZeroBasal = json[Key.withZeroBasal]

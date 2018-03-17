@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+// TODO: It makes logical sense to store blood glucose units in the profile,
+// but doing so would break the JSON parsing structure.
+
 /// A Nightscout profile.
 /// This type stores data such as a user's carb ratio, basal rate, insulin sensitivity, and blood glucose target schedules; duration of active insulin (DIA); and carb absorption rate during activity.
 public struct NightscoutProfile {
@@ -14,7 +17,7 @@ public struct NightscoutProfile {
         /// The time interval since midnight at which the item is scheduled.
         let startTime: TimeInterval
 
-        /// The value of schedule item.
+        /// The value of the schedule item.
         let value: Value
     }
 
@@ -27,7 +30,7 @@ public struct NightscoutProfile {
     public typealias BasalRateSchedule = [ScheduleItem<Double>]
 
     /// An insulin sensitivity schedule.
-    /// Schedule items are specified in <blood glucose unit> per hour.
+    /// Schedule items are specified in <blood glucose unit> per unit of insulin.
     /// Blood glucose units are contextualized by the `NightscoutProfileRecord` containing the profile.
     public typealias InsulinSensitivitySchedule = [ScheduleItem<Double>]
 
@@ -45,7 +48,7 @@ public struct NightscoutProfile {
     public let basalRateSchedule: BasalRateSchedule
 
     /// The profile's insulin sensitivity schedule.
-    /// Schedule items are specified in <blood glucose unit> per hour.
+    /// Schedule items are specified in <blood glucose unit> per unit of insulin.
     /// Blood glucose units are contextualized by the `NightscoutProfileRecord` containing this profile.
     public let sensitivitySchedule: InsulinSensitivitySchedule
 
@@ -64,6 +67,14 @@ public struct NightscoutProfile {
     /// A string representing the time zone for which the profile was designed.
     public let timeZone: String // TODO: use `TimeZone` here
 
+    /// Creates a new profile.
+    /// - Parameter carbRatioSchedule: The carb ratio schedule, with schedule items specified in grams per unit of insulin (g/U).
+    /// - Parameter basalRateSchedule: The basal rate schedule, with schedule items specified in units of insulin per hour (U/hr).
+    /// - Parameter sensitivitySchedule: The insulin sensitivity schedule, with schedule items specified in <blood glucose unit> per unit of insulin.
+    /// - Parameter bloodGlucoseTargetSchedule: The blood glucose target schedule, with schedule items specified in <blood glucose unit>...<blood glucose unit>.
+    /// - Parameter activeInsulinDuration: The length of time for which insulin is active after entering the body; also known as the duration of active insulin (DIA).
+    /// - Parameter carbAbsorptionRateDuringActivity: The rate at which carbs are absorped during activity in grams per hour (g/hr).
+    /// - Parameter timeZone: A string representing the time zone for which the profile was designed.
     public init(carbRatioSchedule: CarbRatioSchedule, basalRateSchedule: BasalRateSchedule, sensitivitySchedule: InsulinSensitivitySchedule,
                 bloodGlucoseTargetSchedule: BloodGlucoseTargetSchedule, activeInsulinDuration: TimeInterval, carbAbsorptionRateDuringActivity: Int, timeZone: String) {
         self.carbRatioSchedule = carbRatioSchedule

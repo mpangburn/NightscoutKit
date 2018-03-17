@@ -35,7 +35,14 @@ public struct NightscoutProfileRecord: UniquelyIdentifiable {
         return defaultProfile ?? profiles.first!.value
     }
 
+    /// Creates a new profile record.
+    /// - Parameter defaultProfileName: The name of the default profile. This name must appear as a key in the profiles dictionary.
+    /// - Parameter date: The date at which the profile record was last validated by the user.
+    /// - Parameter bloodGlucoseUnits: The blood glucose units used in creating the profiles' blood glucose target and insulin sensitivity schedules.
+    /// - Parameter profiles: A dictionary containing the profiles, keyed by the profile names.
+    /// - Returns: A new profile record.
     public init(defaultProfileName: String, date: Date, bloodGlucoseUnits: BloodGlucoseUnit, profiles: [String: NightscoutProfile]) {
+        precondition(profiles[defaultProfileName] != nil, "The default profile name must appear in the profiles dictionary.")
         self.init(id: IdentifierFactory.makeID(), defaultProfileName: defaultProfileName, date: date, bloodGlucoseUnits: bloodGlucoseUnits, profiles: profiles)
     }
 

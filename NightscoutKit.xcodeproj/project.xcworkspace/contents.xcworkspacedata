@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:NightscoutKit.xcodeproj">
+      location = "self:/Users/mpangburn/Developer/NightscoutKit/NightscoutKit.xcodeproj">
    </FileRef>
 </Workspace>

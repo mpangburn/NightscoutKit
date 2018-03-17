@@ -8,18 +8,24 @@
 
 /// A Nightscout blood glucose entry.
 /// This type stores data such as the glucose value (in mg/dL), its source (sensor or meter), the date at which the data was recorded, and the device from which the data was obtained.
-public struct NightscoutEntry: UniquelyIdentifiable {
-    /// The source of a blood glucose entry.
+public struct NightscoutEntry: UniquelyIdentifiable, BloodGlucoseUnitConvertible {
+    /// Describes the source of a blood glucose entry.
     public enum Source {
+        /// A continuous glucose monitor (CGM) reading. The associated value contains the blood glucose trend.
         case sensor(trend: BloodGlucoseTrend)
+
+        /// A blood glucose meter reading.
         case meter
     }
 
     /// The entry's unique, internally assigned identifier.
     public let id: String
 
-    /// The entry's glucose value in milligrams per deciliter (mg/dL).
-    public let glucoseValue: Int
+    /// The blood glucose value. Units are specified by the `units` property.
+    public let glucoseValue: Double
+
+    /// The blood glucose units in which the glucose value is measured.
+    public let units: BloodGlucoseUnit
 
     /// The source of the blood glucose entry.
     public let source: Source
@@ -30,16 +36,32 @@ public struct NightscoutEntry: UniquelyIdentifiable {
     /// The device from which the entry data was obtained.
     public let device: String?
 
-    public init(glucoseValue: Int, source: Source, date: Date, device: String?) {
-        self.init(id: IdentifierFactory.makeID(), glucoseValue: glucoseValue, source: source, date: date, device: device)
+    /// Creates a new blood glucose entry.
+    /// - Parameter glucoseValue: The blood glucose value.
+    /// - Parameter units: The blood glucose units in which the glucose vlaue is measured.
+    /// - Parameter source: The source of the blood glucose entry.
+    /// - Parameter date: The date at which the entry was recorded.
+    /// - Parameter device: The device from which the entry data was obtained.
+    /// - Returns: A new blood glucose entry.
+    public init(glucoseValue: Double, units: BloodGlucoseUnit, source: Source, date: Date, device: String?) {
+        self.init(id: IdentifierFactory.makeID(), glucoseValue: glucoseValue, units: units, source: source, date: date, device: device)
     }
 
-    init(id: String, glucoseValue: Int, source: Source, date: Date, device: String?) {
+    init(id: String, glucoseValue: Double, units: BloodGlucoseUnit, source: Source, date: Date, device: String?) {
         self.id = id
         self.glucoseValue = glucoseValue
+        self.units = units
         self.source = source
         self.date = date
         self.device = device
+    }
+
+    /// Returns an entry converted to the specified blood glucose units.
+    /// - Parameter units: The blood glucose units to which to convert.
+    /// - Returns: An entry converted to the specified blood glucose units.
+    public func converted(toUnits units: BloodGlucoseUnit) -> NightscoutEntry {
+        let convertedGlucoseValue = BloodGlucoseUnit.convert(glucoseValue, from: self.units, to: units)
+        return .init(id: id, glucoseValue: convertedGlucoseValue, units: units, source: source, date: date, device: device)
     }
 }
 
@@ -61,7 +83,7 @@ extension NightscoutEntry: JSONParseable {
             let id = entryJSON[Key.id],
             let millisecondsSince1970 = entryJSON[Key.millisecondsSince1970],
             let typeString = entryJSON[Key.typeString],
-            let glucoseValue = entryJSON[typeString] as? Int,
+            let glucoseValue = entryJSON[typeString] as? Int, // Nightscout stores glucose values internally in mg/dL
             let source = Source.parse(fromJSON: entryJSON)
         else {
             return nil
@@ -69,7 +91,8 @@ extension NightscoutEntry: JSONParseable {
 
         return .init(
             id: id,
-            glucoseValue: glucoseValue,
+            glucoseValue: Double(glucoseValue),
+            units: .milligramsPerDeciliter,
             source: source,
             date: Date(timeIntervalSince1970: .milliseconds(Double(millisecondsSince1970))),
             device: entryJSON[Key.device]
@@ -84,7 +107,7 @@ extension NightscoutEntry: JSONConvertible {
         json[Key.millisecondsSince1970] = Int(date.timeIntervalSince1970.milliseconds)
         json[convertingDateFrom: Key.dateString] = date
         json[Key.typeString] = source.simpleRawValue
-        json[source.simpleRawValue] = glucoseValue
+        json[source.simpleRawValue] = Int(BloodGlucoseUnit.convert(glucoseValue, from: units, to: .milligramsPerDeciliter))
 
         if case .sensor(trend: let trend) = source {
             json[convertingFrom: Source.Key.trend] = trend
@@ -130,42 +153,6 @@ extension NightscoutEntry.Source: PartiallyRawRepresentable {
             return "sgv"
         case .meter:
             return "mbg"
-        }
-    }
-}
-
-// MARK: - CustomStringConvertible
-
-extension NightscoutEntry: CustomStringConvertible, CustomDebugStringConvertible {
-    public var description: String {
-        return description(includingID: false)
-    }
-
-    public var debugDescription: String {
-        return description(includingID: true)
-    }
-
-    private func description(includingID: Bool) -> String {
-        var description = "NightscoutEntry("
-        if includingID {
-            description += "id: \(id), "
-        }
-        description += "glucoseValue: \(glucoseValue) \(BloodGlucoseUnit.milligramsPerDeciliter), source: \(source), date: \(date)"
-        if let device = device {
-            description += ", device: \(device)"
-        }
-        description += ")"
-        return description
-    }
-}
-
-extension NightscoutEntry.Source: CustomStringConvertible {
-    public var description: String {
-        switch self {
-        case .sensor(trend: let trend):
-            return ".sensor(trend: \(trend))"
-        case .meter:
-            return ".meter"
         }
     }
 }

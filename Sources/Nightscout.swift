@@ -64,7 +64,7 @@ public enum NightscoutResult<T> {
 
 /// The primary interface for interacting with the Nightscout API.
 /// This class performs operations such as:
-/// - fetching and uploading entries
+/// - fetching and uploading blood glucose entries
 /// - fetching, uploading, updating, and deleting treatments
 /// - fetching, uploading, updating, and deleting profile records
 /// - fetching device statuses
