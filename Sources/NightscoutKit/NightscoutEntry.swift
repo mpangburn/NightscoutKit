@@ -11,15 +11,9 @@ import Foundation
 
 /// A Nightscout blood glucose entry.
 /// This type stores data such as the glucose value (in mg/dL), its source (sensor or meter), the date at which the data was recorded, and the device from which the data was obtained.
-public struct NightscoutEntry: UniquelyIdentifiable, BloodGlucoseUnitConvertible {
+public struct NightscoutEntry: NightscoutEntryProtocol {
     /// Describes the source of a blood glucose entry.
-    public enum Source {
-        /// A continuous glucose monitor (CGM) reading. The associated value contains the blood glucose trend.
-        case sensor(trend: BloodGlucoseTrend)
-
-        /// A blood glucose meter reading.
-        case meter
-    }
+    public typealias Source = NightscoutEntrySource
 
     /// The entry's unique, internally assigned identifier.
     public let id: String

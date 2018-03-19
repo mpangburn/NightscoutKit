@@ -8,6 +8,7 @@
 
 import Foundation
 
+// TODO: enum documentation here
 
 /// A Nightscout treatment.
 /// This type stores the event type and its details.
