@@ -66,6 +66,15 @@ public struct NightscoutTreatment: UniquelyIdentifiable, BloodGlucoseUnitConvert
         public func converted(to units: BloodGlucoseUnit) -> GlucoseMeasurement {
             return GlucoseMeasurement(glucoseValue: glucoseValue.converted(to: units), source: source)
         }
+
+        /// Creates a new glucose measurement.
+        /// - Parameter glucoseValue: The measured glucose value.
+        /// - Parameter source: The source of the measurement.
+        /// - Returns: A new glucose measurement.
+        public init(glucoseValue: BloodGlucoseValue, source: GlucoseSource) {
+            self.glucoseValue = glucoseValue
+            self.source = source
+        }
     }
 
     /// The treatment's unique, internally assigned identifier.
