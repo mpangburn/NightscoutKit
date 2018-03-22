@@ -12,7 +12,7 @@ import Foundation
 
 /// A Nightscout treatment.
 /// This type stores the event type and its details.
-public struct NightscoutTreatment: UniquelyIdentifiable {
+public struct NightscoutTreatment: UniquelyIdentifiable, BloodGlucoseUnitConvertible {
     /// An event type describing a treatment.
     public enum EventType {
         case bloodGlucoseCheck
@@ -54,11 +54,8 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
     /// A glucose measurement.
     /// This type contains the glucose value, units of measurement, and source.
     public struct GlucoseMeasurement: BloodGlucoseUnitConvertible {
-        /// The value of the glucose measurement in `units`.
-        public let value: Double
-
-        /// The blood glucose units of measurement.
-        public let units: BloodGlucoseUnit
+        /// The glucose value and the units in which it is measured.
+        public let glucoseValue: BloodGlucoseValue
 
         /// The source of the measurement.
         public let source: GlucoseSource
@@ -66,9 +63,8 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
         /// Returns a glucose measureent converted to the specified blood glucose units.
         /// - Parameter units: The blood glucose units to which to convert.
         /// - Returns: An glucose measurement converted to the specified blood glucose units.
-        public func converted(toUnits units: BloodGlucoseUnit) -> GlucoseMeasurement {
-            let convertedGlucoseValue = BloodGlucoseUnit.convert(value, from: self.units, to: units)
-            return .init(value: convertedGlucoseValue, units: units, source: source)
+        public func converted(to units: BloodGlucoseUnit) -> GlucoseMeasurement {
+            return GlucoseMeasurement(glucoseValue: glucoseValue.converted(to: units), source: source)
         }
     }
 
@@ -136,15 +132,18 @@ public struct NightscoutTreatment: UniquelyIdentifiable {
         self.recorder = recorder
         self.notes = notes
     }
-}
 
-// MARK: - Equatable
-
-extension NightscoutTreatment.GlucoseMeasurement: Equatable {
-    public static func == (lhs: NightscoutTreatment.GlucoseMeasurement, rhs: NightscoutTreatment.GlucoseMeasurement) -> Bool {
-        return lhs.value == rhs.value
-            && lhs.units == rhs.units
-            && lhs.source == rhs.source
+    public func converted(to units: BloodGlucoseUnit) -> NightscoutTreatment {
+        return NightscoutTreatment(
+            eventType: eventType,
+            date: date,
+            duration: duration,
+            glucose: glucose?.converted(to: units),
+            insulinGiven: insulinGiven,
+            carbsConsumed: carbsConsumed,
+            recorder: recorder,
+            notes: notes
+        )
     }
 }
 
@@ -180,7 +179,10 @@ extension NightscoutTreatment: JSONParseable {
         if let glucoseValue = treatmentJSON[Key.glucoseValue],
             let units = treatmentJSON[convertingFrom: Key.units],
             let glucoseSource = treatmentJSON[convertingFrom: Key.glucoseSource] {
-                glucose = GlucoseMeasurement(value: glucoseValue, units: units, source: glucoseSource)
+                glucose = GlucoseMeasurement(
+                    glucoseValue: BloodGlucoseValue(value: glucoseValue, units: units),
+                    source: glucoseSource
+            )
         } else {
             glucose = nil
         }
@@ -233,8 +235,8 @@ extension NightscoutTreatment: JSONConvertible {
         }
 
         if let glucose = glucose {
-            json[Key.glucoseValue] = glucose.value
-            json[convertingFrom: Key.units] = glucose.units
+            json[Key.glucoseValue] = glucose.glucoseValue.value
+            json[convertingFrom: Key.units] = glucose.glucoseValue.units
             json[convertingFrom: Key.glucoseSource] = glucose.source
         }
 

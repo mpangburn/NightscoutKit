@@ -27,8 +27,7 @@ class NightscoutKitTests: XCTestCase {
 
         let expectedEntry = NightscoutEntry(
             id: "5a8a0764dc13514404097ed7",
-            glucoseValue: 145,
-            units: .milligramsPerDeciliter,
+            glucoseValue: BloodGlucoseValue(value: 145, units: .milligramsPerDeciliter),
             source: .sensor(trend: .flat),
             date: TimeFormatter.date(from: "2018-02-18T23:06:17.000Z")!,
             device: "share2"
@@ -91,7 +90,8 @@ class NightscoutKitTests: XCTestCase {
         }())
         XCTAssert(treatment.date == expectedTreatment.date)
         XCTAssert(treatment.duration == expectedTreatment.duration)
-        XCTAssert(treatment.glucose == expectedTreatment.glucose)
+        XCTAssert(treatment.glucose?.glucoseValue == expectedTreatment.glucose?.glucoseValue
+            && treatment.glucose?.source == expectedTreatment.glucose?.source)
         XCTAssert(treatment.insulinGiven == expectedTreatment.insulinGiven)
         XCTAssert(treatment.carbsConsumed == expectedTreatment.carbsConsumed)
         XCTAssert(treatment.recorder == expectedTreatment.recorder)

@@ -9,8 +9,6 @@
 import Foundation
 
 
-typealias JSONDictionary = [String: Any]
-
 /// A type that can be parsed from JSON data.
 protocol JSONParseable: DataParseable {
     associatedtype JSONParseType

@@ -8,6 +8,8 @@
 
 import Foundation
 
+/// A dictionary representing a JSON object.
+typealias JSONDictionary = [String: Any]
 
 /// A key into a JSON dictionary with an associated phantom type.
 /// Increases type safety in parsing and recreating JSON.

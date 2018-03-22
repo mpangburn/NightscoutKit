@@ -11,28 +11,13 @@ public protocol BloodGlucoseUnitConvertible {
     /// Returns an instance converted to the specified blood glucose units.
     /// - Parameter units: The blood glucose units to which to convert.
     /// - Returns: An instance converted to the specified blood glucose units.
-    func converted(toUnits units: BloodGlucoseUnit) -> Self
+    func converted(to units: BloodGlucoseUnit) -> Self
 }
 
 /// Represents a unit of concentration for measuring blood glucose.
 public enum BloodGlucoseUnit: String {
     case milligramsPerDeciliter = "mg/dl"
     case millimolesPerLiter = "mmol"
-
-    /// Returns the equivalent of the glucose value in the specified units.
-    public static func convert(_ glucoseValue: Double, from fromUnits: BloodGlucoseUnit, to toUnits: BloodGlucoseUnit) -> Double {
-        return glucoseValue * toUnits.conversionFactor / fromUnits.conversionFactor
-    }
-
-    /// The preferred number of fraction digits for displaying a glucose value with these units.
-    public var preferredFractionDigits: Int {
-        switch self {
-        case .milligramsPerDeciliter:
-            return 0
-        case .millimolesPerLiter:
-            return 1
-        }
-    }
 
     /// The conversion factor for converting from this unit to milligrams per deciliter (mg/dL).
     public var conversionFactor: Double {
@@ -41,6 +26,16 @@ public enum BloodGlucoseUnit: String {
             return 1
         case .millimolesPerLiter:
             return 1 / 18
+        }
+    }
+
+    /// The preferred number of fraction digits for displaying a glucose value with these units.
+    var preferredFractionDigits: Int {
+        switch self {
+        case .milligramsPerDeciliter:
+            return 0
+        case .millimolesPerLiter:
+            return 1
         }
     }
 }

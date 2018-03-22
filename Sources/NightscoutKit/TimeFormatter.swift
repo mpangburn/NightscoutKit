@@ -60,6 +60,9 @@ fileprivate extension Date {
     }
 }
 
+// TODO: ISO8601 is the bottleneck for NightscoutKit to support older firmware versions.
+// This requires iOS 10.0+, macOS 10.12+, tvOS 10.0+, watchOS 3.0+.
+
 fileprivate extension ISO8601DateFormatter {
     static let gmtFormatter: ISO8601DateFormatter = {
         let formatter = ISO8601DateFormatter()
