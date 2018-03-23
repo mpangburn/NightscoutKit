@@ -48,23 +48,6 @@ public enum NightscoutError: Error {
     case dataParsingFailure(Data)
 }
 
-/// Describes the result of a call to the Nightscout API.
-public enum NightscoutResult<T> {
-    case success(T)
-    case failure(NightscoutError)
-
-    /// In the case of a failure, returns the associated `NightscoutError`.
-    /// Returns `nil` in the case of success.
-    var error: NightscoutError? {
-        switch self {
-        case .success(_):
-            return nil
-        case .failure(let error):
-            return error
-        }
-    }
-}
-
 /// The primary interface for interacting with the Nightscout API.
 /// This class performs operations such as:
 /// - fetching and uploading blood glucose entries
