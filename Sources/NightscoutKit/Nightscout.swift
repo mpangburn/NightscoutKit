@@ -28,9 +28,6 @@ public enum NightscoutError: Error {
     /// An error that occurs when the `URLResponse` received is not an `HTTPURLResponse`.
     case notAnHTTPURLResponse
 
-    /// An error that occurs when a response is received, but the data is absent.
-    case missingData
-
     /// An error that occurs when the HTTP status code 401 is returned.
     /// If this error results from an attempt to upload, modify, or delete a Nightscout entity, a possible cause is an invalid API secret.
     case unauthorized
@@ -386,8 +383,7 @@ extension Nightscout {
             }
 
             guard let data = data else {
-                completion(.failure(.missingData))
-                return
+                fatalError("The data task produced no error, but also returned no data. These states are mutually exclusive.")
             }
 
             guard httpResponse.statusCode == 200 else {
@@ -559,8 +555,7 @@ extension Nightscout {
             }
 
             guard let data = data else {
-                completion(.failure(.missingData))
-                return
+                fatalError("The data task produced no error, but also returned no data. These states are mutually exclusive.")
             }
 
             guard httpResponse.statusCode == 200 else {
