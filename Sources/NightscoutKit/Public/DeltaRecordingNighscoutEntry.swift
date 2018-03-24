@@ -49,8 +49,8 @@ public struct DeltaRecordingNightscoutEntry: NightscoutEntryProtocol {
     /// Returns a string for the change in glucose value since the previous entry
     /// appropriate for the units in which this entry is measured.
     /// For example, if the previous entry's glucose value is 123
-    /// and this entry's glucose value is 130, `glucoseDeltaDisplayString` will return `"+7"`.
-    public var glucoseDeltaDisplayString: String {
+    /// and this entry's glucose value is 130, `glucoseDeltaString` will return `"+7"`.
+    public var glucoseDeltaString: String {
         var format = "%.\(glucoseValue.units.preferredFractionDigits)f"
         if glucoseDeltaFromPreviousEntry > 0 {
             format = "+\(format)"

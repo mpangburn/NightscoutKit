@@ -28,7 +28,6 @@ open class NightscoutFailureLogger<Stream: TextOutputStream>: _NightscoutObserve
     /// - Returns: A new logger that logs the operations of an observed `Nightscout` instance to the output stream.
     public init(outputStream: Stream) {
         self._outputStream = ThreadSafe(outputStream)
-        super.init()
     }
 
     private let dateFormatter: DateFormatter = {
@@ -219,6 +218,13 @@ extension NightscoutFailureLogger where Stream == FileHandle {
     /// Creates a new `NightscoutLogger` that logs the operations of an observed `Nightscout` instance to standard output.
     public static func standardOutputLogger() -> Self {
         return .init(outputStream: .standardOutput)
+    }
+}
+
+extension NightscoutFailureLogger where Stream: RangeReplaceableCollection {
+    /// Clears all output written to the stream.
+    public func clearOutputStream() {
+        _outputStream.atomically { $0.removeAll() }
     }
 }
 

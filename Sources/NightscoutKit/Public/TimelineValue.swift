@@ -9,6 +9,8 @@
 import Foundation
 
 
+/// A type that can be described by a date.
 public protocol TimelineValue {
+    /// The date of the timeline value.
     var date: Date { get }
 }

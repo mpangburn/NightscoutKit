@@ -94,7 +94,7 @@ extension NightscoutResult {
     /// - Returns: This `NightscoutResult` instance, unmodified.
     @discardableResult
     public func ifSuccess(_ closure: (Value) -> Void) -> NightscoutResult {
-        if case .success(let value) = self { closure(value) }
+        value.map(closure)
         return self
     }
 
@@ -105,7 +105,7 @@ extension NightscoutResult {
     /// - Returns: This `NightscoutResult` instance, unmodified.
     @discardableResult
     public func ifFailure(_ closure: (NightscoutError) -> Void) -> NightscoutResult {
-        if case .failure(let error) = self { closure(error) }
+        error.map(closure)
         return self
     }
 }

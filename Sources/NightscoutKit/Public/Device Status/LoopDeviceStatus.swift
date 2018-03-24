@@ -9,10 +9,8 @@
 import Foundation
 
 
-// This structure is pulled pretty much directly from Pete Schwamb's NightscoutUploadKit:
+// This structure is pulled more or less directly from Pete Schwamb's NightscoutUploadKit:
 // https://github.com/ps2/rileylink_ios/tree/master/NightscoutUploadKit
-// NightscoutUploadKit could be introduced as a dependency, but it has some reliance
-// on HealthKit, which can't be supported if NightscoutKit is to support all Apple platforms.
 
 /// Describes the status of the devices of a Loop closed loop system.
 public struct LoopDeviceStatus {
