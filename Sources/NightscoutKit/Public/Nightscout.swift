@@ -52,14 +52,17 @@ public enum NightscoutError: Error {
 /// - fetching, uploading, updating, and deleting profile records
 /// - fetching device statuses
 /// - fetching the server status and settings
-public class Nightscout {
+public final class Nightscout {
     /// The base URL for the Nightscout site.
     /// This is the URL the user would visit to view their Nightscout home page.
     public var baseURL: URL
 
     /// The API secret for the base URL.
-    /// If this property is `nil`, only fetch operations can be performed.
+    /// If this property is `nil`, upload, update, and delete operations will produce `NightscoutError.missingAPISecret`.
     public var apiSecret: String?
+
+    /// The observers responding to operations performed by this `Nightscout` instance.
+    private let _observers: ThreadSafe<[NightscoutObserver]>
 
     /// Initializes a Nightscout instance from the base URL and (optionally) the API secret.
     /// - Parameter baseURL: The base URL for the Nightscout site.
@@ -68,6 +71,7 @@ public class Nightscout {
     public init(baseURL: URL, apiSecret: String? = nil) {
         self.baseURL = baseURL
         self.apiSecret = apiSecret
+        self._observers = ThreadSafe([])
     }
 
     /// Attempts to initialize a Nightscout instance from the base URL string and (optionally) the API secret.
@@ -80,6 +84,55 @@ public class Nightscout {
             throw NightscoutError.invalidURL
         }
         self.init(baseURL: baseURL, apiSecret: apiSecret)
+    }
+}
+
+// MARK: - Observers
+
+extension Nightscout {
+    /// Returns an array containing the objects observing this `Nightscout` instance.
+    ///
+    /// This value is immutable.
+    /// For adding observers, see `addObserver(_:)` and `addObservers(_:)`.
+    /// For removing observers, see `removeObserver(_:)` and `removeAllObservers()`.
+    public var observers: [NightscoutObserver] {
+        return _observers.value
+    }
+
+    /// Adds the observer to this `Nightscout` instance.
+    /// - Parameter observer: The object to begin observing this `Nightscout` instance.
+    public func addObserver(_ observer: NightscoutObserver) {
+        _observers.atomically { $0.append(observer) }
+    }
+
+    /// Adds the observers to this `Nightscout` instance.
+    /// - Parameter observers: The objects to begin observing this `Nightscout` instance.
+    public func addObservers(_ observers: [NightscoutObserver]) {
+        _observers.atomically { $0.append(contentsOf: observers) }
+    }
+
+    /// Adds the observers to this `Nightscout` instance.
+    /// - Parameter observers: The objects to begin observing this `Nightscout` instance.
+    public func addObservers(_ observers: NightscoutObserver...) {
+        addObservers(observers)
+    }
+
+    /// Removes the observer from this `Nightscout` instance.
+    ///
+    /// If the observer is not currently observing this `Nightscout` instance, this method does nothing.
+    /// If the observer occurs multiple times in the list of observers, all instances of the observer will be removed.
+    /// - Parameter observer: The object to stop observing this `Nightscout` instance.
+    public func removeObserver(_ observer: NightscoutObserver) {
+        _observers.atomically { observers in
+            while let index = observers.index(where: { $0 === observer }) {
+                observers.remove(at: index)
+            }
+        }
+    }
+
+    /// Removes all observers from this `Nightscout` instance.
+    public func removeAllObservers() {
+        _observers.atomically { $0.removeAll() }
     }
 }
 
@@ -191,11 +244,7 @@ extension Nightscout {
             "Content-Type": "application/json",
             "Accept": "application/json",
         ]
-
-        if let apiSecret = apiSecret {
-            headers["api-secret"] = apiSecret.sha1()
-        }
-
+        apiSecret.map { headers["api-secret"] = $0.sha1() }
         headers.forEach { header, value in request.setValue(value, forHTTPHeaderField: header) }
         request.httpMethod = httpMethod?.rawValue
 
@@ -212,14 +261,15 @@ extension Nightscout {
     /// - Parameter recentDeviceStatusCount: The number of recent device statuses to fetch. Defaults to 10.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     /// - Parameter result: The result of the operation.
-    public func snapshot(recentBloodGlucoseEntryCount: Int = 10, recentTreatmentCount: Int = 10, recentDeviceStatusCount: Int = 10, completion: @escaping (_ result: NightscoutResult<NightscoutSnapshot>) -> Void) {
+    public func snapshot(recentBloodGlucoseEntryCount: Int = 10, recentTreatmentCount: Int = 10, recentDeviceStatusCount: Int = 10,
+                         completion: @escaping (_ result: NightscoutResult<NightscoutSnapshot>) -> Void) {
         let timestamp = Date()
         var status: NightscoutStatus?
         var deviceStatuses: [NightscoutDeviceStatus] = []
         var entries: [NightscoutEntry] = []
         var treatments: [NightscoutTreatment] = []
         var profileRecords: [NightscoutProfileRecord] = []
-        var error: Error?
+        let error: ThreadSafe<NightscoutError?> = ThreadSafe(nil)
 
         let snapshotGroup = DispatchGroup()
 
@@ -229,9 +279,8 @@ extension Nightscout {
             case .success(let fetchedStatus):
                 status = fetchedStatus
             case .failure(let err):
-                error = err
+                error.atomically { $0 = err }
             }
-
             snapshotGroup.leave()
         }
 
@@ -241,7 +290,7 @@ extension Nightscout {
             case .success(let fetchedDeviceStatuses):
                 deviceStatuses = fetchedDeviceStatuses
             case .failure(let err):
-                error = err
+                error.atomically { $0 = err }
             }
             snapshotGroup.leave()
         }
@@ -252,9 +301,8 @@ extension Nightscout {
             case .success(let fetchedProfileRecords):
                 profileRecords = fetchedProfileRecords
             case .failure(let err):
-                error = err
+                error.atomically { $0 = err }
             }
-
             snapshotGroup.leave()
         }
 
@@ -264,9 +312,8 @@ extension Nightscout {
             case .success(let fetchedBloodGlucoseEntries):
                 entries = fetchedBloodGlucoseEntries
             case .failure(let err):
-                error = err
+                error.atomically { $0 = err }
             }
-
             snapshotGroup.leave()
         }
 
@@ -276,38 +323,51 @@ extension Nightscout {
             case .success(let fetchedTreatments):
                 treatments = fetchedTreatments
             case .failure(let err):
-                error = err
+                error.atomically { $0 = err }
             }
-
             snapshotGroup.leave()
         }
 
         snapshotGroup.wait()
 
         // There's a race condition with errors here, but if any fetch request fails, we'll report an error--it doesn't matter which.
-        guard error == nil else {
-            completion(.failure(.fetchError(error!)))
+        guard error.value == nil else {
+            completion(.failure(error.value!))
             return
         }
 
-        let snapshot = NightscoutSnapshot(timestamp: timestamp, status: status!, entries: entries, treatments: treatments, profileRecords: profileRecords, deviceStatuses: deviceStatuses)
+        let snapshot = NightscoutSnapshot(timestamp: timestamp, status: status!, entries: entries,
+                                          treatments: treatments, profileRecords: profileRecords, deviceStatuses: deviceStatuses)
         completion(.success(snapshot))
     }
 
     /// Fetches the status of the Nightscout site.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     /// - Parameter result: The result of the operation.
-    public func fetchStatus(completion: @escaping (_ result: NightscoutResult<NightscoutStatus>) -> Void) {
-        fetch(from: .status, completion: completion)
+    public func fetchStatus(completion: ((_ result: NightscoutResult<NightscoutStatus>) -> Void)? = nil) {
+        fetch(from: .status) { (result: NightscoutResult<NightscoutStatus>) in
+            self.observers.notify(
+                for: result, from: self,
+                ifSuccess: { observer in { nightscout, status in observer.nightscout(nightscout, didFetchStatus: status) } }
+            )
+            completion?(result)
+        }
     }
 
     /// Fetches the most recent blood glucose entries.
     /// - Parameter count: The number of recent blood glucose entries to fetch. Defaults to 10.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     /// - Parameter result: The result of the operation.
-    public func fetchMostRecentEntries(count: Int = 10, completion: @escaping (_ result: NightscoutResult<[NightscoutEntry]>) -> Void) {
+    public func fetchMostRecentEntries(count: Int = 10,
+                                       completion: ((_ result: NightscoutResult<[NightscoutEntry]>) -> Void)? = nil) {
         let queryItems: [QueryItem] = [.count(count)]
-        fetchArray(from: .entries, queryItems: queryItems, completion: completion)
+        fetchArray(from: .entries, queryItems: queryItems) { (result: NightscoutResult<[NightscoutEntry]>) in
+            self.observers.notify(
+                for: result, from: self,
+                ifSuccess: { observer in { nightscout, entries in observer.nightscout(nightscout, didFetchEntries: entries) } }
+            )
+            completion?(result)
+        }
     }
 
     /// Fetches the blood glucose entries from within the specified `DateInterval`.
@@ -315,18 +375,32 @@ extension Nightscout {
     /// - Parameter maxCount: The maximum number of blood glucose entries to fetch. Defaults to `2 ** 31`, where `**` is exponentiation.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     /// - Parameter result: The result of the operation.
-    public func fetchEntries(from interval: DateInterval, maxCount: Int = 2 << 31, completion: @escaping (_ result: NightscoutResult<[NightscoutEntry]>) -> Void) {
-        let queryItems = QueryItem.entryDates(from: interval) + [.count(maxCount)]
-        fetchArray(from: .entries, queryItems: queryItems, completion: completion)
+    public func fetchEntries(from interval: DateInterval, maxCount: Int = 2 << 31,
+                             completion: ((_ result: NightscoutResult<[NightscoutEntry]>) -> Void)? = nil) {
+        let queryItems = QueryItem.entryDates(from: interval).appending(.count(maxCount))
+        fetchArray(from: .entries, queryItems: queryItems) { (result: NightscoutResult<[NightscoutEntry]>) in
+            self.observers.notify(
+                for: result, from: self,
+                ifSuccess: { observer in { nightscout, entries in observer.nightscout(nightscout, didFetchEntries: entries) } }
+            )
+            completion?(result)
+        }
     }
 
     /// Fetches the most recent treatments.
     /// - Parameter count: The number of recent treatments to fetch. Defaults to 10.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     /// - Parameter result: The result of the operation.
-    public func fetchMostRecentTreatments(count: Int = 10, completion: @escaping (_ result: NightscoutResult<[NightscoutTreatment]>) -> Void) {
+    public func fetchMostRecentTreatments(count: Int = 10,
+                                          completion: ((_ result: NightscoutResult<[NightscoutTreatment]>) -> Void)? = nil) {
         let queryItems: [QueryItem] = [.count(count)]
-        fetchArray(from: .treatments, queryItems: queryItems, completion: completion)
+        fetchArray(from: .treatments, queryItems: queryItems) { (result: NightscoutResult<[NightscoutTreatment]>) in
+            self.observers.notify(
+                for: result, from: self,
+                ifSuccess: { observer in { nightscout, treatments in observer.nightscout(nightscout, didFetchTreatments: treatments) } }
+            )
+            completion?(result)
+        }
     }
 
     /// Fetches the treatments from within the specified `DateInterval`.
@@ -334,27 +408,45 @@ extension Nightscout {
     /// - Parameter maxCount: The maximum number of treatments to fetch. Defaults to `2 ** 31`, where `**` is exponentiation.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     /// - Parameter result: The result of the operation.
-    public func fetchTreatments(from interval: DateInterval, maxCount: Int = 2 << 31, completion: @escaping (_ result: NightscoutResult<[NightscoutTreatment]>) -> Void) {
-        let queryItems = QueryItem.treatmentDates(from: interval) + [.count(maxCount)]
-        fetchArray(from: .treatments, queryItems: queryItems, completion: completion)
+    public func fetchTreatments(from interval: DateInterval, maxCount: Int = 2 << 31,
+                                completion: ((_ result: NightscoutResult<[NightscoutTreatment]>) -> Void)? = nil) {
+        let queryItems = QueryItem.treatmentDates(from: interval).appending(.count(maxCount))
+        fetchArray(from: .treatments, queryItems: queryItems) { (result: NightscoutResult<[NightscoutTreatment]>) in
+            self.observers.notify(
+                for: result, from: self,
+                ifSuccess: { observer in { nightscout, treatments in observer.nightscout(nightscout, didFetchTreatments: treatments) } }
+            )
+            completion?(result)
+        }
     }
-
-    // TODO: profile records by count / date if there are a large number of profiles?
 
     /// Fetches the profile records.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     /// - Parameter result: The result of the operation.
-    public func fetchProfileRecords(completion: @escaping (_ result: NightscoutResult<[NightscoutProfileRecord]>) -> Void) {
-        fetchArray(from: .profiles, completion: completion)
+    public func fetchProfileRecords(completion: ((_ result: NightscoutResult<[NightscoutProfileRecord]>) -> Void)? = nil) {
+        fetchArray(from: .profiles) { (result: NightscoutResult<[NightscoutProfileRecord]>) in
+            self.observers.notify(
+                for: result, from: self,
+                ifSuccess: { observer in { nightscout, records in observer.nightscout(nightscout, didFetchProfileRecords: records) } }
+            )
+            completion?(result)
+        }
     }
 
     /// Fetches the most recent device statuses.
     /// - Parameter count: The number of recent device statuses to fetch. Defaults to 10.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     /// - Parameter result: The result of the operation.
-    public func fetchMostRecentDeviceStatuses(count: Int = 10, completion: @escaping (_ result: NightscoutResult<[NightscoutDeviceStatus]>) -> Void) {
+    public func fetchMostRecentDeviceStatuses(count: Int = 10,
+                                              completion: ((_ result: NightscoutResult<[NightscoutDeviceStatus]>) -> Void)? = nil) {
         let queryItems: [QueryItem] = [.count(count)]
-        fetchArray(from: .deviceStatus, queryItems: queryItems, completion: completion)
+        fetchArray(from: .deviceStatus, queryItems: queryItems) { (result: NightscoutResult<[NightscoutDeviceStatus]>) in
+            self.observers.notify(
+                for: result, from: self,
+                ifSuccess: { observer in { nightscout, deviceStatuses in observer.nightscout(nightscout, didFetchDeviceStatuses: deviceStatuses) } }
+            )
+            completion?(result)
+        }
     }
 
     /// Fetches the device statuses from within the specified `DateInterval`.
@@ -362,14 +454,22 @@ extension Nightscout {
     /// - Parameter maxCount: The maximum number of device statuses to fetch. Defaults to `2 ** 31`, where `**` is exponentiation.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     /// - Parameter result: The result of the operation.
-    public func fetchDeviceStatuses(from interval: DateInterval, maxCount: Int = 2 << 31, completion: @escaping (_ result: NightscoutResult<[NightscoutDeviceStatus]>) -> Void) {
+    public func fetchDeviceStatuses(from interval: DateInterval, maxCount: Int = 2 << 31,
+                                    completion: ((_ result: NightscoutResult<[NightscoutDeviceStatus]>) -> Void)? = nil) {
         let queryItems = QueryItem.deviceStatusDates(from: interval) + [.count(maxCount)]
-        fetchArray(from: .deviceStatus, queryItems: queryItems, completion: completion)
+        fetchArray(from: .deviceStatus, queryItems: queryItems) { (result: NightscoutResult<[NightscoutDeviceStatus]>) in
+            self.observers.notify(
+                for: result, from: self,
+                ifSuccess: { observer in { nightscout, deviceStatuses in observer.nightscout(nightscout, didFetchDeviceStatuses: deviceStatuses) } }
+            )
+            completion?(result)
+        }
     }
 }
 
 extension Nightscout {
-    private func fetchData(from endpoint: APIEndpoint, with request: URLRequest, completion: @escaping (NightscoutResult<Data>) -> Void) {
+    private func fetchData(from endpoint: APIEndpoint, with request: URLRequest,
+                           completion: @escaping (NightscoutResult<Data>) -> Void) {
         let session = urlSession(for: endpoint)
         let task = session.dataTask(with: request) { data, response, error in
             guard error == nil else {
@@ -403,7 +503,8 @@ extension Nightscout {
         task.resume()
     }
 
-    private func fetchData(from endpoint: APIEndpoint, queryItems: [QueryItem], completion: @escaping (NightscoutResult<Data>) -> Void) {
+    private func fetchData(from endpoint: APIEndpoint, queryItems: [QueryItem],
+                           completion: @escaping (NightscoutResult<Data>) -> Void) {
         guard let request = configureURLRequest(for: endpoint, queryItems: queryItems, httpMethod: .get) else {
             completion(.failure(.invalidURL))
             return
@@ -432,7 +533,8 @@ extension Nightscout {
     }
 
     // TODO: eliminate this method using conditional conformance with Array in Swift 4.1
-    private func fetchArray<Response: JSONParseable>(from endpoint: APIEndpoint, queryItems: [QueryItem] = [], completion: @escaping (NightscoutResult<[Response]>) -> Void) {
+    private func fetchArray<Response: JSONParseable>(from endpoint: APIEndpoint, queryItems: [QueryItem] = [],
+                                                     completion: @escaping (NightscoutResult<[Response]>) -> Void) {
         fetchData(from: endpoint, queryItems: queryItems) { result in
             switch result {
             case .success(let data):
@@ -455,44 +557,90 @@ extension Nightscout {
 // MARK: - Uploading
 
 extension Nightscout {
+    /// Describes a response to a Nightscout post request.
+    /// A successful result contains a tuple containing the successfully uploaded items and the rejected items.
+    public typealias PostResponse<Payload: Hashable> = NightscoutResult<(uploadedItems: Set<Payload>, rejectedItems: Set<Payload>)>
+
+    /// A tuple containing the set of items successfully processed by an operation and the set of rejections.
+    public typealias OperationResult<Payload: Hashable> = (processedItems: Set<Payload>, rejections: Set<Rejection<Payload>>)
+
+    /// Describes the item for which an operation failed and the error produced.
+    public struct Rejection<Payload: Hashable>: Hashable {
+        /// The item for which the operation failed.
+        public let item: Payload
+
+        /// The error that produced the operation failure.
+        public let error: NightscoutError
+
+        public static func == (lhs: Rejection, rhs: Rejection) -> Bool {
+            return lhs.item == rhs.item // ignore the error
+        }
+
+        public var hashValue: Int {
+            return item.hashValue // ignore the error
+        }
+    }
+
     /// Verifies that the instance is authorized to upload, update, and delete entities.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     /// - Parameter error: The error that occurred in verifying authorization. `nil` indicates success.
-    public func verifyAuthorization(completion: @escaping (_ error: NightscoutError?) -> Void) {
+    public func verifyAuthorization(completion: ((_ error: NightscoutError?) -> Void)? = nil) {
         guard apiSecret != nil else {
-            completion(.missingAPISecret)
+            completion?(.missingAPISecret)
             return
         }
 
         guard let request = configureURLRequest(for: .authorization) else {
-            completion(.invalidURL)
+            completion?(.invalidURL)
             return
         }
 
         fetchData(from: .authorization, with: request) { result in
-            completion(result.error)
+            self.observers.notify(
+                for: result, from: self,
+                ifSuccess: { observer in { nightscout, _ in observer.nightscoutDidVerifyAuthorization(nightscout) } }
+            )
+            completion?(result.error)
         }
     }
 
     /// Uploads the blood glucose entries.
     /// - Parameter entries: The blood glucose entries to upload.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
-    /// - Parameter result: The result of the operation. A successful result contains any entries that were rejected (i.e. not uploaded successfully).
-    public func uploadEntries(_ entries: [NightscoutEntry], completion: @escaping (_ result: NightscoutResult<[NightscoutEntry]>) -> Void) {
-        post(entries, to: .entries, completion: completion)
+    /// - Parameter result: The result of the operation. A successful result contains a tuple containing the successfully uploaded entries and the rejected entries.
+    public func uploadEntries(_ entries: [NightscoutEntry],
+                              completion: ((_ result: PostResponse<NightscoutEntry>) -> Void)? = nil) {
+        post(entries, to: .entries) { (result: PostResponse<NightscoutEntry>) in
+            self.observers.notify(
+                for: result, from: self,
+                withSuccesses: { observer in { nightscout, entries in observer.nightscout(nightscout, didUploadEntries: entries) } },
+                withRejections: { observer in { nightscout, entries in observer.nightscout(nightscout, didFailToUploadEntries: entries) } }
+            )
+            completion?(result)
+        }
     }
 
     // FIXME: entry deletion fails--but why?
-    /* public */ func deleteEntries(_ entries: [NightscoutEntry], completion: @escaping (_ failures: [(NightscoutEntry, NightscoutError)]) -> Void) {
+    /* public */ func deleteEntries(_ entries: [NightscoutEntry],
+                                    completion: @escaping (_ operationResult: OperationResult<NightscoutEntry>) -> Void) {
+        // TODO: observer API once this is fixed
         delete(entries, from: .entries, completion: completion)
     }
 
     /// Uploads the treatments.
     /// - Parameter treatments: The treatments to upload.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
-    /// - Parameter result: The result of the operation. A successful result contains any treatments that were rejected (i.e. not uploaded successfully).
-    public func uploadTreatments(_ treatments: [NightscoutTreatment], completion: @escaping (_ result: NightscoutResult<[NightscoutTreatment]>) -> Void) {
-        post(treatments, to: .treatments, completion: completion)
+    /// - Parameter result: The result of the operation. A successful result contains a tuple containing the successfully uploaded treatments and the rejected treatments.
+    public func uploadTreatments(_ treatments: [NightscoutTreatment],
+                                 completion: ((_ result: PostResponse<NightscoutTreatment>) -> Void)? = nil) {
+        post(treatments, to: .treatments) { (result: PostResponse<NightscoutTreatment>) in
+            self.observers.notify(
+                for: result, from: self,
+                withSuccesses: { observer in { nightscout, treatments in observer.nightscout(nightscout, didUploadTreatments: treatments) } },
+                withRejections: { observer in { nightscout, treatments in observer.nightscout(nightscout, didFailToUploadTreatments: treatments) } }
+            )
+            completion?(result)
+        }
     }
 
     /// Updates the treatments.
@@ -500,25 +648,49 @@ extension Nightscout {
     /// and reupload them rather than update them.
     /// - Parameter treatments: The treatments to update.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
-    /// - Parameter failures: An array of (treatment, error) tuples consisting of the treatments that failed to be updated and the causes of these failures.
-    public func updateTreatments(_ treatments: [NightscoutTreatment], completion: @escaping (_ failures: [(NightscoutTreatment, NightscoutError)]) -> Void) {
-        put(treatments, to: .treatments, completion: completion)
+    /// - Parameter operationResult: The result of the operation, which contains both the successfully updated treatments and the rejections.
+    public func updateTreatments(_ treatments: [NightscoutTreatment],
+                                 completion: ((_ operationResult: OperationResult<NightscoutTreatment>) -> Void)? = nil) {
+        put(treatments, to: .treatments) { (operationResult: OperationResult<NightscoutTreatment>) in
+            self.observers.notify(
+                for: operationResult, from: self,
+                withSuccesses: { observer in { nightscout, treatments in observer.nightscout(nightscout, didUpdateTreatments: treatments) } },
+                withRejections: { observer in { nightscout, treatments in observer.nightscout(nightscout, didFailToUpdateTreatments: treatments) } }
+            )
+            completion?(operationResult)
+        }
     }
 
     /// Deletes the treatments.
     /// - Parameter treatments: The treatments to delete.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
-    /// - Parameter failures: An array of (treatment, error) tuples consisting of the treatments that failed to be deleted and the causes of these failures.
-    public func deleteTreatments(_ treatments: [NightscoutTreatment], completion: @escaping (_ failures: [(NightscoutTreatment, NightscoutError)]) -> Void) {
-        delete(treatments, from: .treatments, completion: completion)
+    /// - Parameter operationResult: The result of the operation, which contains both the successfully deleted treatments and the rejections.
+    public func deleteTreatments(_ treatments: [NightscoutTreatment],
+                                 completion: ((_ operationResult: OperationResult<NightscoutTreatment>) -> Void)? = nil) {
+        delete(treatments, from: .treatments) { (operationResult: OperationResult<NightscoutTreatment>) in
+            self.observers.notify(
+                for: operationResult, from: self,
+                withSuccesses: { observer in { nightscout, treatments in observer.nightscout(nightscout, didDeleteTreatments: treatments) } },
+                withRejections: { observer in { nightscout, treatments in observer.nightscout(nightscout, didFailToDeleteTreatments: treatments) } }
+            )
+            completion?(operationResult)
+        }
     }
 
     /// Uploads the profile records.
     /// - Parameter records: The profile records to upload.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
-    /// - Parameter result: The result of the operation. A successful result contains any profile records that were rejected (i.e. not uploaded successfully).
-    public func uploadProfileRecords(_ records: [NightscoutProfileRecord], completion: @escaping (NightscoutResult<[NightscoutProfileRecord]>) -> Void) {
-        post(records, to: .profiles, completion: completion)
+    /// - Parameter result: The result of the operation. A successful result contains a tuple containing the successfully uploaded records and the rejected records.
+    public func uploadProfileRecords(_ records: [NightscoutProfileRecord],
+                                     completion: ((_ result: PostResponse<NightscoutProfileRecord>) -> Void)? = nil) {
+        post(records, to: .profiles) { (result: PostResponse<NightscoutProfileRecord>) in
+            self.observers.notify(
+                for: result, from: self,
+                withSuccesses: { observer in { nightscout, records in observer.nightscout(nightscout, didUploadProfileRecords: records) } },
+                withRejections: { observer in { nightscout, records in observer.nightscout(nightscout, didFailToUploadProfileRecords: records) } }
+            )
+            completion?(result)
+        }
     }
 
     /// Updates the profile records.
@@ -526,22 +698,39 @@ extension Nightscout {
     /// and reupload them rather than update them.
     /// - Parameter records: The profile records to update.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
-    /// - Parameter failures: An array of (profile record, error) tuples consisting of the profile records that failed to be updated and the causes of these failures.
-    public func updateProfileRecords(_ records: [NightscoutProfileRecord], completion: @escaping (_ failures: [(NightscoutProfileRecord, NightscoutError)]) -> Void) {
-        put(records, to: .profiles, completion: completion)
+    /// - Parameter operationResult: The result of the operation, which contains both the successfully updated records and the rejections.
+    public func updateProfileRecords(_ records: [NightscoutProfileRecord],
+                                     completion: ((_ operationResult: OperationResult<NightscoutProfileRecord>) -> Void)? = nil) {
+        put(records, to: .profiles) { (operationResult: OperationResult<NightscoutProfileRecord>) in
+            self.observers.notify(
+                for: operationResult, from: self,
+                withSuccesses: { observer in { nightscout, records in observer.nightscout(nightscout, didUpdateProfileRecords: records) } },
+                withRejections: { observer in { nightscout, records in observer.nightscout(nightscout, didFailToUpdateProfileRecords: records) } }
+            )
+            completion?(operationResult)
+        }
     }
 
     /// Deletes the profile records.
     /// - Parameter records: The profile records to delete.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
-    /// - Parameter failures: An array of (profile record, error) tuples consisting of the profile records that failed to be deleted and the causes of these failures.
-    public func deleteProfileRecords(_ records: [NightscoutProfileRecord], completion: @escaping (_ failures: [(NightscoutProfileRecord, NightscoutError)]) -> Void) {
-        delete(records, from: .profiles, completion: completion)
+    /// - Parameter operationResult: The result of the operation, which contains both the successfully deleted records and the rejections.
+    public func deleteProfileRecords(_ records: [NightscoutProfileRecord],
+                                     completion: ((_ operationResult: OperationResult<NightscoutProfileRecord>) -> Void)? = nil) {
+        delete(records, from: .profiles) { (operationResult: OperationResult<NightscoutProfileRecord>) in
+            self.observers.notify(
+                for: operationResult, from: self,
+                withSuccesses: { observer in { nightscout, records in observer.nightscout(nightscout, didDeleteProfileRecords: records) } },
+                withRejections: { observer in { nightscout, records in observer.nightscout(nightscout, didFailToDeleteProfileRecords: records) } }
+            )
+            completion?(operationResult)
+        }
     }
 }
 
 extension Nightscout {
-    private func uploadData(_ data: Data, to endpoint: APIEndpoint, with request: URLRequest, completion: @escaping (NightscoutResult<Data>) -> Void) {
+    private func uploadData(_ data: Data, to endpoint: APIEndpoint, with request: URLRequest,
+                            completion: @escaping (NightscoutResult<Data>) -> Void) {
         let session = urlSession(for: endpoint)
         let task = session.uploadTask(with: request, from: data) { data, response, error in
             guard error == nil else {
@@ -575,7 +764,8 @@ extension Nightscout {
         task.resume()
     }
 
-    private func upload<Payload: JSONConvertible, Response: JSONParseable>(_ item: Payload, to endpoint: APIEndpoint, httpMethod: HTTPMethod, completion: @escaping (NightscoutResult<Response>) -> Void) {
+    private func upload<Payload: JSONConvertible, Response: JSONParseable>(_ item: Payload, to endpoint: APIEndpoint, httpMethod: HTTPMethod,
+                                                                           completion: @escaping (NightscoutResult<Response>) -> Void) {
         guard apiSecret != nil else {
             completion(.failure(.missingAPISecret))
             return
@@ -613,7 +803,8 @@ extension Nightscout {
     }
 
     // TODO: Remove this with conditional conformance in Swift 4.1
-    private func uploadArray<Payload: JSONRepresentable, Response: JSONParseable>(_ items: [Payload], to endpoint: APIEndpoint, httpMethod: HTTPMethod, completion: @escaping (NightscoutResult<[Response]>) -> Void) {
+    private func uploadArray<Payload: JSONRepresentable, Response: JSONParseable>(_ items: [Payload], to endpoint: APIEndpoint, httpMethod: HTTPMethod,
+                                                                                  completion: @escaping (NightscoutResult<[Response]>) -> Void) {
         guard apiSecret != nil else {
             completion(.failure(.missingAPISecret))
             return
@@ -650,33 +841,39 @@ extension Nightscout {
         }
     }
 
-    private func post<Payload: JSONConvertible & Equatable>(_ items: [Payload], to endpoint: APIEndpoint, completion: @escaping (NightscoutResult<[Payload]>) -> Void) {
+    private func post<Payload: JSONConvertible>(_ items: [Payload], to endpoint: APIEndpoint,
+                                                completion: @escaping (PostResponse<Payload>) -> Void) {
         uploadArray(items, to: endpoint, httpMethod: .post) { (result: NightscoutResult<[Payload]>) in
             switch result {
-            case .success(let successfullyUploadedItems):
-                let unsuccessfullyUploadedItems = items.filter { !successfullyUploadedItems.contains($0) }
-                completion(.success(unsuccessfullyUploadedItems))
+            case .success(let uploadedItems):
+                let uploadedItems = Set(uploadedItems)
+                let rejectedItems = Set(items).subtracting(uploadedItems)
+                completion(.success((uploadedItems: uploadedItems, rejectedItems: rejectedItems)))
             case .failure(let error):
                 completion(.failure(error))
             }
         }
     }
 
-    private func put<Payload: JSONConvertible>(_ items: [Payload], to endpoint: APIEndpoint, completion: @escaping ([(Payload, NightscoutError)]) -> Void) {
-        synchronizeOperation(_put, items: items, endpoint: endpoint, completion: completion)
+    private func put<Payload: JSONConvertible>(_ items: [Payload], to endpoint: APIEndpoint,
+                                               completion: @escaping (OperationResult<Payload>) -> Void) {
+        concurrentPerform(_put, items: items, endpoint: endpoint, completion: completion)
     }
 
-    private func _put<Payload: JSONConvertible>(_ item: Payload, to endpoint: APIEndpoint, completion: @escaping (NightscoutError?) -> Void) {
+    private func _put<Payload: JSONConvertible>(_ item: Payload, to endpoint: APIEndpoint,
+                                                completion: @escaping (NightscoutError?) -> Void) {
         upload(item, to: endpoint, httpMethod: .put) { (result: NightscoutResult<AnyJSON>) in
             completion(result.error)
         }
     }
 
-    private func delete<Payload: UniquelyIdentifiable>(_ items: [Payload], from endpoint: APIEndpoint, completion: @escaping ([(Payload, NightscoutError)]) -> Void) {
-        synchronizeOperation(_delete, items: items, endpoint: endpoint, completion: completion)
+    private func delete<Payload: UniquelyIdentifiable>(_ items: [Payload], from endpoint: APIEndpoint,
+                                                       completion: @escaping (OperationResult<Payload>) -> Void) {
+        concurrentPerform(_delete, items: items, endpoint: endpoint, completion: completion)
     }
 
-    private func _delete<Payload: UniquelyIdentifiable>(_ item: Payload, from endpoint: APIEndpoint, completion: @escaping (NightscoutError?) -> Void) {
+    private func _delete<Payload: UniquelyIdentifiable>(_ item: Payload, from endpoint: APIEndpoint,
+                                                        completion: @escaping (NightscoutError?) -> Void) {
         guard apiSecret != nil else {
             completion(.missingAPISecret)
             return
@@ -688,32 +885,36 @@ extension Nightscout {
         }
 
         request.url?.appendPathComponent(item.id)
-
         fetchData(from: endpoint, with: request) { result in
             completion(result.error)
         }
     }
 
     private typealias Operation<T> = (_ item: T, _ endpoint: APIEndpoint, _ completion: @escaping (NightscoutError?) -> Void) -> Void
-    private func synchronizeOperation<T>(_ operation: Operation<T>, items: [T], endpoint: APIEndpoint, completion: @escaping ([(T, NightscoutError)]) -> Void) {
-        let dispatchGroup = DispatchGroup()
-        let failuresModificationQueue = DispatchQueue(label: "nightscoutkit://synchronizeoperation")
-        var failures: [(T, NightscoutError)?] = Array(repeating: nil, count: items.count)
+    private func concurrentPerform<T>(_ operation: Operation<T>, items: [T], endpoint: APIEndpoint,
+                                      completion: @escaping (OperationResult<T>) -> Void) {
+        let rejections: ThreadSafe<[Rejection<T>]> = ThreadSafe([])
+        let operationGroup = DispatchGroup()
 
-        for (index, item) in items.enumerated() {
-            dispatchGroup.enter()
+        for item in items {
+            operationGroup.enter()
             operation(item, endpoint) { error in
-                if let error = error {
-                    failuresModificationQueue.sync {
-                        failures[index] = (item, error)
+                error.map { error in
+                    rejections.atomically { rejections in
+                        let rejection = Rejection(item: item, error: error)
+                        rejections.append(rejection)
                     }
                 }
-                dispatchGroup.leave()
+                operationGroup.leave()
             }
         }
 
-        dispatchGroup.wait()
-        completion(failures.flatMap { $0 })
+        operationGroup.wait()
+
+        let rejectionsSet = Set(rejections.value)
+        let processedSet = Set(items).subtracting(rejectionsSet.map { $0.item })
+        let operationResult: OperationResult = (processedItems: processedSet, rejections: rejectionsSet)
+        completion(operationResult)
     }
 }
 
