@@ -8,7 +8,7 @@
 
 /// A highly configurable class that stores data produced or received
 /// by the operations of an observed `Nightscout` instance.
-open class NightscoutDataStore: NightscoutObserver {
+open class NightscoutDataStore: _NightscoutObserver {
     /// Describes the set of possible options for a `NightscoutDataStore` instance.
     public struct Options: OptionSet {
         /// Cache received data.
@@ -350,7 +350,7 @@ open class NightscoutDataStore: NightscoutObserver {
 
     /// Creates a new data store that stores only the fetched site status,
     /// verification status of authorization, and last error encountered.
-    public convenience init() {
+    public convenience override init() {
         self.init(options: [])
     }
 
@@ -472,105 +472,105 @@ open class NightscoutDataStore: NightscoutObserver {
 
     // MARK: - NightscoutObserver
 
-    open func nightscoutDidVerifyAuthorization(_ nightscout: Nightscout) {
+    open override func nightscoutDidVerifyAuthorization(_ nightscout: Nightscout) {
         _nightscoutHasAuthorization.atomicallyAssign(to: true)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFetchStatus status: NightscoutStatus) {
+    open override func nightscout(_ nightscout: Nightscout, didFetchStatus status: NightscoutStatus) {
         _fetchedStatus.atomicallyAssign(to: status)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFetchEntries entries: [NightscoutEntry]) {
+    open override func nightscout(_ nightscout: Nightscout, didFetchEntries entries: [NightscoutEntry]) {
         guard options.contains(.storeFetchedEntries) else { return }
         prependOrReplace(entries, keyPath: \._fetchedEntries)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didUploadEntries entries: Set<NightscoutEntry>) {
+    open override func nightscout(_ nightscout: Nightscout, didUploadEntries entries: Set<NightscoutEntry>) {
         guard options.contains(.storeUploadedEntries) else { return }
         prependOrReplace(entries, keyPath: \._uploadedEntries)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFailToUploadEntries entries: Set<NightscoutEntry>) {
+    open override func nightscout(_ nightscout: Nightscout, didFailToUploadEntries entries: Set<NightscoutEntry>) {
         guard options.contains(.storeFailedUploadEntries) else { return }
         prependOrReplace(entries, keyPath: \._failedUploadEntries)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFetchTreatments treatments: [NightscoutTreatment]) {
+    open override func nightscout(_ nightscout: Nightscout, didFetchTreatments treatments: [NightscoutTreatment]) {
         guard options.contains(.storeFetchedTreatments) else { return }
         prependOrReplace(treatments, keyPath: \._fetchedTreatments)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didUploadTreatments treatments: Set<NightscoutTreatment>) {
+    open override func nightscout(_ nightscout: Nightscout, didUploadTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeUploadedTreatments) else { return }
         prependOrReplace(treatments, keyPath: \._uploadedTreatments)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFailToUploadTreatments treatments: Set<NightscoutTreatment>) {
+    open override func nightscout(_ nightscout: Nightscout, didFailToUploadTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedUploadTreatments) else { return }
         prependOrReplace(treatments, keyPath: \._failedUploadTreatments)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didUpdateTreatments treatments: Set<NightscoutTreatment>) {
+    open override func nightscout(_ nightscout: Nightscout, didUpdateTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeUpdatedTreatments) else { return }
         prependOrReplace(treatments, keyPath: \._updatedTreatments)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFailToUpdateTreatments treatments: Set<NightscoutTreatment>) {
+    open override func nightscout(_ nightscout: Nightscout, didFailToUpdateTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedUpdateTreatments) else { return }
         prependOrReplace(treatments, keyPath: \._failedUpdateTreatments)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didDeleteTreatments treatments: Set<NightscoutTreatment>) {
+    open override func nightscout(_ nightscout: Nightscout, didDeleteTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeDeletedTreatments) else { return }
         prependOrReplace(treatments, keyPath: \._deletedTreatments)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFailToDeleteTreatments treatments: Set<NightscoutTreatment>) {
+    open override func nightscout(_ nightscout: Nightscout, didFailToDeleteTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedDeleteTreatments) else { return }
         prependOrReplace(treatments, keyPath: \._failedDeleteTreatments)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFetchProfileRecords records: [NightscoutProfileRecord]) {
+    open override func nightscout(_ nightscout: Nightscout, didFetchProfileRecords records: [NightscoutProfileRecord]) {
         guard options.contains(.storeFetchedRecords) else { return }
         prependOrReplace(records, keyPath: \._fetchedRecords)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didUploadProfileRecords records: Set<NightscoutProfileRecord>) {
+    open override func nightscout(_ nightscout: Nightscout, didUploadProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeUploadedRecords) else { return }
         prependOrReplace(records, keyPath: \._uploadedRecords)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFailToUploadProfileRecords records: Set<NightscoutProfileRecord>) {
+    open override func nightscout(_ nightscout: Nightscout, didFailToUploadProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedUploadRecords) else { return }
         prependOrReplace(records, keyPath: \._failedUploadRecords)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
+    open override func nightscout(_ nightscout: Nightscout, didUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeUpdatedRecords) else { return }
         prependOrReplace(records, keyPath: \._updatedRecords)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFailToUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
+    open override func nightscout(_ nightscout: Nightscout, didFailToUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedUpdateRecords) else { return }
         prependOrReplace(records, keyPath: \._failedUpdateRecords)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
+    open override func nightscout(_ nightscout: Nightscout, didDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeDeletedRecords) else { return }
         prependOrReplace(records, keyPath: \._deletedRecords)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFailToDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
+    open override func nightscout(_ nightscout: Nightscout, didFailToDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedDeleteRecords) else { return }
         prependOrReplace(records, keyPath: \._failedDeleteRecords)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didFetchDeviceStatuses deviceStatuses: [NightscoutDeviceStatus]) {
+    open override func nightscout(_ nightscout: Nightscout, didFetchDeviceStatuses deviceStatuses: [NightscoutDeviceStatus]) {
         guard options.contains(.storeFetchedDeviceStatuses) else { return }
         prependOrReplace(deviceStatuses, keyPath: \._fetchedDeviceStatuses)
     }
 
-    open func nightscout(_ nightscout: Nightscout, didErrorWith error: NightscoutError) {
+    open override func nightscout(_ nightscout: Nightscout, didErrorWith error: NightscoutError) {
         switch error {
         case .invalidURL, .missingAPISecret, .unauthorized:
             _nightscoutHasAuthorization.atomicallyAssign(to: false)

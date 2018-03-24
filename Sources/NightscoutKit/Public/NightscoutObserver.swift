@@ -145,6 +145,45 @@ extension NightscoutObserver {
     public func nightscout(_ nightscout: Nightscout, didErrorWith error: NightscoutError) { }
 }
 
+// MARK: - Override enforcement
+
+// Hopefully this won't be needed in the future:
+// https://forums.swift.org/t/pitch-introducing-role-keywords-to-reduce-hard-to-find-bugs/6113
+
+/// This class exists only to ensure that `NightscoutObserver` default protocol implementations
+/// are being overriden by its subclasses through compile-time enforcement of the `override` keyword.
+open class _NightscoutObserver: NightscoutObserver {
+    public init() { }
+
+    open func nightscoutDidVerifyAuthorization(_ nightscout: Nightscout) { }
+
+    open func nightscout(_ nightscout: Nightscout, didFetchStatus status: NightscoutStatus) { }
+
+    open func nightscout(_ nightscout: Nightscout, didFetchEntries entries: [NightscoutEntry]) { }
+    open func nightscout(_ nightscout: Nightscout, didUploadEntries entries: Set<NightscoutEntry>) { }
+    open func nightscout(_ nightscout: Nightscout, didFailToUploadEntries entries: Set<NightscoutEntry>) { }
+
+    open func nightscout(_ nightscout: Nightscout, didFetchTreatments treatments: [NightscoutTreatment]) { }
+    open func nightscout(_ nightscout: Nightscout, didUploadTreatments treatments: Set<NightscoutTreatment>) { }
+    open func nightscout(_ nightscout: Nightscout, didFailToUploadTreatments treatments: Set<NightscoutTreatment>) { }
+    open func nightscout(_ nightscout: Nightscout, didUpdateTreatments treatments: Set<NightscoutTreatment>) { }
+    open func nightscout(_ nightscout: Nightscout, didFailToUpdateTreatments treatments: Set<NightscoutTreatment>) { }
+    open func nightscout(_ nightscout: Nightscout, didDeleteTreatments treatments: Set<NightscoutTreatment>) { }
+    open func nightscout(_ nightscout: Nightscout, didFailToDeleteTreatments treatments: Set<NightscoutTreatment>) { }
+
+    open func nightscout(_ nightscout: Nightscout, didFetchProfileRecords records: [NightscoutProfileRecord]) { }
+    open func nightscout(_ nightscout: Nightscout, didUploadProfileRecords records: Set<NightscoutProfileRecord>) { }
+    open func nightscout(_ nightscout: Nightscout, didFailToUploadProfileRecords records: Set<NightscoutProfileRecord>) { }
+    open func nightscout(_ nightscout: Nightscout, didUpdateProfileRecords records: Set<NightscoutProfileRecord>) { }
+    open func nightscout(_ nightscout: Nightscout, didFailToUpdateProfileRecords records: Set<NightscoutProfileRecord>) { }
+    open func nightscout(_ nightscout: Nightscout, didDeleteProfileRecords records: Set<NightscoutProfileRecord>) { }
+    open func nightscout(_ nightscout: Nightscout, didFailToDeleteProfileRecords records: Set<NightscoutProfileRecord>) { }
+
+    open func nightscout(_ nightscout: Nightscout, didFetchDeviceStatuses deviceStatuses: [NightscoutDeviceStatus]) { }
+
+    open func nightscout(_ nightscout: Nightscout, didErrorWith error: NightscoutError) { }
+}
+
 // MARK: - Utilities
 
 // unfortunately, passing these by referencing `NightscoutObserver.nightscout(_:<other parameter>:)`
