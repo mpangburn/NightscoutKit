@@ -13,8 +13,7 @@ open class NightscoutDataStore: _NightscoutObserver {
     public struct Options: OptionSet {
         /// Cache received data.
         ///
-        /// If this option is set, `NightscoutDataStore` properties will cache received data,
-        /// storing the most recently received data at the front of the array.
+        /// If this option is set, `NightscoutDataStore` properties will accumulate received data.
         /// If this option is not set, `NightscoutDataStore` properties will be replaced as
         /// the observed `Nightscout` instance performs operations.
         public static let cacheReceivedData = Options(rawValue: 1 << 0)
@@ -136,24 +135,24 @@ open class NightscoutDataStore: _NightscoutObserver {
     private let _fetchedStatus: ThreadSafe<NightscoutStatus?> = ThreadSafe(nil)
 
     private let _fetchedEntries: ThreadSafe<[NightscoutEntry]> = ThreadSafe([])
-    private let _uploadedEntries: ThreadSafe<[NightscoutEntry]> = ThreadSafe([])
-    private let _failedUploadEntries: ThreadSafe<[NightscoutEntry]> = ThreadSafe([])
+    private let _uploadedEntries: ThreadSafe<Set<NightscoutEntry>> = ThreadSafe([])
+    private let _failedUploadEntries: ThreadSafe<Set<NightscoutEntry>> = ThreadSafe([])
 
     private let _fetchedTreatments: ThreadSafe<[NightscoutTreatment]> = ThreadSafe([])
-    private let _uploadedTreatments: ThreadSafe<[NightscoutTreatment]> = ThreadSafe([])
-    private let _failedUploadTreatments: ThreadSafe<[NightscoutTreatment]> = ThreadSafe([])
-    private let _updatedTreatments: ThreadSafe<[NightscoutTreatment]> = ThreadSafe([])
-    private let _failedUpdateTreatments: ThreadSafe<[NightscoutTreatment]> = ThreadSafe([])
-    private let _deletedTreatments: ThreadSafe<[NightscoutTreatment]> = ThreadSafe([])
-    private let _failedDeleteTreatments: ThreadSafe<[NightscoutTreatment]> = ThreadSafe([])
+    private let _uploadedTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
+    private let _failedUploadTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
+    private let _updatedTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
+    private let _failedUpdateTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
+    private let _deletedTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
+    private let _failedDeleteTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
 
     private let _fetchedRecords: ThreadSafe<[NightscoutProfileRecord]> = ThreadSafe([])
-    private let _uploadedRecords: ThreadSafe<[NightscoutProfileRecord]> = ThreadSafe([])
-    private let _failedUploadRecords: ThreadSafe<[NightscoutProfileRecord]> = ThreadSafe([])
-    private let _updatedRecords: ThreadSafe<[NightscoutProfileRecord]> = ThreadSafe([])
-    private let _failedUpdateRecords: ThreadSafe<[NightscoutProfileRecord]> = ThreadSafe([])
-    private let _deletedRecords: ThreadSafe<[NightscoutProfileRecord]> = ThreadSafe([])
-    private let _failedDeleteRecords: ThreadSafe<[NightscoutProfileRecord]> = ThreadSafe([])
+    private let _uploadedRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
+    private let _failedUploadRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
+    private let _updatedRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
+    private let _failedUpdateRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
+    private let _deletedRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
+    private let _failedDeleteRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
 
     private let _fetchedDeviceStatuses: ThreadSafe<[NightscoutDeviceStatus]> = ThreadSafe([])
 
@@ -179,8 +178,8 @@ open class NightscoutDataStore: _NightscoutObserver {
     ///
     /// If `options` does not contain `.storeFetchedEntries`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate entries as they are fetched,
-    /// with the most recently fetched entries at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate new entries as they are fetched,
+    /// with the most recent entries at the front of the array.
     /// If not, this property be replaced each time the observed `Nightscout` instance fetches entries.
     public var fetchedEntries: [NightscoutEntry] { return _fetchedEntries.value }
 
@@ -188,26 +187,24 @@ open class NightscoutDataStore: _NightscoutObserver {
     ///
     /// If `options` does not contain `.storeUploadedEntries`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate entries as they are uploaded,
-    /// with the most recently uploaded entries at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate entries as they are uploaded.
     /// If not, this property be replaced each time the observed `Nightscout` instance uploads entries.
-    public var uploadedEntries: [NightscoutEntry] { return _uploadedEntries.value }
+    public var uploadedEntries: Set<NightscoutEntry> { return _uploadedEntries.value }
 
     /// The most entries that failed to upload.
     ///
     /// If `options` does not contain `.storeFailedUploadEntries`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate entries as they fail to upload,
-    /// with the most recent failures at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate entries as they fail to upload.
     /// If not, this property be replaced each time the observed `Nightscout` instance fails to upload entries.
-    public var failedUploadEntries: [NightscoutEntry] { return _failedUploadEntries.value }
+    public var failedUploadEntries: Set<NightscoutEntry> { return _failedUploadEntries.value }
 
     /// The most recently fetched treatments.
     ///
     /// If `options` does not contain `.storeFetchedTreatments`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they are fetched,
-    /// with the most recently fetched treatments at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate new treatments as they are fetched,
+    /// with the most recent treatments at the front of the array.
     /// If not, this property be replaced each time the observed `Nightscout` instance fetches treatments.
     public var fetchedTreatments: [NightscoutTreatment] { return _fetchedTreatments.value }
 
@@ -215,62 +212,56 @@ open class NightscoutDataStore: _NightscoutObserver {
     ///
     /// If `options` does not contain `.storeUploadedTreatments`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they are uploaded,
-    /// with the most recently uploaded treatments at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they are uploaded.
     /// If not, this property be replaced each time the observed `Nightscout` instance uploads treatments.
-    public var uploadedTreatments: [NightscoutTreatment] { return _uploadedTreatments.value }
+    public var uploadedTreatments: Set<NightscoutTreatment> { return _uploadedTreatments.value }
 
     /// The most treatments that failed to upload.
     ///
     /// If `options` does not contain `.storeFailedUploadTreatments`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they fail to upload,
-    /// with the most recent failures at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they fail to upload.
     /// If not, this property be replaced each time the observed `Nightscout` instance fails to upload treatments.
-    public var failedUploadTreatments: [NightscoutTreatment] { return _failedUploadTreatments.value }
+    public var failedUploadTreatments: Set<NightscoutTreatment> { return _failedUploadTreatments.value }
 
     /// The most recently updated treatments.
     ///
     /// If `options` does not contain `.storeUpdatedTreatments`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they are updated,
-    /// with the most recently updated treatments at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they are updated.
     /// If not, this property be replaced each time the observed `Nightscout` instance updates treatments.
-    public var updatedTreatments: [NightscoutTreatment] { return _updatedTreatments.value }
+    public var updatedTreatments: Set<NightscoutTreatment>{ return _updatedTreatments.value }
 
     /// The most treatments that failed to update.
     ///
     /// If `options` does not contain `.storeFailedUpdateTreatments`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they fail to update,
-    /// with the most recent failures at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they fail to update.
     /// If not, this property be replaced each time the observed `Nightscout` instance fails to update treatments.
-    public var failedUpdateTreatments: [NightscoutTreatment] { return _failedUpdateTreatments.value }
+    public var failedUpdateTreatments: Set<NightscoutTreatment> { return _failedUpdateTreatments.value }
 
     /// The most recently deleted treatments.
     ///
     /// If `options` does not contain `.storeDeletedTreatments`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they are deleted,
-    /// with the most recently deleted treatments at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they are deleted.
     /// If not, this property be replaced each time the observed `Nightscout` instance deletes treatments.
-    public var deletedTreatments: [NightscoutTreatment] { return _deletedTreatments.value }
+    public var deletedTreatments: Set<NightscoutTreatment> { return _deletedTreatments.value }
 
     /// The most treatments that failed to delete.
     ///
     /// If `options` does not contain `.storeFailedDeleteTreatments`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they fail to delete,
-    /// with the most recent failures at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate treatments as they fail to delete.
     /// If not, this property be replaced each time the observed `Nightscout` instance fails to delete treatments.
-    public var failedDeleteTreatments: [NightscoutTreatment] { return _failedDeleteTreatments.value }
+    public var failedDeleteTreatments: Set<NightscoutTreatment> { return _failedDeleteTreatments.value }
 
     /// The most recently fetched profile records.
     ///
     /// If `options` does not contain `.storeFetchedRecords`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they are fetched,
-    /// with the most recently fetched records at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate new records as they are fetched,
+    /// with the most recent records at the front of the array.
     /// If not, this property be replaced each time the observed `Nightscout` instance fetches records.
     public var fetchedRecords: [NightscoutProfileRecord] { return _fetchedRecords.value }
 
@@ -278,62 +269,56 @@ open class NightscoutDataStore: _NightscoutObserver {
     ///
     /// If `options` does not contain `.storeUploadedRecords`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they are uploaded,
-    /// with the most recently uploaded records at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they are uploaded.
     /// If not, this property be replaced each time the observed `Nightscout` instance uploads records.
-    public var uploadedRecords: [NightscoutProfileRecord] { return _uploadedRecords.value }
+    public var uploadedRecords: Set<NightscoutProfileRecord>  { return _uploadedRecords.value }
 
     /// The most profile records that failed to upload.
     ///
     /// If `options` does not contain `.storeFailedUploadRecords`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they fail to upload,
-    /// with the most recent failures at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they fail to upload.
     /// If not, this property be replaced each time the observed `Nightscout` instance fails to upload records.
-    public var failedUploadRecords: [NightscoutProfileRecord] { return _failedUploadRecords.value }
+    public var failedUploadRecords: Set<NightscoutProfileRecord>  { return _failedUploadRecords.value }
 
     /// The most recently updated profile records.
     ///
     /// If `options` does not contain `.storeUpdatedRecords`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they are updated,
-    /// with the most recently updated records at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they are updated.
     /// If not, this property be replaced each time the observed `Nightscout` instance updates records.
-    public var updatedRecords: [NightscoutProfileRecord] { return _updatedRecords.value }
+    public var updatedRecords: Set<NightscoutProfileRecord>  { return _updatedRecords.value }
 
     /// The most profile records that failed to update.
     ///
     /// If `options` does not contain `.storeFailedUpdateRecords`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they fail to update,
-    /// with the most recent failures at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they fail to update.
     /// If not, this property be replaced each time the observed `Nightscout` instance fails to update records.
-    public var failedUpdateRecords: [NightscoutProfileRecord] { return _failedUpdateRecords.value }
+    public var failedUpdateRecords: Set<NightscoutProfileRecord>  { return _failedUpdateRecords.value }
 
     /// The most recently deleted profile records.
     ///
     /// If `options` does not contain `.storeDeletedRecords`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they are deleted,
-    /// with the most recently deleted records at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they are deleted.
     /// If not, this property be replaced each time the observed `Nightscout` instance deletes records.
-    public var deletedRecords: [NightscoutProfileRecord] { return _deletedRecords.value }
+    public var deletedRecords: Set<NightscoutProfileRecord> { return _deletedRecords.value }
 
     /// The most profile records that failed to delete.
     ///
     /// If `options` does not contain `.storeFailedDeleteRecords`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they fail to delete,
-    /// with the most recent failures at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate records as they fail to delete.
     /// If not, this property be replaced each time the observed `Nightscout` instance fails to delete records.
-    public var failedDeleteRecords: [NightscoutProfileRecord] { return _failedDeleteRecords.value }
+    public var failedDeleteRecords: Set<NightscoutProfileRecord>  { return _failedDeleteRecords.value }
 
     /// The most recently fetched device statuses.
     ///
     /// If `options` does not contain `.storeFetchedDeviceStatuses`, this property will not be updated.
     ///
-    /// If `options` contains `.cacheReceivedData`, this property will accumulate device statuses as they are fetched,
-    /// with the most recently fetched device statuses at the front of the array.
+    /// If `options` contains `.cacheReceivedData`, this property will accumulate new device statuses as they are fetched,
+    /// with the most recent device statuses at the front of the array.
     /// If not, this property be replaced each time the observed `Nightscout` instance fetches device statuses.
     public var fetchedDeviceStatuses: [NightscoutDeviceStatus] { return _fetchedDeviceStatuses.value }
 
@@ -674,8 +659,10 @@ open class NightscoutDataStore: _NightscoutObserver {
         clearFailureDataCache()
     }
 
-    private func clearCache<T>(_ keyPath: KeyPath<NightscoutDataStore, ThreadSafe<[T]>>) {
-        self[keyPath: keyPath].atomically { (values: inout [T]) in values.removeAll() }
+    private func clearCache<C: RemovableCollection>(_ keyPath: KeyPath<NightscoutDataStore, ThreadSafe<C>>) {
+        self[keyPath: keyPath].atomically { (values: inout C) in
+            values.removeAll(keepingCapacity: false)
+        }
     }
 
     // MARK: - NightscoutObserver
@@ -695,12 +682,12 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     open override func nightscout(_ nightscout: Nightscout, didUploadEntries entries: Set<NightscoutEntry>) {
         guard options.contains(.storeUploadedEntries) else { return }
-        prependOrReplace(entries, keyPath: \._uploadedEntries)
+        formUnionOrReplace(entries, keyPath: \._uploadedEntries)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToUploadEntries entries: Set<NightscoutEntry>) {
         guard options.contains(.storeFailedUploadEntries) else { return }
-        prependOrReplace(entries, keyPath: \._failedUploadEntries)
+        formUnionOrReplace(entries, keyPath: \._failedUploadEntries)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFetchTreatments treatments: [NightscoutTreatment]) {
@@ -710,32 +697,32 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     open override func nightscout(_ nightscout: Nightscout, didUploadTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeUploadedTreatments) else { return }
-        prependOrReplace(treatments, keyPath: \._uploadedTreatments)
+        formUnionOrReplace(treatments, keyPath: \._uploadedTreatments)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToUploadTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedUploadTreatments) else { return }
-        prependOrReplace(treatments, keyPath: \._failedUploadTreatments)
+        formUnionOrReplace(treatments, keyPath: \._failedUploadTreatments)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didUpdateTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeUpdatedTreatments) else { return }
-        prependOrReplace(treatments, keyPath: \._updatedTreatments)
+        formUnionOrReplace(treatments, keyPath: \._updatedTreatments)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToUpdateTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedUpdateTreatments) else { return }
-        prependOrReplace(treatments, keyPath: \._failedUpdateTreatments)
+        formUnionOrReplace(treatments, keyPath: \._failedUpdateTreatments)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didDeleteTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeDeletedTreatments) else { return }
-        prependOrReplace(treatments, keyPath: \._deletedTreatments)
+        formUnionOrReplace(treatments, keyPath: \._deletedTreatments)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToDeleteTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedDeleteTreatments) else { return }
-        prependOrReplace(treatments, keyPath: \._failedDeleteTreatments)
+        formUnionOrReplace(treatments, keyPath: \._failedDeleteTreatments)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFetchProfileRecords records: [NightscoutProfileRecord]) {
@@ -745,32 +732,32 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     open override func nightscout(_ nightscout: Nightscout, didUploadProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeUploadedRecords) else { return }
-        prependOrReplace(records, keyPath: \._uploadedRecords)
+        formUnionOrReplace(records, keyPath: \._uploadedRecords)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToUploadProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedUploadRecords) else { return }
-        prependOrReplace(records, keyPath: \._failedUploadRecords)
+        formUnionOrReplace(records, keyPath: \._failedUploadRecords)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeUpdatedRecords) else { return }
-        prependOrReplace(records, keyPath: \._updatedRecords)
+        formUnionOrReplace(records, keyPath: \._updatedRecords)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedUpdateRecords) else { return }
-        prependOrReplace(records, keyPath: \._failedUpdateRecords)
+        formUnionOrReplace(records, keyPath: \._failedUpdateRecords)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeDeletedRecords) else { return }
-        prependOrReplace(records, keyPath: \._deletedRecords)
+        formUnionOrReplace(records, keyPath: \._deletedRecords)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedDeleteRecords) else { return }
-        prependOrReplace(records, keyPath: \._failedDeleteRecords)
+        formUnionOrReplace(records, keyPath: \._failedDeleteRecords)
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFetchDeviceStatuses deviceStatuses: [NightscoutDeviceStatus]) {
@@ -788,14 +775,36 @@ open class NightscoutDataStore: _NightscoutObserver {
         _lastError.atomicallyAssign(to: error)
     }
 
-    private func prependOrReplace<S: Sequence>(_ newValues: S, keyPath: KeyPath<NightscoutDataStore, ThreadSafe<[S.Element]>>) {
-        let newValues = Array(newValues)
+    private func prependOrReplace<T: TimelineValue>(_ newValues: [T], keyPath: KeyPath<NightscoutDataStore, ThreadSafe<[T]>>) {
         if options.contains(.cacheReceivedData) {
-            self[keyPath: keyPath].atomically { (oldValues: inout [S.Element]) in
-                oldValues.insert(contentsOf: newValues, at: 0)
+            self[keyPath: keyPath].atomically { (oldValues: inout [T]) in
+                if let newestOldValue = oldValues.first,
+                    let overlappingValue = newValues.index(where: { $0.date <= newestOldValue.date }) {
+                        let unrecordedNewValues = newValues[0..<overlappingValue]
+                        oldValues.insert(contentsOf: unrecordedNewValues, at: 0)
+                } else {
+                    oldValues.insert(contentsOf: newValues, at: 0)
+                }
+            }
+        } else {
+            self[keyPath: keyPath].atomicallyAssign(to: newValues)
+        }
+    }
+
+    private func formUnionOrReplace<T>(_ newValues: Set<T>, keyPath: KeyPath<NightscoutDataStore, ThreadSafe<Set<T>>>) {
+        if options.contains(.cacheReceivedData) {
+            self[keyPath: keyPath].atomically { (oldValues: inout Set<T>) in
+                oldValues.formUnion(newValues)
             }
         } else {
             self[keyPath: keyPath].atomicallyAssign(to: newValues)
         }
     }
 }
+
+private protocol RemovableCollection: Collection {
+    mutating func removeAll(keepingCapacity: Bool)
+}
+
+extension Array: RemovableCollection { }
+extension Set: RemovableCollection { }

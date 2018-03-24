@@ -11,7 +11,7 @@ import Foundation
 
 /// A Nightscout treatment.
 /// This type stores the event type and its details.
-public struct NightscoutTreatment: UniquelyIdentifiable, BloodGlucoseUnitConvertible {
+public struct NightscoutTreatment: UniquelyIdentifiable, TimelineValue, BloodGlucoseUnitConvertible {
     /// An event type describing a treatment.
     public enum EventType {
         case bloodGlucoseCheck

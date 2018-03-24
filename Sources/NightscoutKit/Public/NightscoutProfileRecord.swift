@@ -11,7 +11,7 @@ import Foundation
 
 /// A Nightscout profile record.
 /// This type stores data such as the user's profiles and the blood glucose units used in specifying details of these profiles.
-public struct NightscoutProfileRecord: UniquelyIdentifiable {
+public struct NightscoutProfileRecord: UniquelyIdentifiable, TimelineValue {
     /// The profile record's unique, internally assigned identifier.
     public let id: String
 

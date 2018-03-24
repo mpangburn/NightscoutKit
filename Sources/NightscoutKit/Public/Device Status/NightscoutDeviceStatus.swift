@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Describes the status of a device in communication with Nightscout.
-public struct NightscoutDeviceStatus: UniquelyIdentifiable {
+public struct NightscoutDeviceStatus: UniquelyIdentifiable, TimelineValue {
     /// Describes a closed loop system uploading data to Nightscout.
     public enum ClosedLoopSystem {
         case loop(status: LoopDeviceStatus)
