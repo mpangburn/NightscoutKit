@@ -210,6 +210,10 @@
 		89D8F93E2066EA9800E8A13B /* TimelineValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F93C2066EA9800E8A13B /* TimelineValue.swift */; };
 		89D8F93F2066EA9800E8A13B /* TimelineValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F93C2066EA9800E8A13B /* TimelineValue.swift */; };
 		89D8F9402066EA9800E8A13B /* TimelineValue.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F93C2066EA9800E8A13B /* TimelineValue.swift */; };
+		89D8F9422066F02A00E8A13B /* NightscoutError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F9412066F02A00E8A13B /* NightscoutError.swift */; };
+		89D8F9432066F02A00E8A13B /* NightscoutError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F9412066F02A00E8A13B /* NightscoutError.swift */; };
+		89D8F9442066F02A00E8A13B /* NightscoutError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F9412066F02A00E8A13B /* NightscoutError.swift */; };
+		89D8F9452066F02A00E8A13B /* NightscoutError.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F9412066F02A00E8A13B /* NightscoutError.swift */; };
 		89F4C6A12058C0D000C14F93 /* loopdevicestatus.json in Resources */ = {isa = PBXBuildFile; fileRef = 89F4C6A02058C0D000C14F93 /* loopdevicestatus.json */; };
 /* End PBXBuildFile section */
 
@@ -289,6 +293,7 @@
 		89D8F932206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodGlucoseUnitConvertible.swift; sourceTree = "<group>"; };
 		89D8F937206623EE00E8A13B /* NightscoutDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutDataStore.swift; sourceTree = "<group>"; };
 		89D8F93C2066EA9800E8A13B /* TimelineValue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TimelineValue.swift; sourceTree = "<group>"; };
+		89D8F9412066F02A00E8A13B /* NightscoutError.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutError.swift; sourceTree = "<group>"; };
 		89E63F35205CE9B600C458AA /* NightscoutKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89E63F38205CE9B600C458AA /* Info-watchOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
 		89F4C6A02058C0D000C14F93 /* loopdevicestatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loopdevicestatus.json; sourceTree = "<group>"; };
@@ -496,6 +501,7 @@
 				896FF5A12048C77B0054198A /* NightscoutEntry.swift */,
 				892BE725205F8BA2009493EE /* NightscoutEntryProtocol.swift */,
 				892BE72A205F8BE5009493EE /* NightscoutEntrySource.swift */,
+				89D8F9412066F02A00E8A13B /* NightscoutError.swift */,
 				89AFA450206563E20013C5FB /* NightscoutLogger.swift */,
 				89AFA44B20655F520013C5FB /* NightscoutObserver.swift */,
 				896FF5A32048C77B0054198A /* NightscoutProfile.swift */,
@@ -769,6 +775,7 @@
 				892BE6C3205CEE11009493EE /* NightscoutSnapshot.swift in Sources */,
 				892BE729205F8BA2009493EE /* NightscoutEntryProtocol.swift in Sources */,
 				892BE6DD205CEE11009493EE /* JSONKey.swift in Sources */,
+				89D8F9452066F02A00E8A13B /* NightscoutError.swift in Sources */,
 				892BE733205F8FC4009493EE /* Sequence.swift in Sources */,
 				892BE6DB205CEE11009493EE /* DataConvertible.swift in Sources */,
 				892BE6CE205CEE11009493EE /* LoopDeviceStatus.swift in Sources */,
@@ -824,6 +831,7 @@
 				892BE67B205CEE10009493EE /* NightscoutSnapshot.swift in Sources */,
 				892BE727205F8BA2009493EE /* NightscoutEntryProtocol.swift in Sources */,
 				892BE695205CEE10009493EE /* JSONKey.swift in Sources */,
+				89D8F9432066F02A00E8A13B /* NightscoutError.swift in Sources */,
 				892BE731205F8FC4009493EE /* Sequence.swift in Sources */,
 				892BE693205CEE10009493EE /* DataConvertible.swift in Sources */,
 				892BE686205CEE10009493EE /* LoopDeviceStatus.swift in Sources */,
@@ -879,6 +887,7 @@
 				896FF5BC2048C7A30054198A /* JSONConvertible.swift in Sources */,
 				892BE726205F8BA2009493EE /* NightscoutEntryProtocol.swift in Sources */,
 				896FB4612050CEA90021107F /* NightscoutDeviceStatus.swift in Sources */,
+				89D8F9422066F02A00E8A13B /* NightscoutError.swift in Sources */,
 				892BE730205F8FC4009493EE /* Sequence.swift in Sources */,
 				896FF5B52048C77B0054198A /* Nightscout.swift in Sources */,
 				892FBE79205A0286003D74F8 /* TemporaryBasalProtocol.swift in Sources */,
@@ -943,6 +952,7 @@
 				892BE69F205CEE11009493EE /* NightscoutSnapshot.swift in Sources */,
 				892BE728205F8BA2009493EE /* NightscoutEntryProtocol.swift in Sources */,
 				892BE6B9205CEE11009493EE /* JSONKey.swift in Sources */,
+				89D8F9442066F02A00E8A13B /* NightscoutError.swift in Sources */,
 				892BE732205F8FC4009493EE /* Sequence.swift in Sources */,
 				892BE6B7205CEE11009493EE /* DataConvertible.swift in Sources */,
 				892BE6AA205CEE11009493EE /* LoopDeviceStatus.swift in Sources */,

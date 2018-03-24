@@ -9,42 +9,6 @@
 import Foundation
 
 
-/// Describes an error occurring in communication with a Nightscout site.
-public enum NightscoutError: Error {
-    /// An error that occurs when the Nightscout URL is invalid.
-    case invalidURL
-
-    /// An error that occurs when attempting to upload, update, or delete Nightscout entities without providing the API secret.
-    case missingAPISecret
-
-    /// An error that occurs when fetching Nightscout data.
-    /// The associated value contains the error from the call to `URLSession.dataTask`.
-    case fetchError(Error)
-
-    /// An error that occurs when uploading Nightscout data.
-    /// The associated value contains the error from the call to `URLSession.dataTask` or `URLSession.uploadTask`.
-    case uploadError(Error)
-
-    /// An error that occurs when the `URLResponse` received is not an `HTTPURLResponse`.
-    case notAnHTTPURLResponse
-
-    /// An error that occurs when the HTTP status code 401 is returned.
-    /// If this error results from an attempt to upload, modify, or delete a Nightscout entity, a possible cause is an invalid API secret.
-    case unauthorized
-
-    /// An error that occurs when an unexpected HTTP response is returned.
-    /// The associated value contains the HTTP status code and the body of the message response.
-    case httpError(statusCode: Int, body: String)
-
-    /// An error that occurs when the received data cannot be parsed as JSON.
-    /// The associated value contains the error from the call to `JSONSerialization.jsonObject(with:options:)`.
-    case jsonParsingError(Error)
-
-    /// An error that occurs when the received data can be parsed as JSON but does not match the expected format of a Nightscout entity.
-    /// The associated value contains the data which could not be parsed.
-    case dataParsingFailure(Data)
-}
-
 /// The primary interface for interacting with the Nightscout API.
 /// This class performs operations such as:
 /// - fetching and uploading blood glucose entries
