@@ -8,7 +8,6 @@
 
 import Foundation
 
-// TODO: enum documentation here
 
 /// A Nightscout treatment.
 /// This type stores the event type and its details.
@@ -87,13 +86,13 @@ public struct NightscoutTreatment: UniquelyIdentifiable, BloodGlucoseUnitConvert
     public let date: Date
 
     /// The duration of the treatment.
-    public let duration: TimeInterval
+    public let duration: TimeInterval?
 
     /// The glucose measurement at the time of the treatment.
     public let glucose: GlucoseMeasurement?
 
     /// The insulin given at the time of the treatment in units (U).
-    public let insulinGiven: Double? // units
+    public let insulinGiven: Double?
 
     /// The carbs consumed at the time of the treatment in grams (g).
     public let carbsConsumed: Int?
@@ -114,7 +113,7 @@ public struct NightscoutTreatment: UniquelyIdentifiable, BloodGlucoseUnitConvert
     /// - Parameter recorder: The name of the individual who entered the treatment.
     /// - Parameter notes: The notes entered with the treatment.
     /// - Returns: A new treatment.
-    public init(eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?,
+    public init(eventType: EventType, date: Date, duration: TimeInterval?, glucose: GlucoseMeasurement?,
                 insulinGiven: Double?, carbsConsumed: Int?, recorder: String?, notes: String?) {
         self.init(
             id: IdentifierFactory.makeID(),
@@ -129,7 +128,7 @@ public struct NightscoutTreatment: UniquelyIdentifiable, BloodGlucoseUnitConvert
         )
     }
 
-    init(id: String, eventType: EventType, date: Date, duration: TimeInterval, glucose: GlucoseMeasurement?,
+    init(id: String, eventType: EventType, date: Date, duration: TimeInterval?, glucose: GlucoseMeasurement?,
          insulinGiven: Double?, carbsConsumed: Int?, recorder: String?, notes: String?) {
         self.id = id
         self.eventType = eventType
@@ -200,7 +199,7 @@ extension NightscoutTreatment: JSONParseable {
             id: id,
             eventType: eventType,
             date: date,
-            duration: .minutes(treatmentJSON[Key.duration] ?? 0),
+            duration: treatmentJSON[Key.duration].map(TimeInterval.minutes),
             glucose: glucose,
             insulinGiven: treatmentJSON[Key.insulinGiven],
             carbsConsumed: treatmentJSON[Key.carbsConsumed],
@@ -216,7 +215,7 @@ extension NightscoutTreatment: JSONConvertible {
 
         json[Key.id] = id
         json[Key.eventTypeString] = eventType.simpleRawValue
-        json[Key.duration] = duration.minutes
+        json[Key.duration] = duration?.minutes ?? 0
         json[convertingDateFrom: Key.dateString] = date
         json[Key.recorder] = recorder
         json[Key.notes] = notes
