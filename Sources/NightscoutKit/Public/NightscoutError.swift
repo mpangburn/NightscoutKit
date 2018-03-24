@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// Describes an error occurring in communication with a Nightscout site.
 public enum NightscoutError: LocalizedError {
     /// An error that occurs when the Nightscout URL is invalid.
