@@ -470,6 +470,214 @@ open class NightscoutDataStore: _NightscoutObserver {
         return .init(options: .storeAllData, cachingReceivedData: cachingReceivedData)
     }
 
+    // MARK: - Cache clearing
+
+    /// Clears the cached verification status of authorization.
+    public func clearAuthorizationCache() {
+        _nightscoutHasAuthorization.atomicallyAssign(to: nil)
+    }
+
+    /// Clears the cached fetched site status.
+    public func clearFetchedStatusCache() {
+        _fetchedStatus.atomicallyAssign(to: nil)
+    }
+
+    /// Clears the cached fetched entries.
+    public func clearFetchedEntriesCache() {
+        clearCache(\._fetchedEntries)
+    }
+
+    /// Clears the cached uploaded entries.
+    public func clearUploadedEntriesCache() {
+        clearCache(\._uploadedEntries)
+    }
+
+    /// Clears the cached entries that failed to upload.
+    public func clearFailedUploadEntriesCache() {
+        clearCache(\._failedUploadEntries)
+    }
+
+    /// Clears the cached fetched treaments.
+    public func clearFetchedTreatmentsCache() {
+        clearCache(\._fetchedTreatments)
+    }
+
+    /// Clears the cached uploaded treaments.
+    public func clearUploadedTreatmentsCache() {
+        clearCache(\._uploadedTreatments)
+    }
+
+    /// Clears the cached treaments that failed to upload.
+    public func clearFailedUploadTreatmentsCache() {
+        clearCache(\._failedUploadTreatments)
+    }
+
+    /// Clears the cached updated treaments.
+    public func clearUpdatedTreatmentsCache() {
+        clearCache(\._updatedTreatments)
+    }
+
+    /// Clears the cached treaments that failed to update.
+    public func clearFailedUpdateTreatmentsCache() {
+        clearCache(\._failedUpdateTreatments)
+    }
+
+    /// Clears the cached deleted treaments.
+    public func clearDeletedTreatmentsCache() {
+        clearCache(\._deletedTreatments)
+    }
+
+    /// Clears the cached treaments that failed to delete.
+    public func clearFailedDeleteTreatmentsCache() {
+        clearCache(\._failedDeleteTreatments)
+    }
+
+    /// Clears the cached fetched profile records.
+    public func clearFetchedRecordsCache() {
+        clearCache(\._fetchedRecords)
+    }
+
+    /// Clears the cached uploaded profile records.
+    public func clearUploadedRecordsCache() {
+        clearCache(\._uploadedRecords)
+    }
+
+    /// Clears the cached profile records that failed to upload.
+    public func clearFailedUploadRecordsCache() {
+        clearCache(\._failedUploadRecords)
+    }
+
+    /// Clears the cached updated profile records.
+    public func clearUpdatedRecordsCache() {
+        clearCache(\._updatedRecords)
+    }
+
+    /// Clears the cached profile records that failed to update.
+    public func clearFailedUpdateRecordsCache() {
+        clearCache(\._failedUpdateRecords)
+    }
+
+    /// Clears the cached deleted profile records.
+    public func clearDeletedRecordsCache() {
+        clearCache(\._deletedRecords)
+    }
+
+    /// Clears the cached profile records that failed to delete.
+    public func clearFailedDeleteRecordsCache() {
+        clearCache(\._failedDeleteRecords)
+    }
+
+    /// Clears the cached fetched device statuses.
+    public func clearFetchedDeviceStatusesCache() {
+        clearCache(\._fetchedDeviceStatuses)
+    }
+
+    /// Clears the cached error.
+    public func clearErrorCache() {
+        _lastError.atomicallyAssign(to: nil)
+    }
+
+    /// Clears all cached entry data.
+    public func clearEntryDataCache() {
+        clearFetchedEntriesCache()
+        clearUploadedEntriesCache()
+        clearFailedUploadEntriesCache()
+    }
+
+    /// Clears all cached treatment data.
+    public func clearTreatmentDataCache() {
+        clearFetchedTreatmentsCache()
+        clearUploadedTreatmentsCache()
+        clearFailedUploadTreatmentsCache()
+        clearUpdatedTreatmentsCache()
+        clearFailedUpdateTreatmentsCache()
+        clearDeletedTreatmentsCache()
+        clearFailedDeleteTreatmentsCache()
+    }
+
+    /// Clears all cached profile record data.
+    public func clearRecordDataCache() {
+        clearFetchedRecordsCache()
+        clearUploadedRecordsCache()
+        clearFailedUploadRecordsCache()
+        clearUpdatedRecordsCache()
+        clearFailedUpdateRecordsCache()
+        clearDeletedRecordsCache()
+        clearFailedDeleteRecordsCache()
+    }
+
+    /// Clears all cached device status data.
+    public func clearDeviceStatusCache() {
+        clearFetchedDeviceStatusesCache()
+    }
+
+    /// Clears all cached fetched data.
+    public func clearFetchedDataCache() {
+        clearFetchedDeviceStatusesCache()
+        clearFetchedEntriesCache()
+        clearFetchedTreatmentsCache()
+        clearFetchedRecordsCache()
+        clearFetchedDeviceStatusesCache()
+    }
+
+    /// Clears all cached uploaded data.
+    public func clearUploadedDataCache() {
+        clearUploadedEntriesCache()
+        clearUploadedTreatmentsCache()
+        clearUploadedRecordsCache()
+    }
+
+    /// Clears all cached data that failed to upload.
+    public func clearFailedUploadDataCache() {
+        clearFailedUploadEntriesCache()
+        clearFailedUploadTreatmentsCache()
+        clearFailedUploadRecordsCache()
+    }
+
+    /// Clears all cached updated data.
+    public func clearUpdatedDataCache() {
+        clearUpdatedTreatmentsCache()
+        clearFailedUpdateRecordsCache()
+    }
+
+    /// Clears all cached data that failed to update.
+    public func clearFailedUpdateDataCache() {
+        clearFailedUpdateTreatmentsCache()
+        clearFailedUpdateRecordsCache()
+    }
+
+    /// Clears all cached deleted data.
+    public func clearDeletedDataCache() {
+        clearDeletedTreatmentsCache()
+        clearDeletedRecordsCache()
+    }
+
+    /// Clears all cached data that failed to delete.
+    public func clearFailedDeleteDataCache() {
+        clearFailedDeleteTreatmentsCache()
+        clearFailedDeleteRecordsCache()
+    }
+
+    /// Clears all data that failed to upload, update, or delete, along with the cached error.
+    public func clearFailureDataCache() {
+        clearFailedUploadDataCache()
+        clearFailedUpdateDataCache()
+        clearFailedDeleteDataCache()
+        clearErrorCache()
+    }
+
+    /// Clears all cached data.
+    public func clearAllDataCache() {
+        clearFetchedDataCache()
+        clearUploadedDataCache()
+        clearUpdatedDataCache()
+        clearFailureDataCache()
+    }
+
+    private func clearCache<T>(_ keyPath: KeyPath<NightscoutDataStore, ThreadSafe<[T]>>) {
+        self[keyPath: keyPath].atomically { (values: inout [T]) in values.removeAll() }
+    }
+
     // MARK: - NightscoutObserver
 
     open override func nightscoutDidVerifyAuthorization(_ nightscout: Nightscout) {

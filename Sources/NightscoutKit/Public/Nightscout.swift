@@ -51,7 +51,7 @@ public enum NightscoutError: Error {
 /// - fetching, uploading, updating, and deleting treatments
 /// - fetching, uploading, updating, and deleting profile records
 /// - fetching device statuses
-/// - fetching the server status and settings
+/// - fetching the site status and settings
 public final class Nightscout {
     /// The base URL for the Nightscout site.
     /// This is the URL the user would visit to view their Nightscout home page.
@@ -893,7 +893,7 @@ extension Nightscout {
     private typealias Operation<T> = (_ item: T, _ endpoint: APIEndpoint, _ completion: @escaping (NightscoutError?) -> Void) -> Void
     private func concurrentPerform<T>(_ operation: Operation<T>, items: [T], endpoint: APIEndpoint,
                                       completion: @escaping (OperationResult<T>) -> Void) {
-        let rejections: ThreadSafe<[Rejection<T>]> = ThreadSafe([])
+        let rejections: ThreadSafe<Set<Rejection<T>>> = ThreadSafe([])
         let operationGroup = DispatchGroup()
 
         for item in items {
@@ -902,7 +902,7 @@ extension Nightscout {
                 error.map { error in
                     rejections.atomically { rejections in
                         let rejection = Rejection(item: item, error: error)
-                        rejections.append(rejection)
+                        rejections.insert(rejection)
                     }
                 }
                 operationGroup.leave()
@@ -911,7 +911,7 @@ extension Nightscout {
 
         operationGroup.wait()
 
-        let rejectionsSet = Set(rejections.value)
+        let rejectionsSet = rejections.value
         let processedSet = Set(items).subtracting(rejectionsSet.map { $0.item })
         let operationResult: OperationResult = (processedItems: processedSet, rejections: rejectionsSet)
         completion(operationResult)

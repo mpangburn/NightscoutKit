@@ -233,6 +233,8 @@ extension NightscoutObserver {
     }
 }
 
+// TODO: Should observers be notified concurrently?
+
 extension Array where Element == NightscoutObserver {
     func notify<T>(for result: NightscoutResult<T>, from nightscout: Nightscout,
                    ifSuccess update: NightscoutObserverAction<T>) {
