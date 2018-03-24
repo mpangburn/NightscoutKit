@@ -279,7 +279,7 @@ extension Nightscout {
             case .success(let fetchedStatus):
                 status = fetchedStatus
             case .failure(let err):
-                error.atomically { $0 = err }
+                error.atomicallyAssign(to: err)
             }
             snapshotGroup.leave()
         }
@@ -290,7 +290,7 @@ extension Nightscout {
             case .success(let fetchedDeviceStatuses):
                 deviceStatuses = fetchedDeviceStatuses
             case .failure(let err):
-                error.atomically { $0 = err }
+                error.atomicallyAssign(to: err)
             }
             snapshotGroup.leave()
         }
@@ -301,7 +301,7 @@ extension Nightscout {
             case .success(let fetchedProfileRecords):
                 profileRecords = fetchedProfileRecords
             case .failure(let err):
-                error.atomically { $0 = err }
+                error.atomicallyAssign(to: err)
             }
             snapshotGroup.leave()
         }
@@ -312,7 +312,7 @@ extension Nightscout {
             case .success(let fetchedBloodGlucoseEntries):
                 entries = fetchedBloodGlucoseEntries
             case .failure(let err):
-                error.atomically { $0 = err }
+                error.atomicallyAssign(to: err)
             }
             snapshotGroup.leave()
         }
@@ -323,7 +323,7 @@ extension Nightscout {
             case .success(let fetchedTreatments):
                 treatments = fetchedTreatments
             case .failure(let err):
-                error.atomically { $0 = err }
+                error.atomicallyAssign(to: err)
             }
             snapshotGroup.leave()
         }

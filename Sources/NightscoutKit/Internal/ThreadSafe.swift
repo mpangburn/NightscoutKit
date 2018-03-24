@@ -26,4 +26,8 @@ final class ThreadSafe<Value> {
     func atomically(_ transform: (inout Value) -> Void) {
         accessQueue.sync { transform(&self._value) }
     }
+
+    func atomicallyAssign(to newValue: Value) {
+        atomically { $0 = newValue }
+    }
 }

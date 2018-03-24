@@ -202,6 +202,10 @@
 		89D8F934206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F932206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift */; };
 		89D8F935206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F932206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift */; };
 		89D8F936206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F932206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift */; };
+		89D8F938206623EE00E8A13B /* NightscoutDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F937206623EE00E8A13B /* NightscoutDataStore.swift */; };
+		89D8F939206623EE00E8A13B /* NightscoutDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F937206623EE00E8A13B /* NightscoutDataStore.swift */; };
+		89D8F93A206623EE00E8A13B /* NightscoutDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F937206623EE00E8A13B /* NightscoutDataStore.swift */; };
+		89D8F93B206623EE00E8A13B /* NightscoutDataStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F937206623EE00E8A13B /* NightscoutDataStore.swift */; };
 		89F4C6A12058C0D000C14F93 /* loopdevicestatus.json in Resources */ = {isa = PBXBuildFile; fileRef = 89F4C6A02058C0D000C14F93 /* loopdevicestatus.json */; };
 /* End PBXBuildFile section */
 
@@ -279,6 +283,7 @@
 		89D48E34204FA3310066B293 /* DataConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConvertible.swift; sourceTree = "<group>"; };
 		89D48E37204FAC0E0066B293 /* AnyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSON.swift; sourceTree = "<group>"; };
 		89D8F932206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodGlucoseUnitConvertible.swift; sourceTree = "<group>"; };
+		89D8F937206623EE00E8A13B /* NightscoutDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutDataStore.swift; sourceTree = "<group>"; };
 		89E63F35205CE9B600C458AA /* NightscoutKit.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = NightscoutKit.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		89E63F38205CE9B600C458AA /* Info-watchOS.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-watchOS.plist"; sourceTree = "<group>"; };
 		89F4C6A02058C0D000C14F93 /* loopdevicestatus.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = loopdevicestatus.json; sourceTree = "<group>"; };
@@ -482,6 +487,7 @@
 				892BE73420632970009493EE /* BloodGlucoseValue.swift */,
 				892BE720205F87FA009493EE /* DeltaRecordingNighscoutEntry.swift */,
 				896FF5A62048C77B0054198A /* Nightscout.swift */,
+				89D8F937206623EE00E8A13B /* NightscoutDataStore.swift */,
 				896FF5A12048C77B0054198A /* NightscoutEntry.swift */,
 				892BE725205F8BA2009493EE /* NightscoutEntryProtocol.swift */,
 				892BE72A205F8BE5009493EE /* NightscoutEntrySource.swift */,
@@ -749,6 +755,7 @@
 				89AFA454206563E20013C5FB /* NightscoutLogger.swift in Sources */,
 				892BE724205F87FA009493EE /* DeltaRecordingNighscoutEntry.swift in Sources */,
 				892BE6C0205CEE11009493EE /* NightscoutProfile.swift in Sources */,
+				89D8F93B206623EE00E8A13B /* NightscoutDataStore.swift in Sources */,
 				892BE6D3205CEE11009493EE /* TemporaryBasalProtocol.swift in Sources */,
 				892BE6DA205CEE11009493EE /* AnyJSON.swift in Sources */,
 				892BE6CD205CEE11009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */,
@@ -802,6 +809,7 @@
 				89AFA452206563E20013C5FB /* NightscoutLogger.swift in Sources */,
 				892BE722205F87FA009493EE /* DeltaRecordingNighscoutEntry.swift in Sources */,
 				892BE678205CEE10009493EE /* NightscoutProfile.swift in Sources */,
+				89D8F939206623EE00E8A13B /* NightscoutDataStore.swift in Sources */,
 				892BE68B205CEE10009493EE /* TemporaryBasalProtocol.swift in Sources */,
 				892BE692205CEE10009493EE /* AnyJSON.swift in Sources */,
 				892BE685205CEE10009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */,
@@ -855,6 +863,7 @@
 				89AFA451206563E20013C5FB /* NightscoutLogger.swift in Sources */,
 				892BE721205F87FA009493EE /* DeltaRecordingNighscoutEntry.swift in Sources */,
 				896FF5AE2048C77B0054198A /* TimeFormatter.swift in Sources */,
+				89D8F938206623EE00E8A13B /* NightscoutDataStore.swift in Sources */,
 				896FB45D20507EB10021107F /* JSONKey.swift in Sources */,
 				896FF5AF2048C77B0054198A /* BloodGlucoseUnit.swift in Sources */,
 				896FF5AD2048C77B0054198A /* NightscoutTreatment.swift in Sources */,
@@ -917,6 +926,7 @@
 				89AFA453206563E20013C5FB /* NightscoutLogger.swift in Sources */,
 				892BE723205F87FA009493EE /* DeltaRecordingNighscoutEntry.swift in Sources */,
 				892BE69C205CEE11009493EE /* NightscoutProfile.swift in Sources */,
+				89D8F93A206623EE00E8A13B /* NightscoutDataStore.swift in Sources */,
 				892BE6AF205CEE11009493EE /* TemporaryBasalProtocol.swift in Sources */,
 				892BE6B6205CEE11009493EE /* AnyJSON.swift in Sources */,
 				892BE6A9205CEE11009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */,
