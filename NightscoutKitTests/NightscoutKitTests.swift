@@ -71,7 +71,7 @@ class NightscoutKitTests: XCTestCase {
             id: "5a89f9fcdc13514404093e3f",
             eventType: .bolus(type: .meal),
             date: TimeFormatter.date(from: "2018-02-18T22:25:01Z")!,
-            duration: 0,
+            duration: nil,
             glucose: nil,
             insulinGiven: nil,
             carbsConsumed: 25,
