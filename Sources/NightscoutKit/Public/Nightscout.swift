@@ -88,6 +88,7 @@ extension Nightscout {
     /// - Parameter observer: The object to stop observing this `Nightscout` instance.
     public func removeObserver(_ observer: NightscoutObserver) {
         _observers.atomically { observers in
+            // TODO: use more efficient removeAll(where:) in Swift 4.1
             while let index = observers.index(where: { $0 === observer }) {
                 observers.remove(at: index)
             }
@@ -578,7 +579,8 @@ extension Nightscout {
             self.observers.notify(
                 for: result, from: self,
                 withSuccesses: { observer in { nightscout, entries in observer.nightscout(nightscout, didUploadEntries: entries) } },
-                withRejections: { observer in { nightscout, entries in observer.nightscout(nightscout, didFailToUploadEntries: entries) } }
+                withRejections: { observer in { nightscout, entries in observer.nightscout(nightscout, didFailToUploadEntries: entries) } },
+                ifError: { observer in observer.nightscout(self, didFailToUploadEntries: Set(entries)) }
             )
             completion?(result)
         }
@@ -601,7 +603,8 @@ extension Nightscout {
             self.observers.notify(
                 for: result, from: self,
                 withSuccesses: { observer in { nightscout, treatments in observer.nightscout(nightscout, didUploadTreatments: treatments) } },
-                withRejections: { observer in { nightscout, treatments in observer.nightscout(nightscout, didFailToUploadTreatments: treatments) } }
+                withRejections: { observer in { nightscout, treatments in observer.nightscout(nightscout, didFailToUploadTreatments: treatments) } },
+                ifError: { observer in observer.nightscout(self, didFailToUploadTreatments: Set(treatments)) }
             )
             completion?(result)
         }
@@ -651,7 +654,8 @@ extension Nightscout {
             self.observers.notify(
                 for: result, from: self,
                 withSuccesses: { observer in { nightscout, records in observer.nightscout(nightscout, didUploadProfileRecords: records) } },
-                withRejections: { observer in { nightscout, records in observer.nightscout(nightscout, didFailToUploadProfileRecords: records) } }
+                withRejections: { observer in { nightscout, records in observer.nightscout(nightscout, didFailToUploadProfileRecords: records) } },
+                ifError: { observer in observer.nightscout(self, didFailToUploadProfileRecords: Set(records)) }
             )
             completion?(result)
         }

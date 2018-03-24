@@ -193,24 +193,33 @@ typealias NightscoutObserverAction<T> = (NightscoutObserver) -> (Nightscout, T) 
 
 extension NightscoutObserver {
     func notify<T>(for result: NightscoutResult<T>, from nightscout: Nightscout,
-                   ifSuccess update: NightscoutObserverAction<T>) {
+                   ifSuccess update: NightscoutObserverAction<T>,
+                   ifError errorWork: ((NightscoutObserver) -> Void)? = nil) {
         result.ifSuccess { value in update(self)(nightscout, value) }
-              .ifFailure { error in self.nightscout(nightscout, didErrorWith: error) }
+              .ifFailure { error in
+                errorWork?(self)
+                self.nightscout(nightscout, didErrorWith: error)
+        }
     }
 
     func notify<T>(for postResponse: Nightscout.PostResponse<T>, from nightscout: Nightscout,
                    withSuccesses successUpdate: @escaping NightscoutObserverAction<Set<T>>,
-                   withRejections rejectionUpdate: @escaping NightscoutObserverAction<Set<T>>) {
-        notify(for: postResponse, from: nightscout, ifSuccess: { observer in { nightscout, postResponsePayload in
-            let (uploadedItems, rejectedItems) = postResponsePayload
-            // TODO: is ignoring empty sets always desirable?
-            if !uploadedItems.isEmpty {
-                successUpdate(self)(nightscout, uploadedItems)
-            }
-            if !rejectedItems.isEmpty {
-                rejectionUpdate(self)(nightscout, rejectedItems)
-            }
-        }})
+                   withRejections rejectionUpdate: @escaping NightscoutObserverAction<Set<T>>,
+                   ifError errorWork: ((NightscoutObserver) -> Void)? = nil) {
+        notify(
+            for: postResponse, from: nightscout,
+            ifSuccess: { observer in { nightscout, postResponsePayload in
+                let (uploadedItems, rejectedItems) = postResponsePayload
+                // TODO: is ignoring empty sets always desirable?
+                if !uploadedItems.isEmpty {
+                    successUpdate(self)(nightscout, uploadedItems)
+                }
+                if !rejectedItems.isEmpty {
+                    rejectionUpdate(self)(nightscout, rejectedItems)
+                }
+            }},
+            ifError: errorWork
+        )
     }
 
     func notify<T>(for operationResult: Nightscout.OperationResult<T>, from nightscout: Nightscout,
@@ -237,14 +246,16 @@ extension NightscoutObserver {
 
 extension Array where Element == NightscoutObserver {
     func notify<T>(for result: NightscoutResult<T>, from nightscout: Nightscout,
-                   ifSuccess update: NightscoutObserverAction<T>) {
-        forEach { $0.notify(for: result, from: nightscout, ifSuccess: update) }
+                   ifSuccess update: NightscoutObserverAction<T>,
+                   ifError errorWork: ((NightscoutObserver) -> Void)? = nil) {
+        forEach { $0.notify(for: result, from: nightscout, ifSuccess: update, ifError: errorWork) }
     }
 
     func notify<T>(for postResponse: Nightscout.PostResponse<T>, from nightscout: Nightscout,
                    withSuccesses successUpdate: @escaping NightscoutObserverAction<Set<T>>,
-                   withRejections rejectionUpdate: @escaping NightscoutObserverAction<Set<T>>) {
-        forEach { $0.notify(for: postResponse, from: nightscout, withSuccesses: successUpdate, withRejections: rejectionUpdate) }
+                   withRejections rejectionUpdate: @escaping NightscoutObserverAction<Set<T>>,
+                   ifError errorWork: ((NightscoutObserver) -> Void)? = nil) {
+        forEach { $0.notify(for: postResponse, from: nightscout, withSuccesses: successUpdate, withRejections: rejectionUpdate, ifError: errorWork) }
     }
 
     func notify<T>(for operationResult: Nightscout.OperationResult<T>, from nightscout: Nightscout,
