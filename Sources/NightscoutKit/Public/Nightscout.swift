@@ -28,6 +28,12 @@ public final class Nightscout {
     /// The observers responding to operations performed by this `Nightscout` instance.
     private let _observers: ThreadSafe<[NightscoutObserver]>
 
+    /// The URL sessions for accessing the API endpoints of this `Nightscout` instance.
+    private let sessions: Sessions
+
+    /// The queues for asynchronously performing concurrent operations for this `Nightscout` instance.
+    private let queues: Queues
+
     /// Initializes a Nightscout instance from the base URL and (optionally) the API secret.
     /// - Parameter baseURL: The base URL for the Nightscout site.
     /// - Parameter apiSecret: The API secret for the Nightscout site. Defaults to `nil`.
@@ -36,6 +42,8 @@ public final class Nightscout {
         self.baseURL = baseURL
         self.apiSecret = apiSecret
         self._observers = ThreadSafe([])
+        self.sessions = Sessions()
+        self.queues = Queues()
     }
 
     /// Attempts to initialize a Nightscout instance from the base URL string and (optionally) the API secret.
@@ -101,9 +109,9 @@ extension Nightscout {
     }
 }
 
-// MARK: - API
+// MARK: - API Access
 
-fileprivate enum HTTPMethod: String {
+private enum HTTPMethod: String {
     case get = "GET"
     case put = "PUT"
     case post = "POST"
@@ -118,6 +126,50 @@ extension Nightscout {
         case status = "status"
         case deviceStatus = "devicestatus"
         case authorization = "experiments/test"
+    }
+
+    private struct Sessions {
+        let settingsSession = URLSession(configuration: .default)
+        let entriesSession = URLSession(configuration: .default)
+        let treatmentsSession = URLSession(configuration: .default)
+        let profilesSession = URLSession(configuration: .default)
+        let deviceStatusSession = URLSession(configuration: .default)
+        let authorizationSession = URLSession(configuration: .default)
+
+        func urlSession(for endpoint: APIEndpoint) -> URLSession {
+            switch endpoint {
+            case .entries:
+                return entriesSession
+            case .treatments:
+                return treatmentsSession
+            case .profiles:
+                return profilesSession
+            case .status:
+                return settingsSession
+            case .deviceStatus:
+                return deviceStatusSession
+            case .authorization:
+                return authorizationSession
+            }
+        }
+    }
+
+    private struct Queues {
+        let treatmentsQueue = DispatchQueue(label: "com.mpangburn.nightscoutkit.treatments")
+        let profilesQueue = DispatchQueue(label: "com.mpangburn.nightscoutkit.profiles")
+        let snapshotQueue = DispatchQueue(label: "com.mpangburn.nightscoutkit.snapshot")
+        let defaultQueue = DispatchQueue(label: "com.mpangburn.nightscoutkit.default")
+
+        func dispatchQueue(for endpoint: APIEndpoint) -> DispatchQueue {
+            switch endpoint {
+            case .treatments:
+                return treatmentsQueue
+            case .profiles:
+                return profilesQueue
+            default:
+                return defaultQueue // unused, only treatments + profiles support update/delete
+            }
+        }
     }
 
     private enum QueryItem {
@@ -180,23 +232,6 @@ extension Nightscout {
         let base = baseURL.appendingPathComponents("api", Nightscout.apiVersion, endpoint.rawValue)
         let urlQueryItems = queryItems.map { $0.urlQueryItem }
         return base.components?.addingQueryItems(urlQueryItems).url
-    }
-
-    private func urlSession(for endpoint: APIEndpoint) -> URLSession {
-        switch endpoint {
-        case .entries:
-            return .entriesSession
-        case .treatments:
-            return .treatmentsSession
-        case .profiles:
-            return .profilesSession
-        case .status:
-            return .settingsSession
-        case .deviceStatus:
-            return .deviceStatusSession
-        case .authorization:
-            return .authorizationSession
-        }
     }
 
     private func configureURLRequest(for endpoint: APIEndpoint, queryItems: [QueryItem] = [], httpMethod: HTTPMethod? = nil) -> URLRequest? {
@@ -293,17 +328,17 @@ extension Nightscout {
             snapshotGroup.leave()
         }
 
-        snapshotGroup.wait()
+        snapshotGroup.notify(queue: queues.snapshotQueue) {
+            // There's a race condition with errors here, but if any fetch request fails, we'll report an error--it doesn't matter which.
+            guard error.value == nil else {
+                completion(.failure(error.value!))
+                return
+            }
 
-        // There's a race condition with errors here, but if any fetch request fails, we'll report an error--it doesn't matter which.
-        guard error.value == nil else {
-            completion(.failure(error.value!))
-            return
+            let snapshot = NightscoutSnapshot(timestamp: timestamp, status: status!, entries: entries,
+                                              treatments: treatments, profileRecords: profileRecords, deviceStatuses: deviceStatuses)
+            completion(.success(snapshot))
         }
-
-        let snapshot = NightscoutSnapshot(timestamp: timestamp, status: status!, entries: entries,
-                                          treatments: treatments, profileRecords: profileRecords, deviceStatuses: deviceStatuses)
-        completion(.success(snapshot))
     }
 
     /// Fetches the status of the Nightscout site.
@@ -435,7 +470,7 @@ extension Nightscout {
 extension Nightscout {
     private func fetchData(from endpoint: APIEndpoint, with request: URLRequest,
                            completion: @escaping (NightscoutResult<Data>) -> Void) {
-        let session = urlSession(for: endpoint)
+        let session = sessions.urlSession(for: endpoint)
         let task = session.dataTask(with: request) { data, response, error in
             guard error == nil else {
                 completion(.failure(.fetchError(error!)))
@@ -699,7 +734,7 @@ extension Nightscout {
 extension Nightscout {
     private func uploadData(_ data: Data, to endpoint: APIEndpoint, with request: URLRequest,
                             completion: @escaping (NightscoutResult<Data>) -> Void) {
-        let session = urlSession(for: endpoint)
+        let session = sessions.urlSession(for: endpoint)
         let task = session.uploadTask(with: request, from: data) { data, response, error in
             guard error == nil else {
                 completion(.failure(.uploadError(error!)))
@@ -877,20 +912,12 @@ extension Nightscout {
             }
         }
 
-        operationGroup.wait()
-
-        let rejectionsSet = rejections.value
-        let processedSet = Set(items).subtracting(rejectionsSet.map { $0.item })
-        let operationResult: OperationResult = (processedItems: processedSet, rejections: rejectionsSet)
-        completion(operationResult)
+        let queue = queues.dispatchQueue(for: endpoint)
+        operationGroup.notify(queue: queue) {
+            let rejectionsSet = rejections.value
+            let processedSet = Set(items).subtracting(rejectionsSet.map { $0.item })
+            let operationResult: OperationResult = (processedItems: processedSet, rejections: rejectionsSet)
+            completion(operationResult)
+        }
     }
-}
-
-fileprivate extension URLSession {
-    static let settingsSession = URLSession(configuration: .default)
-    static let entriesSession = URLSession(configuration: .default)
-    static let treatmentsSession = URLSession(configuration: .default)
-    static let profilesSession = URLSession(configuration: .default)
-    static let deviceStatusSession = URLSession(configuration: .default)
-    static let authorizationSession = URLSession(configuration: .default)
 }
