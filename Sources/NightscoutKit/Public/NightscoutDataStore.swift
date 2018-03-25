@@ -162,7 +162,7 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     /// The options to use in storing Nightscout data.
     ///
-    /// This value is immutable. Specify options when creating the data store using `.init(options:)`.
+    /// This value is immutable. Specify options when creating the data store using `init(options:)`.
     public var options: Options { return _options.value }
 
     /// A boolean value representing whether the observed `Nightscout` instance has authorization.
@@ -329,7 +329,15 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     /// Creates a new data store with the specified options.
     /// - Parameter options: The options for data storage.
-    public init(options: Options) {
+    /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
+    ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
+    ///                                  Passing `true` is equivalent to including `.cacheReceivedData` in `options`.
+    ///                                  Defaults to `true`.
+    public required init(options: Options, cachingReceivedData: Bool = true) {
+        var options = options
+        if cachingReceivedData {
+            options.insert(.cacheReceivedData)
+        }
         self._options = ThreadSafe(options)
     }
 
@@ -339,120 +347,114 @@ open class NightscoutDataStore: _NightscoutObserver {
         self.init(options: [])
     }
 
-    private convenience init(options: Options, cachingReceivedData: Bool) {
-        var options = options
-        if cachingReceivedData { options.insert(.cacheReceivedData) }
-        self.init(options: options)
-    }
-
     /// Creates a new data store that stores the fetched site status,
     /// verification status of authorization, and last error encountered.
-    public static func statusStore() -> Self {
-        return .init(options: [])
+    public class func statusStore() -> Self {
+        return self.init(options: [])
     }
 
     /// Creates a new data store that stores all entry data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func entryStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllEntryData, cachingReceivedData: cachingReceivedData)
+    public class func entryStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllEntryData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores all treatment data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func treatmentStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllTreatmentData, cachingReceivedData: cachingReceivedData)
+    public class func treatmentStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllTreatmentData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores all profile record data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func recordStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllRecordData, cachingReceivedData: cachingReceivedData)
+    public class func recordStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllRecordData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores all device status data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func deviceStatusStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllDeviceStatusData, cachingReceivedData: cachingReceivedData)
+    public class func deviceStatusStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllDeviceStatusData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores all fetched data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func fetchStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllFetchedData, cachingReceivedData: cachingReceivedData)
+    public class func fetchStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllFetchedData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores all uploaded data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func uploadStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllUploadedData, cachingReceivedData: cachingReceivedData)
+    public class func uploadStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllUploadedData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores all data that failed to upload.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func failedUploadStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllFailedUploadData, cachingReceivedData: cachingReceivedData)
+    public class func failedUploadStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllFailedUploadData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores all updated data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func updateStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllUpdatedData, cachingReceivedData: cachingReceivedData)
+    public class func updateStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllUpdatedData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores all data that failed to update.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func failedUpdateStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllFailedUpdateData, cachingReceivedData: cachingReceivedData)
+    public class func failedUpdateStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllFailedUpdateData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores all deleted data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func deleteStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllDeletedData, cachingReceivedData: cachingReceivedData)
+    public class func deleteStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllDeletedData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores all data that failed to delete.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func failedDeleteStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllFailedDeleteData, cachingReceivedData: cachingReceivedData)
+    public class func failedDeleteStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllFailedDeleteData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores data produced by failed operations.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func failureStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllFailureData, cachingReceivedData: cachingReceivedData)
+    public class func failureStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllFailureData, cachingReceivedData: cachingReceivedData)
     }
 
     /// Creates a new data store that stores all data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public static func allDataStore(cachingReceivedData: Bool = true) -> Self {
-        return .init(options: .storeAllData, cachingReceivedData: cachingReceivedData)
+    public class func allDataStore(cachingReceivedData: Bool = true) -> Self {
+        return self.init(options: .storeAllData, cachingReceivedData: cachingReceivedData)
     }
 
     // MARK: - Cache clearing
@@ -659,7 +661,7 @@ open class NightscoutDataStore: _NightscoutObserver {
         clearFailureDataCache()
     }
 
-    private func clearCache<C: RemovableCollection>(_ keyPath: KeyPath<NightscoutDataStore, ThreadSafe<C>>) {
+    private func clearCache<C: ElementRemovableCollection>(_ keyPath: KeyPath<NightscoutDataStore, ThreadSafe<C>>) {
         self[keyPath: keyPath].atomically { (values: inout C) in
             values.removeAll(keepingCapacity: false)
         }
@@ -802,9 +804,9 @@ open class NightscoutDataStore: _NightscoutObserver {
     }
 }
 
-private protocol RemovableCollection: Collection {
+private protocol ElementRemovableCollection: Collection {
     mutating func removeAll(keepingCapacity: Bool)
 }
 
-extension Array: RemovableCollection { }
-extension Set: RemovableCollection { }
+extension Array: ElementRemovableCollection { }
+extension Set: ElementRemovableCollection { }
