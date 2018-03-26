@@ -18,59 +18,65 @@ open class NightscoutDataStore: _NightscoutObserver {
         /// the observed `Nightscout` instance performs operations.
         public static let cacheReceivedData = Options(rawValue: 1 << 0)
 
+        /// When fetched data is received, only store data more recent than
+        /// the most recently stored data.
+        ///
+        /// If the `cacheReceivedData` option is not set, this option has no effect.
+        public static let ignoreOlderFetchedData = Options(rawValue: 1 << 1)
+
         /// Store the entries fetched by the observed `Nightscout` instance.
-        public static let storeFetchedEntries = Options(rawValue: 1 << 1)
+        public static let storeFetchedEntries = Options(rawValue: 1 << 2)
 
         /// Store the entries uploaded by the observed `Nightscout` instance.
-        public static let storeUploadedEntries = Options(rawValue: 1 << 2)
+        public static let storeUploadedEntries = Options(rawValue: 1 << 3)
 
         /// Store the entries that the observed `Nightscout` instance failed to upload.
-        public static let storeFailedUploadEntries = Options(rawValue: 1 << 3)
+        public static let storeFailedUploadEntries = Options(rawValue: 1 << 4)
 
         /// Store the treatments fetched by the observed `Nightscout` instance.
-        public static let storeFetchedTreatments = Options(rawValue: 1 << 4)
+        public static let storeFetchedTreatments = Options(rawValue: 1 << 5)
 
         /// Store the treatments uploaded by the observed `Nightscout` instance.
-        public static let storeUploadedTreatments = Options(rawValue: 1 << 5)
+        public static let storeUploadedTreatments = Options(rawValue: 1 << 6)
 
         /// Store the treatments that the observed `Nightscout` instance failed to upload.
-        public static let storeFailedUploadTreatments = Options(rawValue: 1 << 6)
+        public static let storeFailedUploadTreatments = Options(rawValue: 1 << 7)
 
         /// Store the treatments updated by the observed `Nightscout` instance.
-        public static let storeUpdatedTreatments = Options(rawValue: 1 << 7)
+        public static let storeUpdatedTreatments = Options(rawValue: 1 << 8)
 
         /// Store the treatments that the observed `Nightscout` instance failed to update.
-        public static let storeFailedUpdateTreatments = Options(rawValue: 1 << 8)
+        public static let storeFailedUpdateTreatments = Options(rawValue: 1 << 9)
 
         /// Store the treatments deleted by the observed `Nightscout` instance.
-        public static let storeDeletedTreatments = Options(rawValue: 1 << 9)
+        public static let storeDeletedTreatments = Options(rawValue: 1 << 10)
 
         /// Store the treatments that the observed `Nightscout` instance failed to delete.
-        public static let storeFailedDeleteTreatments = Options(rawValue: 1 << 10)
+        public static let storeFailedDeleteTreatments = Options(rawValue: 1 << 11)
 
         /// Store the profile records fetched by the observed `Nightscout` instance.
-        public static let storeFetchedRecords = Options(rawValue: 1 << 11)
+        public static let storeFetchedRecords = Options(rawValue: 1 << 12)
 
         /// Store the profile records uploaded by the observed `Nightscout` instance.
-        public static let storeUploadedRecords = Options(rawValue: 1 << 12)
+        public static let storeUploadedRecords = Options(rawValue: 1 << 13)
 
         /// Store the profile records that the observed `Nightscout` instance failed to upload.
-        public static let storeFailedUploadRecords = Options(rawValue: 1 << 13)
+        public static let storeFailedUploadRecords = Options(rawValue: 1 << 14)
 
         /// Store the profile records updated by the observed `Nightscout` instance.
-        public static let storeUpdatedRecords = Options(rawValue: 1 << 14)
+        public static let storeUpdatedRecords = Options(rawValue: 1 << 15)
 
         /// Store the profile records that the observed `Nightscout` instance failed to update.
-        public static let storeFailedUpdateRecords = Options(rawValue: 1 << 15)
+        public static let storeFailedUpdateRecords = Options(rawValue: 1 << 16)
 
         /// Store the profile records deleted by the observed `Nightscout` instance.
-        public static let storeDeletedRecords = Options(rawValue: 1 << 16)
+        public static let storeDeletedRecords = Options(rawValue: 1 << 17)
 
         /// Store the profile records that the observed `Nightscout` instance failed to delete.
-        public static let storeFailedDeleteRecords = Options(rawValue: 1 << 17)
+        public static let storeFailedDeleteRecords = Options(rawValue: 1 << 18)
 
         /// Store the device statuses fetched by the observed `Nightscout` instance.
-        public static let storeFetchedDeviceStatuses = Options(rawValue: 1 << 18)
+        public static let storeFetchedDeviceStatuses = Options(rawValue: 1 << 19)
 
         /// Store fetched entries, uploaded entries, and entries that failed to upload.
         public static let storeAllEntryData: Options = [.storeFetchedEntries, .storeUploadedEntries, .storeFailedUploadEntries]
@@ -779,13 +785,14 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     private func prependOrReplace<T: TimelineValue>(_ newValues: [T], keyPath: KeyPath<NightscoutDataStore, ThreadSafe<[T]>>) {
         if options.contains(.cacheReceivedData) {
-            self[keyPath: keyPath].atomically { (oldValues: inout [T]) in
-                if let newestOldValue = oldValues.first,
-                    let overlappingValue = newValues.index(where: { $0.date <= newestOldValue.date }) {
-                        let unrecordedNewValues = newValues[0..<overlappingValue]
-                        oldValues.insert(contentsOf: unrecordedNewValues, at: 0)
+            self[keyPath: keyPath].atomically { (storedValues: inout [T]) in
+                if options.contains(.ignoreOlderFetchedData),
+                    let mostRecentStoredValue = storedValues.first,
+                    let overlappingValue = newValues.index(where: { $0.date <= mostRecentStoredValue.date }) {
+                        let moreRecentValues = newValues[..<overlappingValue]
+                        storedValues.insert(contentsOf: moreRecentValues, at: 0)
                 } else {
-                    oldValues.insert(contentsOf: newValues, at: 0)
+                    storedValues.insert(contentsOf: newValues, at: 0)
                 }
             }
         } else {
@@ -795,8 +802,8 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     private func formUnionOrReplace<T>(_ newValues: Set<T>, keyPath: KeyPath<NightscoutDataStore, ThreadSafe<Set<T>>>) {
         if options.contains(.cacheReceivedData) {
-            self[keyPath: keyPath].atomically { (oldValues: inout Set<T>) in
-                oldValues.formUnion(newValues)
+            self[keyPath: keyPath].atomically { (storedValues: inout Set<T>) in
+                storedValues.formUnion(newValues)
             }
         } else {
             self[keyPath: keyPath].atomicallyAssign(to: newValues)
