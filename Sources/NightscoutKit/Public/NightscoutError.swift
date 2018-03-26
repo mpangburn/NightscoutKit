@@ -46,12 +46,12 @@ public enum NightscoutError: LocalizedError {
 }
 
 extension NightscoutError {
-    var localizedDescription: String {
+    public var errorDescription: String? {
         switch self {
         case .invalidURL:
-            return NSLocalizedString("Invalid Nightscout URL. Verify that the Nightscout URL is correct.", comment: "The error description and recovery message for an invalid Nightscout URL")
+            return NSLocalizedString("Invalid Nightscout URL.", comment: "The error description for an invalid Nightscout URL")
         case .missingAPISecret:
-            return NSLocalizedString("Missing API secret. The API secret is required for upload, update, and delete operations.", comment: "The error description for a missing API secret")
+            return NSLocalizedString("Missing Nightscout API secret.", comment: "The error description for a missing API secret")
         case .fetchError(let error):
             let format = NSLocalizedString("Fetch error: %@", comment: "The error description for a data fetch error")
             return String(format: format, error.localizedDescription)
@@ -59,19 +59,89 @@ extension NightscoutError {
             let format = NSLocalizedString("Upload error: %@", comment: "The error description for a data upload error")
             return String(format: format, error.localizedDescription)
         case .notAnHTTPURLResponse:
-            return NSLocalizedString("The response received was not an HTTP URL response.", comment: "The error description for non-HTTP URL response")
+            return NSLocalizedString("The response received was not an HTTP URL response.", comment: "The error description a for non-HTTP URL response")
         case .unauthorized:
-            return NSLocalizedString("Unauthorized. Verify that the Nightscout URL and API secret are correct.", comment: "The error description and recovery message for an unauthorized attempt to access data")
-        case .httpError(statusCode: let statusCode, body: let body):
-            let format = NSLocalizedString("HTTP Error %d: %@", comment: "The error description for an HTTP error response")
-            return String(format: format, statusCode, body)
+            return NSLocalizedString("Unauthorized.", comment: "The error description for an unauthorized attempt to access data")
+        case .httpError(statusCode: let statusCode, body: _):
+            return HTTPURLResponse.localizedString(forStatusCode: statusCode)
         case .jsonParsingError(let error):
             let format = NSLocalizedString("JSON parsing error: %@", comment: "The error description for a JSON parsing error")
             return String(format: format, error.localizedDescription)
         case .dataParsingFailure(let data):
-            let format = NSLocalizedString("Data parsing failure. Consider submitting a issue report to https://github.com/mpangburn/NightscoutKit/issues with the following information: %@", comment: "The error description and bug report recommendation for a data parsing failure")
+            let format = NSLocalizedString("Data parsing failure.", comment: "The error description for a data parsing failure")
             let body = String(data: data, encoding: .utf8)!
             return String(format: format, body)
+        }
+    }
+
+    public var failureReason: String? {
+        switch self {
+        case .invalidURL:
+            return nil
+        case .missingAPISecret:
+            return NSLocalizedString("Attempting to upload, update, or delete Nightscout data without providing the API secret will fail.", comment: "The failure reason for a 'missing API secret' error")
+        case .fetchError(let error as NSError):
+            return error.localizedFailureReason
+        case .uploadError(let error as NSError):
+            return error.localizedFailureReason
+        case .notAnHTTPURLResponse:
+            return NSLocalizedString("Attempting to access data from a non-HTTP source will fail.", comment: "The failure reason for a 'non-HTTP URL response' error")
+        case .unauthorized:
+            return nil
+        case .httpError(statusCode: _, body: _):
+            return nil
+        case .jsonParsingError(let error as NSError):
+            return error.localizedFailureReason
+        case .dataParsingFailure(_):
+            return NSLocalizedString("The data received did not match the expected format.", comment: "The failure reason for a 'data parsing failure' error")
+        }
+    }
+
+    public var recoverySuggestion: String? {
+        switch self {
+        case .invalidURL:
+            return NSLocalizedString("Verify that the Nightscout URL is correct.", comment: "The recovery suggestion for an invalid Nightscout URL")
+        case .missingAPISecret:
+            return NSLocalizedString("Verify that the Nightscout API secret has been entered.", comment: "The recovery suggestion for a missing API secret")
+        case .fetchError(let error as NSError):
+            return error.localizedRecoverySuggestion
+        case .uploadError(let error as NSError):
+            return error.localizedRecoverySuggestion
+        case .notAnHTTPURLResponse:
+            return NSLocalizedString("Verify that the Nightscout URL is a valid HTTP URL.", comment: "The recovery suggestion for a non-HTTP URL response")
+        case .unauthorized:
+            return NSLocalizedString("Verify that the Nightscout URL and API secret are correct.", comment: "The recovery suggestion for an unauthorized attempt to access data")
+        case .httpError(statusCode: _, body: _):
+            return nil
+        case .jsonParsingError(let error as NSError):
+            return error.localizedRecoverySuggestion
+        case .dataParsingFailure(let data):
+            let format = NSLocalizedString("If you're certain the Nightscout URL and API secret are correct, consider filing an issue at https://github.com/mpangburn/NightscoutKit/issues with the following information:\n%@", comment: "The bug report recommendation for a data parsing failure")
+            let body = String(data: data, encoding: .utf8)!
+            return String(format: format, body)
+        }
+    }
+
+    public var helpAnchor: String? {
+        switch self {
+        case .invalidURL:
+            return nil
+        case .missingAPISecret:
+            return nil
+        case .fetchError(let error as NSError):
+            return error.helpAnchor
+        case .uploadError(let error as NSError):
+            return error.helpAnchor
+        case .notAnHTTPURLResponse:
+            return nil
+        case .unauthorized:
+            return nil
+        case .httpError(statusCode: _, body: _):
+            return nil
+        case .jsonParsingError(let error as NSError):
+            return error.helpAnchor
+        case .dataParsingFailure(_):
+            return nil
         }
     }
 }
