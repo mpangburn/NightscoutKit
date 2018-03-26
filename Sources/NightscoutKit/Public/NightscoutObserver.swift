@@ -7,7 +7,7 @@
 //
 
 /// A type that observes the operations of a `Nightscout` instance.
-public protocol NightscoutObserver: class {
+public protocol NightscoutObserver: AnyObject {
     /// Called when an observed `Nightscout` instance successfully verifies authorization.
     /// - Parameter nightscout: The `Nightscout` instance that performed the operation.
     func nightscoutDidVerifyAuthorization(_ nightscout: Nightscout)

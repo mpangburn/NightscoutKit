@@ -25,8 +25,9 @@ public final class Nightscout {
     /// If this property is `nil`, upload, update, and delete operations will produce `NightscoutError.missingAPISecret`.
     public var apiSecret: String?
 
-    /// The observers responding to operations performed by this `Nightscout` instance.
-    private let _observers: ThreadSafe<[NightscoutObserver]>
+    /// The observers responding to operations performed by this `Nightscout` instance,
+    /// boxed to hold references weakly.
+    private let _observers: ThreadSafe<[NightscoutObserverBox]>
 
     /// The URL sessions for accessing the API endpoints of this `Nightscout` instance.
     private let sessions: Sessions
@@ -68,19 +69,19 @@ extension Nightscout {
     /// For adding observers, see `addObserver(_:)` and `addObservers(_:)`.
     /// For removing observers, see `removeObserver(_:)` and `removeAllObservers()`.
     public var observers: [NightscoutObserver] {
-        return _observers.value
+        return _observers.value.flatMap { $0.observer }
     }
 
     /// Adds the observer to this `Nightscout` instance.
     /// - Parameter observer: The object to begin observing this `Nightscout` instance.
     public func addObserver(_ observer: NightscoutObserver) {
-        _observers.atomically { $0.append(observer) }
+        _observers.atomically { $0.append(NightscoutObserverBox(observer)) }
     }
 
     /// Adds the observers to this `Nightscout` instance.
     /// - Parameter observers: The objects to begin observing this `Nightscout` instance.
     public func addObservers(_ observers: [NightscoutObserver]) {
-        _observers.atomically { $0.append(contentsOf: observers) }
+        _observers.atomically { $0.append(contentsOf: observers.map(NightscoutObserverBox.init)) }
     }
 
     /// Adds the observers to this `Nightscout` instance.
@@ -92,12 +93,10 @@ extension Nightscout {
     /// Removes the observer from this `Nightscout` instance.
     ///
     /// If the observer is not currently observing this `Nightscout` instance, this method does nothing.
-    /// If the observer occurs multiple times in the list of observers, all instances of the observer will be removed.
     /// - Parameter observer: The object to stop observing this `Nightscout` instance.
     public func removeObserver(_ observer: NightscoutObserver) {
         _observers.atomically { observers in
-            // TODO: use more efficient removeAll(where:) in Swift 4.1
-            while let index = observers.index(where: { $0 === observer }) {
+            if let index = observers.index(where: { $0.observer === observer }) {
                 observers.remove(at: index)
             }
         }
@@ -167,7 +166,8 @@ extension Nightscout {
             case .profiles:
                 return profilesQueue
             default:
-                return defaultQueue // unused, only treatments + profiles support update/delete
+                return defaultQueue // unused, only treatments + profiles support update/delete,
+                                    // which is where this method is used
             }
         }
     }
@@ -902,7 +902,7 @@ extension Nightscout {
         for item in items {
             operationGroup.enter()
             operation(item, endpoint) { error in
-                error.map { error in
+                if let error = error {
                     rejections.atomically { rejections in
                         let rejection = Rejection(item: item, error: error)
                         rejections.insert(rejection)
