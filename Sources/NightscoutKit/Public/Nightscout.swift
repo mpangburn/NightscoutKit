@@ -65,6 +65,10 @@ public final class Nightscout {
 extension Nightscout {
     /// Returns an array containing the objects observing this `Nightscout` instance.
     ///
+    /// **Note:** Observers are notified of `Nightscout` operations concurrently.
+    /// The order of the observers in this array is not reflective
+    /// of the order in which they will be notified.
+    ///
     /// This value is immutable.
     /// For adding observers, see `addObserver(_:)` and `addObservers(_:)`.
     /// For removing observers, see `removeObserver(_:)` and `removeAllObservers()`.
@@ -73,18 +77,30 @@ extension Nightscout {
     }
 
     /// Adds the observer to this `Nightscout` instance.
+    ///
+    /// **Note:** Observers are notified of `Nightscout` operations concurrently.
+    /// The order in which observers are added is not reflective
+    /// of the order in which they will be notified.
     /// - Parameter observer: The object to begin observing this `Nightscout` instance.
     public func addObserver(_ observer: NightscoutObserver) {
         _observers.atomically { $0.append(NightscoutObserverBox(observer)) }
     }
 
     /// Adds the observers to this `Nightscout` instance.
+    ///
+    /// **Note:** Observers are notified of `Nightscout` operations concurrently.
+    /// The order in which observers are added is not reflective
+    /// of the order in which they will be notified.
     /// - Parameter observers: The objects to begin observing this `Nightscout` instance.
     public func addObservers(_ observers: [NightscoutObserver]) {
         _observers.atomically { $0.append(contentsOf: observers.map(NightscoutObserverBox.init)) }
     }
 
     /// Adds the observers to this `Nightscout` instance.
+    ///
+    /// **Note:** Observers are notified of `Nightscout` operations concurrently.
+    /// The order in which observers are added is not reflective
+    /// of the order in which they will be notified.
     /// - Parameter observers: The objects to begin observing this `Nightscout` instance.
     public func addObservers(_ observers: NightscoutObserver...) {
         addObservers(observers)
@@ -260,6 +276,7 @@ extension Nightscout {
     /// - Parameter recentTreatmentCount: The number of recent treatments to fetch. Defaults to 10.
     /// - Parameter recentDeviceStatusCount: The number of recent device statuses to fetch. Defaults to 10.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
     public func snapshot(recentBloodGlucoseEntryCount: Int = 10, recentTreatmentCount: Int = 10, recentDeviceStatusCount: Int = 10,
                          completion: @escaping (_ result: NightscoutResult<NightscoutSnapshot>) -> Void) {
@@ -343,6 +360,7 @@ extension Nightscout {
 
     /// Fetches the status of the Nightscout site.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
     public func fetchStatus(completion: ((_ result: NightscoutResult<NightscoutStatus>) -> Void)? = nil) {
         fetch(from: .status) { (result: NightscoutResult<NightscoutStatus>) in
@@ -357,6 +375,7 @@ extension Nightscout {
     /// Fetches the most recent blood glucose entries.
     /// - Parameter count: The number of recent blood glucose entries to fetch. Defaults to 10.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
     public func fetchMostRecentEntries(count: Int = 10,
                                        completion: ((_ result: NightscoutResult<[NightscoutEntry]>) -> Void)? = nil) {
@@ -374,6 +393,7 @@ extension Nightscout {
     /// - Parameter interval: The interval from which blood glucose entries should be fetched.
     /// - Parameter maxCount: The maximum number of blood glucose entries to fetch. Defaults to `2 ** 31`, where `**` is exponentiation.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
     public func fetchEntries(from interval: DateInterval, maxCount: Int = 2 << 31,
                              completion: ((_ result: NightscoutResult<[NightscoutEntry]>) -> Void)? = nil) {
@@ -390,6 +410,7 @@ extension Nightscout {
     /// Fetches the most recent treatments.
     /// - Parameter count: The number of recent treatments to fetch. Defaults to 10.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
     public func fetchMostRecentTreatments(count: Int = 10,
                                           completion: ((_ result: NightscoutResult<[NightscoutTreatment]>) -> Void)? = nil) {
@@ -407,6 +428,7 @@ extension Nightscout {
     /// - Parameter interval: The interval from which treatments should be fetched.
     /// - Parameter maxCount: The maximum number of treatments to fetch. Defaults to `2 ** 31`, where `**` is exponentiation.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
     public func fetchTreatments(from interval: DateInterval, maxCount: Int = 2 << 31,
                                 completion: ((_ result: NightscoutResult<[NightscoutTreatment]>) -> Void)? = nil) {
@@ -422,6 +444,7 @@ extension Nightscout {
 
     /// Fetches the profile records.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
     public func fetchProfileRecords(completion: ((_ result: NightscoutResult<[NightscoutProfileRecord]>) -> Void)? = nil) {
         fetchArray(from: .profiles) { (result: NightscoutResult<[NightscoutProfileRecord]>) in
@@ -436,6 +459,7 @@ extension Nightscout {
     /// Fetches the most recent device statuses.
     /// - Parameter count: The number of recent device statuses to fetch. Defaults to 10.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
     public func fetchMostRecentDeviceStatuses(count: Int = 10,
                                               completion: ((_ result: NightscoutResult<[NightscoutDeviceStatus]>) -> Void)? = nil) {
@@ -453,6 +477,7 @@ extension Nightscout {
     /// - Parameter interval: The interval from which device statuses should be fetched.
     /// - Parameter maxCount: The maximum number of device statuses to fetch. Defaults to `2 ** 31`, where `**` is exponentiation.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
     public func fetchDeviceStatuses(from interval: DateInterval, maxCount: Int = 2 << 31,
                                     completion: ((_ result: NightscoutResult<[NightscoutDeviceStatus]>) -> Void)? = nil) {
@@ -583,6 +608,7 @@ extension Nightscout {
 
     /// Verifies that the instance is authorized to upload, update, and delete entities.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter error: The error that occurred in verifying authorization. `nil` indicates success.
     public func verifyAuthorization(completion: ((_ error: NightscoutError?) -> Void)? = nil) {
         guard apiSecret != nil else {
@@ -607,6 +633,7 @@ extension Nightscout {
     /// Uploads the blood glucose entries.
     /// - Parameter entries: The blood glucose entries to upload.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation. A successful result contains a tuple containing the successfully uploaded entries and the rejected entries.
     public func uploadEntries(_ entries: [NightscoutEntry],
                               completion: ((_ result: PostResponse<NightscoutEntry>) -> Void)? = nil) {
@@ -631,6 +658,7 @@ extension Nightscout {
     /// Uploads the treatments.
     /// - Parameter treatments: The treatments to upload.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation. A successful result contains a tuple containing the successfully uploaded treatments and the rejected treatments.
     public func uploadTreatments(_ treatments: [NightscoutTreatment],
                                  completion: ((_ result: PostResponse<NightscoutTreatment>) -> Void)? = nil) {
@@ -650,6 +678,7 @@ extension Nightscout {
     /// and reupload them rather than update them.
     /// - Parameter treatments: The treatments to update.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter operationResult: The result of the operation, which contains both the successfully updated treatments and the rejections.
     public func updateTreatments(_ treatments: [NightscoutTreatment],
                                  completion: ((_ operationResult: OperationResult<NightscoutTreatment>) -> Void)? = nil) {
@@ -666,6 +695,7 @@ extension Nightscout {
     /// Deletes the treatments.
     /// - Parameter treatments: The treatments to delete.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter operationResult: The result of the operation, which contains both the successfully deleted treatments and the rejections.
     public func deleteTreatments(_ treatments: [NightscoutTreatment],
                                  completion: ((_ operationResult: OperationResult<NightscoutTreatment>) -> Void)? = nil) {
@@ -682,6 +712,7 @@ extension Nightscout {
     /// Uploads the profile records.
     /// - Parameter records: The profile records to upload.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation. A successful result contains a tuple containing the successfully uploaded records and the rejected records.
     public func uploadProfileRecords(_ records: [NightscoutProfileRecord],
                                      completion: ((_ result: PostResponse<NightscoutProfileRecord>) -> Void)? = nil) {
@@ -701,6 +732,7 @@ extension Nightscout {
     /// and reupload them rather than update them.
     /// - Parameter records: The profile records to update.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter operationResult: The result of the operation, which contains both the successfully updated records and the rejections.
     public func updateProfileRecords(_ records: [NightscoutProfileRecord],
                                      completion: ((_ operationResult: OperationResult<NightscoutProfileRecord>) -> Void)? = nil) {
@@ -717,6 +749,7 @@ extension Nightscout {
     /// Deletes the profile records.
     /// - Parameter records: The profile records to delete.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
+    ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter operationResult: The result of the operation, which contains both the successfully deleted records and the rejections.
     public func deleteProfileRecords(_ records: [NightscoutProfileRecord],
                                      completion: ((_ operationResult: OperationResult<NightscoutProfileRecord>) -> Void)? = nil) {

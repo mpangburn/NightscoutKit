@@ -148,6 +148,10 @@
 		892FBE7D205A09F0003D74F8 /* ClosedLoopStatusProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7C205A09F0003D74F8 /* ClosedLoopStatusProtocol.swift */; };
 		892FBE7F205A0A9D003D74F8 /* AnyClosedLoopStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE7E205A0A9D003D74F8 /* AnyClosedLoopStatus.swift */; };
 		892FBE81205A1FB0003D74F8 /* IdentifierFactory.swift in Sources */ = {isa = PBXBuildFile; fileRef = 892FBE80205A1FB0003D74F8 /* IdentifierFactory.swift */; };
+		893A991D2069C1C000D41D9A /* RandomAccessCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893A991C2069C1C000D41D9A /* RandomAccessCollection.swift */; };
+		893A991E2069C1C000D41D9A /* RandomAccessCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893A991C2069C1C000D41D9A /* RandomAccessCollection.swift */; };
+		893A991F2069C1C000D41D9A /* RandomAccessCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893A991C2069C1C000D41D9A /* RandomAccessCollection.swift */; };
+		893A99202069C1C000D41D9A /* RandomAccessCollection.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893A991C2069C1C000D41D9A /* RandomAccessCollection.swift */; };
 		89667317205CEC4600C65985 /* NightscoutKit.h in Headers */ = {isa = PBXBuildFile; fileRef = 896FF57F2048C7510054198A /* NightscoutKit.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		896FB45D20507EB10021107F /* JSONKey.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45C20507EB10021107F /* JSONKey.swift */; };
 		896FB45F2050BBFC0021107F /* NightscoutStatus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896FB45E2050BBFC0021107F /* NightscoutStatus.swift */; };
@@ -252,6 +256,7 @@
 		892FBE7C205A09F0003D74F8 /* ClosedLoopStatusProtocol.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ClosedLoopStatusProtocol.swift; sourceTree = "<group>"; };
 		892FBE7E205A0A9D003D74F8 /* AnyClosedLoopStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyClosedLoopStatus.swift; sourceTree = "<group>"; };
 		892FBE80205A1FB0003D74F8 /* IdentifierFactory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IdentifierFactory.swift; sourceTree = "<group>"; };
+		893A991C2069C1C000D41D9A /* RandomAccessCollection.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RandomAccessCollection.swift; sourceTree = "<group>"; };
 		896FB45C20507EB10021107F /* JSONKey.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JSONKey.swift; sourceTree = "<group>"; };
 		896FB45E2050BBFC0021107F /* NightscoutStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutStatus.swift; sourceTree = "<group>"; };
 		896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutDeviceStatus.swift; sourceTree = "<group>"; };
@@ -453,6 +458,7 @@
 			children = (
 				896FF5982048C77A0054198A /* Array.swift */,
 				896FF5992048C77A0054198A /* Dictionary.swift */,
+				893A991C2069C1C000D41D9A /* RandomAccessCollection.swift */,
 				892BE72F205F8FC4009493EE /* Sequence.swift */,
 				896FF5D1204BB9810054198A /* String.swift */,
 				896FF59C2048C77A0054198A /* TimeInterval.swift */,
@@ -767,6 +773,7 @@
 				892BE6C6205CEE11009493EE /* TimeFormatter.swift in Sources */,
 				892BE6D0205CEE11009493EE /* OpenAPSDeviceStatus.swift in Sources */,
 				89D8F94F20672F6000E8A13B /* NightscoutObserverBox.swift in Sources */,
+				893A99202069C1C000D41D9A /* RandomAccessCollection.swift in Sources */,
 				892BE6D2205CEE11009493EE /* PumpStatusProtocol.swift in Sources */,
 				892BE6C7205CEE11009493EE /* UniquelyIdentifiable.swift in Sources */,
 				892BE6DC205CEE11009493EE /* JSONConvertible.swift in Sources */,
@@ -824,6 +831,7 @@
 				892BE67E205CEE10009493EE /* TimeFormatter.swift in Sources */,
 				892BE688205CEE10009493EE /* OpenAPSDeviceStatus.swift in Sources */,
 				89D8F94D20672F6000E8A13B /* NightscoutObserverBox.swift in Sources */,
+				893A991E2069C1C000D41D9A /* RandomAccessCollection.swift in Sources */,
 				892BE68A205CEE10009493EE /* PumpStatusProtocol.swift in Sources */,
 				892BE67F205CEE10009493EE /* UniquelyIdentifiable.swift in Sources */,
 				892BE694205CEE10009493EE /* JSONConvertible.swift in Sources */,
@@ -881,6 +889,7 @@
 				892FBE7D205A09F0003D74F8 /* ClosedLoopStatusProtocol.swift in Sources */,
 				896FF5D2204BB9810054198A /* String.swift in Sources */,
 				89D8F94C20672F6000E8A13B /* NightscoutObserverBox.swift in Sources */,
+				893A991D2069C1C000D41D9A /* RandomAccessCollection.swift in Sources */,
 				896FF5A82048C77B0054198A /* Array.swift in Sources */,
 				896FF5AC2048C77B0054198A /* TimeInterval.swift in Sources */,
 				896FF5B02048C77B0054198A /* NightscoutEntry.swift in Sources */,
@@ -947,6 +956,7 @@
 				892BE6A2205CEE11009493EE /* TimeFormatter.swift in Sources */,
 				892BE6AC205CEE11009493EE /* OpenAPSDeviceStatus.swift in Sources */,
 				89D8F94E20672F6000E8A13B /* NightscoutObserverBox.swift in Sources */,
+				893A991F2069C1C000D41D9A /* RandomAccessCollection.swift in Sources */,
 				892BE6AE205CEE11009493EE /* PumpStatusProtocol.swift in Sources */,
 				892BE6A3205CEE11009493EE /* UniquelyIdentifiable.swift in Sources */,
 				892BE6B8205CEE11009493EE /* JSONConvertible.swift in Sources */,

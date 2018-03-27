@@ -242,25 +242,29 @@ extension NightscoutObserver {
     }
 }
 
-// TODO: Should observers be notified concurrently?
-
 extension Array where Element == NightscoutObserver {
     func notify<T>(for result: NightscoutResult<T>, from nightscout: Nightscout,
                    ifSuccess update: NightscoutObserverAction<T>,
                    ifError errorWork: ((NightscoutObserver) -> Void)? = nil) {
-        forEach { $0.notify(for: result, from: nightscout, ifSuccess: update, ifError: errorWork) }
+        concurrentForEach { observer in
+            observer.notify(for: result, from: nightscout, ifSuccess: update, ifError: errorWork)
+        }
     }
 
     func notify<T>(for postResponse: Nightscout.PostResponse<T>, from nightscout: Nightscout,
                    withSuccesses successUpdate: @escaping NightscoutObserverAction<Set<T>>,
                    withRejections rejectionUpdate: @escaping NightscoutObserverAction<Set<T>>,
                    ifError errorWork: ((NightscoutObserver) -> Void)? = nil) {
-        forEach { $0.notify(for: postResponse, from: nightscout, withSuccesses: successUpdate, withRejections: rejectionUpdate, ifError: errorWork) }
+        concurrentForEach { observer in
+            observer.notify(for: postResponse, from: nightscout, withSuccesses: successUpdate, withRejections: rejectionUpdate, ifError: errorWork)
+        }
     }
 
     func notify<T>(for operationResult: Nightscout.OperationResult<T>, from nightscout: Nightscout,
                    withSuccesses successUpdate: @escaping NightscoutObserverAction<Set<T>>,
                    withRejections rejectionUpdate: @escaping NightscoutObserverAction<Set<T>>) {
-        forEach { $0.notify(for: operationResult, from: nightscout, withSuccesses: successUpdate, withRejections: rejectionUpdate) }
+        concurrentForEach { observer in
+            observer.notify(for: operationResult, from: nightscout, withSuccesses: successUpdate, withRejections: rejectionUpdate)
+        }
     }
 }
