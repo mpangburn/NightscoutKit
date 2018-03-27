@@ -6,23 +6,13 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-/// Since `NightscoutObserver` used as a type is not directly convertible to `AnyObject`,
-/// we use this "hack" to store observers weakly in order to avoid retain cycles.
-/// This functionality could be generalized to some extent,
-/// but this is basically a workaround for a `WeakBox<T: AnyObject>`
-/// (which would not work in this situation for the reason described above).
+/// This box is a protocol equivalent for `WeakBox<T: AnyObject>`,
+/// which we can't really generalize in these circumstances
+/// since a protocol constrained to `AnyObject` is not directly convertible to `AnyObject`.
 final class NightscoutObserverBox {
-    private weak var _observer: AnyObject?
-
-    var observer: NightscoutObserver? {
-        if let observer = _observer {
-            return observer as? NightscoutObserver // really should be `as!` but this produces a warning
-        } else {
-            return nil
-        }
-    }
+    private(set) weak var observer: NightscoutObserver?
 
     init(_ observer: NightscoutObserver) {
-        self._observer = observer
+        self.observer = observer
     }
 }
