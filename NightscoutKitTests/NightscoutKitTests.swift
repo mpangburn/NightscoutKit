@@ -49,7 +49,7 @@ class NightscoutKitTests: XCTestCase {
 
     func testParseEntryJSON() {
         let entriesJSON: [JSONDictionary] = loadFixture("entries")
-        let entries = entriesJSON.flatMap(NightscoutEntry.init(rawValue:))
+        let entries = entriesJSON.compactMap(NightscoutEntry.init(rawValue:))
         XCTAssert(entries.count == entriesJSON.count)
     }
 
@@ -100,7 +100,7 @@ class NightscoutKitTests: XCTestCase {
 
     func testParseTreatmentJSON() {
         let treatmentsJSON: [JSONDictionary] = loadFixture("treatments")
-        let treatments = treatmentsJSON.flatMap(NightscoutTreatment.init(rawValue:))
+        let treatments = treatmentsJSON.compactMap(NightscoutTreatment.init(rawValue:))
         XCTAssert(treatments.count == treatmentsJSON.count)
 
         for treatment in treatments {
@@ -112,19 +112,19 @@ class NightscoutKitTests: XCTestCase {
 
     func testParseProfileRecordJSON() {
         let profileJSON: [JSONDictionary] = loadFixture("profiles")
-        let profileStores = profileJSON.flatMap(NightscoutProfileRecord.parse)
+        let profileStores = profileJSON.compactMap(NightscoutProfileRecord.parse)
         XCTAssert(profileJSON.count == profileStores.count)
     }
 
     func testParseLoopDeviceStatusJSON1000Count() {
         let loopDeviceStatusJSON: [JSONDictionary] = loadFixture("loopdevicestatus")
-        let deviceStatuses = loopDeviceStatusJSON.flatMap(NightscoutDeviceStatus.parse(fromJSON:))
+        let deviceStatuses = loopDeviceStatusJSON.compactMap(NightscoutDeviceStatus.parse(fromJSON:))
         XCTAssert(loopDeviceStatusJSON.count == deviceStatuses.count)
     }
 
     func testParseOpenAPSDeviceStatusJSON1000Count() {
         let openAPSDeviceStatusJSON: [JSONDictionary] = loadFixture("openapsstatus")
-        let deviceStatuses = openAPSDeviceStatusJSON.flatMap(NightscoutDeviceStatus.parse(fromJSON:))
+        let deviceStatuses = openAPSDeviceStatusJSON.compactMap(NightscoutDeviceStatus.parse(fromJSON:))
         XCTAssert(openAPSDeviceStatusJSON.count == deviceStatuses.count)
     }
 }

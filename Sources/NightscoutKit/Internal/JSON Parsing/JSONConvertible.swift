@@ -54,33 +54,18 @@ extension JSONConvertible {
 
 // MARK: - Conditional conformance
 
-extension Array /*: JSONParseable */ where Element: JSONParseable {
+extension Array: DataParseable, JSONParseable where Element: JSONParseable {
     typealias JSONParseType = [Element.JSONParseType]
 
     static func parse(fromJSON jsonArray: JSONParseType) -> [Element]? {
-        return jsonArray.flatMap(Element.parse(fromJSON:))
-    }
-
-    // Can be removed post-conditional conformance
-    static func parse(fromData data: Data) throws -> [Element]? {
-        guard let json = try JSONSerialization.jsonObject(with: data, options: []) as? JSONParseType else {
-            return nil
-        }
-        return parse(fromJSON: json)
+        return jsonArray.compactMap(Element.parse(fromJSON:))
     }
 }
 
-extension Array /*: JSONRepresentable */ where Element: JSONRepresentable {
+extension Array: DataRepresentable, JSONRepresentable where Element: JSONRepresentable {
     typealias JSONRepresentation = [Element.JSONRepresentation]
 
     var jsonRepresentation: JSONRepresentation {
         return map { $0.jsonRepresentation }
     }
-
-    // Can be removed post-conditional conformance
-    func data() throws -> Data {
-        return try JSONSerialization.data(withJSONObject: jsonRepresentation, options: [])
-    }
 }
-
-extension Array /*: JSONConvertible */ where Element: JSONConvertible { }

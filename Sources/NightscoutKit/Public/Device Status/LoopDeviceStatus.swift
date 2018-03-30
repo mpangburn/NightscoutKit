@@ -283,8 +283,7 @@ extension LoopDeviceStatus.LoopStatus: JSONParseable {
         static let recommendedTemporaryBasal: JSONKey<TemporaryBasal> = "recommendedTempBasal"
         static let recommendedBolus: JSONKey<Double> = "recommendedBolus"
         static let loopEnacted: JSONKey<LoopEnacted> = "enacted"
-        // TODO: use make this a [RileyLinkStatus] key once we have conditional conformance
-        static let rileyLinkStatuses: JSONKey<[JSONDictionary]> = "rileylinks"
+        static let rileyLinkStatuses: JSONKey<[RileyLinkStatus]> = "rileylinks"
         static let failureReason: JSONKey<String> = "failureReason"
     }
 
@@ -307,7 +306,7 @@ extension LoopDeviceStatus.LoopStatus: JSONParseable {
             recommendedTemporaryBasal: json[parsingFrom: Key.recommendedTemporaryBasal],
             recommendedBolus: json[Key.recommendedBolus],
             loopEnacted: json[parsingFrom: Key.loopEnacted],
-            rileyLinkStatuses: json[Key.rileyLinkStatuses]?.flatMap(RileyLinkStatus.parse(fromJSON:)),
+            rileyLinkStatuses: json[parsingFrom: Key.rileyLinkStatuses],
             failureReason: json[Key.failureReason]
         )
     }

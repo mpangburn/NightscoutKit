@@ -73,7 +73,7 @@ extension Nightscout {
     /// For adding observers, see `addObserver(_:)` and `addObservers(_:)`.
     /// For removing observers, see `removeObserver(_:)` and `removeAllObservers()`.
     public var observers: [NightscoutObserver] {
-        return _observers.value.flatMap { $0.observer }
+        return _observers.value.compactMap { $0.observer }
     }
 
     /// Adds the observer to this `Nightscout` instance.
@@ -380,7 +380,7 @@ extension Nightscout {
     public func fetchMostRecentEntries(count: Int = 10,
                                        completion: ((_ result: NightscoutResult<[NightscoutEntry]>) -> Void)? = nil) {
         let queryItems: [QueryItem] = [.count(count)]
-        fetchArray(from: .entries, queryItems: queryItems) { (result: NightscoutResult<[NightscoutEntry]>) in
+        fetch(from: .entries, queryItems: queryItems) { (result: NightscoutResult<[NightscoutEntry]>) in
             self.observers.notify(
                 for: result, from: self,
                 ifSuccess: { observer in { nightscout, entries in observer.nightscout(nightscout, didFetchEntries: entries) } }
@@ -398,7 +398,7 @@ extension Nightscout {
     public func fetchEntries(from interval: DateInterval, maxCount: Int = 2 << 31,
                              completion: ((_ result: NightscoutResult<[NightscoutEntry]>) -> Void)? = nil) {
         let queryItems = QueryItem.entryDates(from: interval).appending(.count(maxCount))
-        fetchArray(from: .entries, queryItems: queryItems) { (result: NightscoutResult<[NightscoutEntry]>) in
+        fetch(from: .entries, queryItems: queryItems) { (result: NightscoutResult<[NightscoutEntry]>) in
             self.observers.notify(
                 for: result, from: self,
                 ifSuccess: { observer in { nightscout, entries in observer.nightscout(nightscout, didFetchEntries: entries) } }
@@ -415,7 +415,7 @@ extension Nightscout {
     public func fetchMostRecentTreatments(count: Int = 10,
                                           completion: ((_ result: NightscoutResult<[NightscoutTreatment]>) -> Void)? = nil) {
         let queryItems: [QueryItem] = [.count(count)]
-        fetchArray(from: .treatments, queryItems: queryItems) { (result: NightscoutResult<[NightscoutTreatment]>) in
+        fetch(from: .treatments, queryItems: queryItems) { (result: NightscoutResult<[NightscoutTreatment]>) in
             self.observers.notify(
                 for: result, from: self,
                 ifSuccess: { observer in { nightscout, treatments in observer.nightscout(nightscout, didFetchTreatments: treatments) } }
@@ -433,7 +433,7 @@ extension Nightscout {
     public func fetchTreatments(from interval: DateInterval, maxCount: Int = 2 << 31,
                                 completion: ((_ result: NightscoutResult<[NightscoutTreatment]>) -> Void)? = nil) {
         let queryItems = QueryItem.treatmentDates(from: interval).appending(.count(maxCount))
-        fetchArray(from: .treatments, queryItems: queryItems) { (result: NightscoutResult<[NightscoutTreatment]>) in
+        fetch(from: .treatments, queryItems: queryItems) { (result: NightscoutResult<[NightscoutTreatment]>) in
             self.observers.notify(
                 for: result, from: self,
                 ifSuccess: { observer in { nightscout, treatments in observer.nightscout(nightscout, didFetchTreatments: treatments) } }
@@ -447,7 +447,7 @@ extension Nightscout {
     ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
     public func fetchProfileRecords(completion: ((_ result: NightscoutResult<[NightscoutProfileRecord]>) -> Void)? = nil) {
-        fetchArray(from: .profiles) { (result: NightscoutResult<[NightscoutProfileRecord]>) in
+        fetch(from: .profiles) { (result: NightscoutResult<[NightscoutProfileRecord]>) in
             self.observers.notify(
                 for: result, from: self,
                 ifSuccess: { observer in { nightscout, records in observer.nightscout(nightscout, didFetchProfileRecords: records) } }
@@ -464,7 +464,7 @@ extension Nightscout {
     public func fetchMostRecentDeviceStatuses(count: Int = 10,
                                               completion: ((_ result: NightscoutResult<[NightscoutDeviceStatus]>) -> Void)? = nil) {
         let queryItems: [QueryItem] = [.count(count)]
-        fetchArray(from: .deviceStatus, queryItems: queryItems) { (result: NightscoutResult<[NightscoutDeviceStatus]>) in
+        fetch(from: .deviceStatus, queryItems: queryItems) { (result: NightscoutResult<[NightscoutDeviceStatus]>) in
             self.observers.notify(
                 for: result, from: self,
                 ifSuccess: { observer in { nightscout, deviceStatuses in observer.nightscout(nightscout, didFetchDeviceStatuses: deviceStatuses) } }
@@ -482,7 +482,7 @@ extension Nightscout {
     public func fetchDeviceStatuses(from interval: DateInterval, maxCount: Int = 2 << 31,
                                     completion: ((_ result: NightscoutResult<[NightscoutDeviceStatus]>) -> Void)? = nil) {
         let queryItems = QueryItem.deviceStatusDates(from: interval) + [.count(maxCount)]
-        fetchArray(from: .deviceStatus, queryItems: queryItems) { (result: NightscoutResult<[NightscoutDeviceStatus]>) in
+        fetch(from: .deviceStatus, queryItems: queryItems) { (result: NightscoutResult<[NightscoutDeviceStatus]>) in
             self.observers.notify(
                 for: result, from: self,
                 ifSuccess: { observer in { nightscout, deviceStatuses in observer.nightscout(nightscout, didFetchDeviceStatuses: deviceStatuses) } }
@@ -544,27 +544,6 @@ extension Nightscout {
             case .success(let data):
                 do {
                     guard let parsed = try Response.parse(fromData: data) else {
-                        completion(.failure(.dataParsingFailure(data)))
-                        return
-                    }
-                    completion(.success(parsed))
-                } catch {
-                    completion(.failure(.jsonParsingError(error)))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-
-    // TODO: eliminate this method using conditional conformance with Array in Swift 4.1
-    private func fetchArray<Response: JSONParseable>(from endpoint: APIEndpoint, queryItems: [QueryItem] = [],
-                                                     completion: @escaping (NightscoutResult<[Response]>) -> Void) {
-        fetchData(from: endpoint, queryItems: queryItems) { result in
-            switch result {
-            case .success(let data):
-                do {
-                    guard let parsed = try [Response].parse(fromData: data) else {
                         completion(.failure(.dataParsingFailure(data)))
                         return
                     }
@@ -800,8 +779,8 @@ extension Nightscout {
         task.resume()
     }
 
-    private func upload<Payload: JSONConvertible, Response: JSONParseable>(_ item: Payload, to endpoint: APIEndpoint, httpMethod: HTTPMethod,
-                                                                           completion: @escaping (NightscoutResult<Response>) -> Void) {
+    private func upload<Payload: JSONRepresentable, Response: JSONParseable>(_ item: Payload, to endpoint: APIEndpoint, httpMethod: HTTPMethod,
+                                                                             completion: @escaping (NightscoutResult<Response>) -> Void) {
         guard apiSecret != nil else {
             completion(.failure(.missingAPISecret))
             return
@@ -838,48 +817,9 @@ extension Nightscout {
         }
     }
 
-    // TODO: Remove this with conditional conformance in Swift 4.1
-    private func uploadArray<Payload: JSONRepresentable, Response: JSONParseable>(_ items: [Payload], to endpoint: APIEndpoint, httpMethod: HTTPMethod,
-                                                                                  completion: @escaping (NightscoutResult<[Response]>) -> Void) {
-        guard apiSecret != nil else {
-            completion(.failure(.missingAPISecret))
-            return
-        }
-
-        guard let request = configureURLRequest(for: endpoint, httpMethod: httpMethod) else {
-            completion(.failure(.invalidURL))
-            return
-        }
-
-        let data: Data
-        do {
-            data = try items.data()
-        } catch {
-            completion(.failure(.jsonParsingError(error)))
-            return
-        }
-
-        uploadData(data, to: endpoint, with: request) { result in
-            switch result {
-            case .success(let data):
-                do {
-                    guard let response = try [Response].parse(fromData: data) else {
-                        completion(.failure(.dataParsingFailure(data)))
-                        return
-                    }
-                    completion(.success(response))
-                } catch {
-                    completion(.failure(.jsonParsingError(error)))
-                }
-            case .failure(let error):
-                completion(.failure(error))
-            }
-        }
-    }
-
-    private func post<Payload: JSONConvertible>(_ items: [Payload], to endpoint: APIEndpoint,
-                                                completion: @escaping (PostResponse<Payload>) -> Void) {
-        uploadArray(items, to: endpoint, httpMethod: .post) { (result: NightscoutResult<[Payload]>) in
+    private func post<Payload: JSONRepresentable & JSONParseable>(_ items: [Payload], to endpoint: APIEndpoint,
+                                                                  completion: @escaping (PostResponse<Payload>) -> Void) {
+        upload(items, to: endpoint, httpMethod: .post) { (result: NightscoutResult<[Payload]>) in
             switch result {
             case .success(let uploadedItems):
                 let uploadedItems = Set(uploadedItems)
@@ -891,13 +831,13 @@ extension Nightscout {
         }
     }
 
-    private func put<Payload: JSONConvertible>(_ items: [Payload], to endpoint: APIEndpoint,
-                                               completion: @escaping (OperationResult<Payload>) -> Void) {
+    private func put<Payload: JSONRepresentable & JSONParseable>(_ items: [Payload], to endpoint: APIEndpoint,
+                                                                 completion: @escaping (OperationResult<Payload>) -> Void) {
         concurrentPerform(_put, items: items, endpoint: endpoint, completion: completion)
     }
 
-    private func _put<Payload: JSONConvertible>(_ item: Payload, to endpoint: APIEndpoint,
-                                                completion: @escaping (NightscoutError?) -> Void) {
+    private func _put<Payload: JSONRepresentable & JSONParseable>(_ item: Payload, to endpoint: APIEndpoint,
+                                                                  completion: @escaping (NightscoutError?) -> Void) {
         upload(item, to: endpoint, httpMethod: .put) { (result: NightscoutResult<AnyJSON>) in
             completion(result.error)
         }
