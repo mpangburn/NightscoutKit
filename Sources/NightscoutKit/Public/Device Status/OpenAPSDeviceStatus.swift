@@ -91,7 +91,7 @@ public struct OpenAPSDeviceStatus {
                     /// and each subsequent member represents the predicted glucose five minutes after the previous.
                     public var all: [[Int]] {
                         return [basedOnInsulinOnBoard,
-                                withZeroBasal, basedOnCarbAbsorption, basedOnUnannouncedMeal].flatMap { $0 }
+                                withZeroBasal, basedOnCarbAbsorption, basedOnUnannouncedMeal].compactMap { $0 }
                     }
                 }
 

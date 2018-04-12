@@ -1,7 +1,7 @@
 language: objective-c
-osx_image: xcode9.2
+osx_image: xcode9.3
 script:
-  - xcodebuild -project NightscoutKit.xcodeproj -scheme NightscoutKit-iOS -sdk iphonesimulator11.2 build -destination name="iPhone SE" test
+  - xcodebuild -project NightscoutKit.xcodeproj -scheme NightscoutKit-iOS -sdk iphonesimulator11.3 build -destination name="iPhone SE" test
   - xcrun xcodebuild -project NightscoutKit.xcodeproj -scheme NightscoutKit-macOS 
   - xcrun xcodebuild -project NightscoutKit.xcodeproj -scheme NightscoutKit-watchOS
   - xcrun xcodebuild -project NightscoutKit.xcodeproj -scheme NightscoutKit-tvOS

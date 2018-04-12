@@ -120,8 +120,8 @@ extension NightscoutProfile: JSONParseable {
             return nil
         }
 
-        let lowTargets: [ScheduleItem<Double>] = lowTargetDictionaries.flatMap(ScheduleItem.parse).sorted { $0.startTime < $1.startTime }
-        let highTargets: [ScheduleItem<Double>] = highTargetDictionaries.flatMap(ScheduleItem.parse).sorted { $0.startTime < $1.startTime }
+        let lowTargets: [ScheduleItem<Double>] = lowTargetDictionaries.compactMap(ScheduleItem.parse).sorted { $0.startTime < $1.startTime }
+        let highTargets: [ScheduleItem<Double>] = highTargetDictionaries.compactMap(ScheduleItem.parse).sorted { $0.startTime < $1.startTime }
         var bloodGlucoseTargetSchedule: BloodGlucoseTargetSchedule = []
         for (lowTarget, highTarget) in zip(lowTargets, highTargets) {
             guard lowTarget.startTime == highTarget.startTime else {
@@ -131,11 +131,10 @@ extension NightscoutProfile: JSONParseable {
             bloodGlucoseTargetSchedule.append(targetScheduleItem)
         }
 
-        // TODO: minor JSON parsing cleanup in this file once ScheduleItem can conditionally conform to JSONParseable/JSONConvertible
         return .init(
-            carbRatioSchedule: carbRatioDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),
-            basalRateSchedule: basalRateDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),
-            sensitivitySchedule: sensitivityDictionaries.flatMap(ScheduleItem.parse(fromJSON:)),
+            carbRatioSchedule: carbRatioDictionaries.compactMap(ScheduleItem.parse(fromJSON:)),
+            basalRateSchedule: basalRateDictionaries.compactMap(ScheduleItem.parse(fromJSON:)),
+            sensitivitySchedule: sensitivityDictionaries.compactMap(ScheduleItem.parse(fromJSON:)),
             bloodGlucoseTargetSchedule: bloodGlucoseTargetSchedule,
             activeInsulinDuration: .hours(activeInsulinDurationInHours),
             carbAbsorptionRateDuringActivity: carbsAbsorptionRateDuringActivity,
@@ -147,11 +146,11 @@ extension NightscoutProfile: JSONParseable {
 extension NightscoutProfile: JSONConvertible {
     var jsonRepresentation: JSONDictionary {
         var json: JSONDictionary = [:]
-        json[Key.carbRatioSchedule] = carbRatioSchedule.map { $0.jsonRepresentation }
-        json[Key.sensitivitySchedule] = basalRateSchedule.map { $0.jsonRepresentation }
+        json[Key.carbRatioSchedule] = carbRatioSchedule.jsonRepresentation
+        json[Key.sensitivitySchedule] = basalRateSchedule.jsonRepresentation
 
         let splitTargets = bloodGlucoseTargetSchedule.map { $0.split() }
-        json[Key.sensitivitySchedule] = sensitivitySchedule.map { $0.jsonRepresentation }
+        json[Key.sensitivitySchedule] = sensitivitySchedule.jsonRepresentation
         json[Key.lowTargets] = splitTargets.map { $0.lower.jsonRepresentation }
         json[Key.highTargets] = splitTargets.map { $0.upper.jsonRepresentation }
 
@@ -169,8 +168,9 @@ fileprivate enum ScheduleItemKey {
     static let valueString: JSONKey<String> = "value"
 }
 
-// TODO: conditional conformance here
-extension NightscoutProfile.ScheduleItem /*: JSONParseable */ where Value: LosslessStringConvertible {
+extension NightscoutProfile.ScheduleItem: DataParseable, JSONParseable where Value: LosslessStringConvertible {
+    typealias JSONParseType = JSONDictionary
+
     static func parse(fromJSON itemJSON: JSONDictionary) -> NightscoutProfile.ScheduleItem<Value>? {
         guard
             let startTime = itemJSON[ScheduleItemKey.startDateString].flatMap(TimeFormatter.time(from:)),
@@ -183,7 +183,7 @@ extension NightscoutProfile.ScheduleItem /*: JSONParseable */ where Value: Lossl
     }
 }
 
-extension NightscoutProfile.ScheduleItem /*: JSONConvertible */ /* where T: StringParseable */ {
+extension NightscoutProfile.ScheduleItem: JSONRepresentable {
     var jsonRepresentation: JSONDictionary {
         var json: JSONDictionary = [:]
         json[ScheduleItemKey.startDateString] = TimeFormatter.string(from: startTime)
