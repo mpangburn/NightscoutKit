@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// A highly configurable class that stores data produced or received
 /// by the operations of an observed `Nightscout` instance.
 open class NightscoutDataStore: _NightscoutObserver {
