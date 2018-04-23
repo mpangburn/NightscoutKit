@@ -134,6 +134,8 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     // MARK: - Private properties
 
+    private let _lastUpdated: ThreadSafe<Date?> = ThreadSafe(nil)
+
     private let _options: ThreadSafe<Options>
 
     private let _nightscoutHasAuthorization: ThreadSafe<Bool?> = ThreadSafe(nil)
@@ -165,6 +167,9 @@ open class NightscoutDataStore: _NightscoutObserver {
     private let _lastError: ThreadSafe<NightscoutError?> = ThreadSafe(nil)
 
     // MARK: - Public properties
+
+    /// The date at which the contents of the data store were last updated.
+    public var lastUpdated: Date? { return _lastUpdated.value }
 
     /// The options to use in storing Nightscout data.
     ///
@@ -339,10 +344,18 @@ open class NightscoutDataStore: _NightscoutObserver {
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Passing `true` is equivalent to including `.cacheReceivedData` in `options`.
     ///                                  Defaults to `true`.
-    public required init(options: Options, cachingReceivedData: Bool = true) {
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public required init(options: Options, cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) {
         var options = options
         if cachingReceivedData {
             options.insert(.cacheReceivedData)
+        }
+        if ignoringOlderFetchedData {
+            options.insert(.ignoreOlderFetchedData)
         }
         self._options = ThreadSafe(options)
     }
@@ -363,104 +376,169 @@ open class NightscoutDataStore: _NightscoutObserver {
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func entryStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllEntryData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func entryStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllEntryData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores all treatment data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func treatmentStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllTreatmentData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func treatmentStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllTreatmentData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores all profile record data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func recordStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllRecordData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func recordStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllRecordData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores all device status data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func deviceStatusStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllDeviceStatusData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func deviceStatusStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllDeviceStatusData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores all fetched data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func fetchStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllFetchedData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func fetchStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllFetchedData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores all uploaded data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func uploadStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllUploadedData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func uploadStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllUploadedData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores all data that failed to upload.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func failedUploadStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllFailedUploadData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func failedUploadStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllFailedUploadData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores all updated data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func updateStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllUpdatedData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func updateStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllUpdatedData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores all data that failed to update.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func failedUpdateStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllFailedUpdateData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func failedUpdateStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllFailedUpdateData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores all deleted data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func deleteStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllDeletedData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func deleteStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllDeletedData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores all data that failed to delete.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func failedDeleteStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllFailedDeleteData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func failedDeleteStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllFailedDeleteData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores data produced by failed operations.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func failureStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllFailureData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func failureStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllFailureData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     /// Creates a new data store that stores all data.
     /// - Parameter cachingReceivedData: A boolean value determining whether the data store should cache received data.
     ///                                  If this value is `false`, previously received data will be replaced by new incoming data.
     ///                                  Defaults to `true`.
-    public class func allDataStore(cachingReceivedData: Bool = true) -> Self {
-        return self.init(options: .storeAllData, cachingReceivedData: cachingReceivedData)
+    /// - Parameter ignoringOlderFetchedData: A boolean value determining whether any data received that is older than
+    ///                                       the most recently received data should be ignored (i.e. not cached).
+    ///                                       If `cachingReceivedData` is `false`, this option has no effect.
+    ///                                       Passing `true` is equivalent to including `.ignoreOlderFetchedData` in `options`.
+    ///                                       Defaults to `true`.
+    public class func allDataStore(cachingReceivedData: Bool = true, ignoringOlderFetchedData: Bool = true) -> Self {
+        return self.init(options: .storeAllData, cachingReceivedData: cachingReceivedData, ignoringOlderFetchedData: ignoringOlderFetchedData)
     }
 
     // MARK: - Cache clearing
@@ -677,100 +755,120 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     open override func nightscoutDidVerifyAuthorization(_ nightscout: Nightscout) {
         _nightscoutHasAuthorization.atomicallyAssign(to: true)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFetchStatus status: NightscoutStatus) {
         _fetchedStatus.atomicallyAssign(to: status)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFetchEntries entries: [NightscoutEntry]) {
         guard options.contains(.storeFetchedEntries) else { return }
         prependOrReplace(entries, keyPath: \._fetchedEntries)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didUploadEntries entries: Set<NightscoutEntry>) {
         guard options.contains(.storeUploadedEntries) else { return }
         formUnionOrReplace(entries, keyPath: \._uploadedEntries)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToUploadEntries entries: Set<NightscoutEntry>) {
         guard options.contains(.storeFailedUploadEntries) else { return }
         formUnionOrReplace(entries, keyPath: \._failedUploadEntries)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFetchTreatments treatments: [NightscoutTreatment]) {
         guard options.contains(.storeFetchedTreatments) else { return }
         prependOrReplace(treatments, keyPath: \._fetchedTreatments)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didUploadTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeUploadedTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._uploadedTreatments)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToUploadTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedUploadTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._failedUploadTreatments)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didUpdateTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeUpdatedTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._updatedTreatments)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToUpdateTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedUpdateTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._failedUpdateTreatments)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didDeleteTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeDeletedTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._deletedTreatments)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToDeleteTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedDeleteTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._failedDeleteTreatments)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFetchProfileRecords records: [NightscoutProfileRecord]) {
         guard options.contains(.storeFetchedRecords) else { return }
         prependOrReplace(records, keyPath: \._fetchedRecords)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didUploadProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeUploadedRecords) else { return }
         formUnionOrReplace(records, keyPath: \._uploadedRecords)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToUploadProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedUploadRecords) else { return }
         formUnionOrReplace(records, keyPath: \._failedUploadRecords)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeUpdatedRecords) else { return }
         formUnionOrReplace(records, keyPath: \._updatedRecords)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedUpdateRecords) else { return }
         formUnionOrReplace(records, keyPath: \._failedUpdateRecords)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeDeletedRecords) else { return }
         formUnionOrReplace(records, keyPath: \._deletedRecords)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFailToDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedDeleteRecords) else { return }
         formUnionOrReplace(records, keyPath: \._failedDeleteRecords)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didFetchDeviceStatuses deviceStatuses: [NightscoutDeviceStatus]) {
         guard options.contains(.storeFetchedDeviceStatuses) else { return }
         prependOrReplace(deviceStatuses, keyPath: \._fetchedDeviceStatuses)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     open override func nightscout(_ nightscout: Nightscout, didErrorWith error: NightscoutError) {
@@ -781,6 +879,7 @@ open class NightscoutDataStore: _NightscoutObserver {
             break
         }
         _lastError.atomicallyAssign(to: error)
+        _lastUpdated.atomicallyAssign(to: Date())
     }
 
     private func prependOrReplace<T: TimelineValue>(_ newValues: [T], keyPath: KeyPath<NightscoutDataStore, ThreadSafe<[T]>>) {

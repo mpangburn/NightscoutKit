@@ -11,8 +11,8 @@ import Dispatch
 
 extension RandomAccessCollection {
     func concurrentForEach(_ body: (Element) -> Void) {
-        DispatchQueue.concurrentPerform(iterations: numericCast(count)) { offset in
-            let index = self.index(startIndex, offsetBy: numericCast(offset))
+        DispatchQueue.concurrentPerform(iterations: count) { offset in
+            let index = self.index(startIndex, offsetBy: offset)
             let element = self[index]
             body(element)
         }

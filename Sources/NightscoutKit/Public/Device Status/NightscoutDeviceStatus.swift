@@ -63,8 +63,6 @@ public struct NightscoutDeviceStatus: UniquelyIdentifiable, TimelineValue {
 // MARK: - JSON
 
 extension NightscoutDeviceStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     enum Key {
         static let id: JSONKey<String> = "_id"
         static let device: JSONKey<String> = "device"

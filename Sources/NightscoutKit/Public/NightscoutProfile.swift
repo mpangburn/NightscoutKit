@@ -93,8 +93,6 @@ public struct NightscoutProfile {
 // MARK: - JSON
 
 extension NightscoutProfile: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let carbRatioSchedule: JSONKey<[JSONDictionary]> = "carbratio"
         static let basalRateSchedule: JSONKey<[JSONDictionary]> = "basal"
@@ -169,8 +167,6 @@ fileprivate enum ScheduleItemKey {
 }
 
 extension NightscoutProfile.ScheduleItem: DataParseable, JSONParseable where Value: LosslessStringConvertible {
-    typealias JSONParseType = JSONDictionary
-
     static func parse(fromJSON itemJSON: JSONDictionary) -> NightscoutProfile.ScheduleItem<Value>? {
         guard
             let startTime = itemJSON[ScheduleItemKey.startDateString].flatMap(TimeFormatter.time(from:)),

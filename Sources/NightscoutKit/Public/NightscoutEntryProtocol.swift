@@ -10,7 +10,7 @@ import Foundation
 
 
 /// A type fulfilling the role of a Nightscout blood glucose entry.
-public protocol NightscoutEntryProtocol: UniquelyIdentifiable, TimelineValue, BloodGlucoseUnitConvertible {
+public protocol NightscoutEntryProtocol: UniquelyIdentifiable, BloodGlucoseEntry {
     /// The entry's unique, internally assigned identifier.
     var id: String { get }
 

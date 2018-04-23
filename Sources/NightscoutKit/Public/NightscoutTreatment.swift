@@ -158,8 +158,6 @@ public struct NightscoutTreatment: UniquelyIdentifiable, TimelineValue, BloodGlu
 // MARK: - JSON
 
 extension NightscoutTreatment: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     enum Key {
         static let id: JSONKey<String> = "_id"
         static let eventTypeString: JSONKey<String> = "eventType"
@@ -185,12 +183,10 @@ extension NightscoutTreatment: JSONParseable {
 
         let glucose: GlucoseMeasurement?
         if let glucoseValue = treatmentJSON[Key.glucoseValue],
-            let units = treatmentJSON[convertingFrom: Key.units],
             let glucoseSource = treatmentJSON[convertingFrom: Key.glucoseSource] {
-                glucose = GlucoseMeasurement(
-                    glucoseValue: BloodGlucoseValue(value: glucoseValue, units: units),
-                    source: glucoseSource
-            )
+                let units = treatmentJSON[convertingFrom: Key.units] ?? .milligramsPerDeciliter
+                let glucoseValue = BloodGlucoseValue(value: glucoseValue, units: units)
+                glucose = GlucoseMeasurement(glucoseValue: glucoseValue, source: glucoseSource)
         } else {
             glucose = nil
         }
@@ -256,8 +252,6 @@ extension NightscoutTreatment: JSONConvertible {
 }
 
 extension NightscoutTreatment.EventType: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     fileprivate enum Key {
         static let profileName: JSONKey<String> = "profile"
     }
@@ -336,8 +330,6 @@ extension NightscoutTreatment.EventType: PartiallyRawRepresentable {
 }
 
 extension NightscoutTreatment.BolusType: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     fileprivate enum Key {
         static let totalInsulinString: JSONKey<String> = "enteredinsulin"
         static let percentageUpFrontString: JSONKey<String> = "splitNow"
@@ -388,8 +380,6 @@ extension NightscoutTreatment.BolusType: PartiallyRawRepresentable {
 }
 
 extension NightscoutTreatment.TemporaryBasalType: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     fileprivate enum Key {
         static let percentage = "percent"
         static let absolute = "absolute"

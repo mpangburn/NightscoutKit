@@ -11,7 +11,7 @@ import Foundation
 
 /// A type that can be parsed from JSON data.
 protocol JSONParseable: DataParseable {
-    associatedtype JSONParseType
+    associatedtype JSONParseType = JSONDictionary
     static func parse(fromJSON json: JSONParseType) -> Self?
 }
 
@@ -26,7 +26,7 @@ extension JSONParseable {
 
 /// A type that can be represented as JSON.
 protocol JSONRepresentable: DataRepresentable {
-    associatedtype JSONRepresentation
+    associatedtype JSONRepresentation = JSONDictionary
     var jsonRepresentation: JSONRepresentation { get }
 }
 
