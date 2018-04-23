@@ -7,8 +7,8 @@
 //
 
 extension Sequence where SubSequence: Sequence, SubSequence.Element == Element {
+    /// - Warning: Behavior is undefined for single-pass sequences.
     func adjacentPairs() -> [(Element, Element)] {
-        // create an Array from dropFirst() because Sequence iteration can be destructive
-        return Array(zip(self, Array(dropFirst())))
+        return Array(zip(self, dropFirst()))
     }
 }

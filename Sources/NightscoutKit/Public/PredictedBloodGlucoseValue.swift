@@ -10,7 +10,7 @@ import Foundation
 
 
 // Describes a predicted blood glucose value.
-public struct PredictedBloodGlucoseValue: BloodGlucoseUnitConvertible {
+public struct PredictedBloodGlucoseValue: BloodGlucoseEntry {
     /// The predicted glucose value.
     public let glucoseValue: BloodGlucoseValue
 
@@ -32,10 +32,8 @@ extension Array where Element == PredictedBloodGlucoseValue {
     init(values: [Int], everyFiveMinutesBeginningAt startDate: Date) {
         self = values.enumerated().map { index, value in
             let predictionDate = startDate + .minutes(5 * Double(index))
-            return PredictedBloodGlucoseValue(
-                glucoseValue: BloodGlucoseValue(value: Double(value), units: .milligramsPerDeciliter),
-                date: predictionDate
-            )
+            let glucoseValue = BloodGlucoseValue(value: Double(value), units: .milligramsPerDeciliter)
+            return PredictedBloodGlucoseValue(glucoseValue: glucoseValue, date: predictionDate)
         }
     }
 }

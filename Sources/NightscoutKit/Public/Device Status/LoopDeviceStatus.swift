@@ -251,8 +251,6 @@ public struct LoopDeviceStatus {
 // MARK: - JSON
 
 extension LoopDeviceStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let loopStatus: JSONKey<LoopStatus> = "loop"
         static let pumpStatus: JSONKey<PumpStatus> = "pump"
@@ -271,8 +269,6 @@ extension LoopDeviceStatus: JSONParseable {
 }
 
 extension LoopDeviceStatus.LoopStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let name: JSONKey<String> = "name"
         static let version: JSONKey<String> = "version"
@@ -313,8 +309,6 @@ extension LoopDeviceStatus.LoopStatus: JSONParseable {
 }
 
 extension LoopDeviceStatus.InsulinOnBoardStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let timestampString: JSONKey<String> = "timestamp"
         static let insulinOnBoard: JSONKey<Double> = "iob"
@@ -335,8 +329,6 @@ extension LoopDeviceStatus.InsulinOnBoardStatus: JSONParseable {
 }
 
 extension LoopDeviceStatus.LoopStatus.CarbsOnBoardStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let timestampString: JSONKey<String> = "timestamp"
         static let carbsOnBoard: JSONKey<Double> = "cob"
@@ -355,8 +347,6 @@ extension LoopDeviceStatus.LoopStatus.CarbsOnBoardStatus: JSONParseable {
 }
 
 extension LoopDeviceStatus.LoopStatus.PredictedBloodGlucoseValuesContext: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let startDateString: JSONKey<String> = "startDate"
         static let values: JSONKey<[Int]> = "values"
@@ -382,8 +372,6 @@ extension LoopDeviceStatus.LoopStatus.PredictedBloodGlucoseValuesContext: JSONPa
 }
 
 extension LoopDeviceStatus.LoopStatus.TemporaryBasal: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let startDateString: JSONKey<String> = "timestamp"
         static let rate: JSONKey<Double> = "rate"
@@ -404,8 +392,6 @@ extension LoopDeviceStatus.LoopStatus.TemporaryBasal: JSONParseable {
 }
 
 extension LoopDeviceStatus.LoopStatus.LoopEnacted: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let received: JSONKey<Bool> = "received"
     }
@@ -423,8 +409,6 @@ extension LoopDeviceStatus.LoopStatus.LoopEnacted: JSONParseable {
 }
 
 extension LoopDeviceStatus.LoopStatus.RileyLinkStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let name: JSONKey<String> = "name"
         static let state: JSONKey<State> = "state"
@@ -452,8 +436,6 @@ extension LoopDeviceStatus.LoopStatus.RileyLinkStatus: JSONParseable {
 }
 
 extension LoopDeviceStatus.PumpStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let clockDateString: JSONKey<String> = "clock"
         static let pumpID: JSONKey<String> = "pumpID"
@@ -485,8 +467,6 @@ extension LoopDeviceStatus.PumpStatus: JSONParseable {
 }
 
 extension LoopDeviceStatus.PumpStatus.BatteryStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let percentage: JSONKey<Int> = "percent"
         static let voltage: JSONKey<Double> = "voltage"
@@ -503,8 +483,6 @@ extension LoopDeviceStatus.PumpStatus.BatteryStatus: JSONParseable {
 }
 
 extension LoopDeviceStatus.UploaderStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let timestampString: JSONKey<String> = "timestamp"
         static let name: JSONKey<String> = "name"
@@ -528,8 +506,6 @@ extension LoopDeviceStatus.UploaderStatus: JSONParseable {
 }
 
 extension LoopDeviceStatus.RadioAdapter: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let hardwareDescription: JSONKey<String> = "hardware"
         static let frequency: JSONKey<Double> = "frequency"

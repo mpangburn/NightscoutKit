@@ -19,8 +19,6 @@ public enum NightscoutEntrySource {
 }
 
 extension NightscoutEntrySource: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     enum Key {
         static let trend: JSONKey<BloodGlucoseTrend> = "direction"
     }

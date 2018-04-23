@@ -19,8 +19,6 @@ public struct NightscoutStatus {
 // MARK: - JSON
 
 extension NightscoutStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let version: JSONKey<String> = "version"
         static let settings: JSONKey<NightscoutSettings> = "settings"

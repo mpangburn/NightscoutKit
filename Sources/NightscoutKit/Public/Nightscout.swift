@@ -27,7 +27,7 @@ public final class Nightscout {
 
     /// The observers responding to operations performed by this `Nightscout` instance,
     /// boxed to hold references weakly.
-    private let _observers: ThreadSafe<[NightscoutObserverBox]>
+    private let _observers: ThreadSafe<[ObjectIdentifier: NightscoutObserverBox]>
 
     /// The URL sessions for accessing the API endpoints of this `Nightscout` instance.
     private let sessions: Sessions
@@ -42,7 +42,7 @@ public final class Nightscout {
     public init(baseURL: URL, apiSecret: String? = nil) {
         self.baseURL = baseURL
         self.apiSecret = apiSecret
-        self._observers = ThreadSafe([])
+        self._observers = ThreadSafe([:])
         self.sessions = Sessions()
         self.queues = Queues()
     }
@@ -63,19 +63,6 @@ public final class Nightscout {
 // MARK: - Observers
 
 extension Nightscout {
-    /// Returns an array containing the objects observing this `Nightscout` instance.
-    ///
-    /// **Note:** Observers are notified of `Nightscout` operations concurrently.
-    /// The order of the observers in this array is not reflective
-    /// of the order in which they will be notified.
-    ///
-    /// This value is immutable.
-    /// For adding observers, see `addObserver(_:)` and `addObservers(_:)`.
-    /// For removing observers, see `removeObserver(_:)` and `removeAllObservers()`.
-    public var observers: [NightscoutObserver] {
-        return _observers.value.compactMap { $0.observer }
-    }
-
     /// Adds the observer to this `Nightscout` instance.
     ///
     /// **Note:** Observers are notified of `Nightscout` operations concurrently.
@@ -83,7 +70,10 @@ extension Nightscout {
     /// of the order in which they will be notified.
     /// - Parameter observer: The object to begin observing this `Nightscout` instance.
     public func addObserver(_ observer: NightscoutObserver) {
-        _observers.atomically { $0.append(NightscoutObserverBox(observer)) }
+        _observers.atomically { observers in
+            let id = ObjectIdentifier(observer)
+            observers[id] = NightscoutObserverBox(observer)
+        }
     }
 
     /// Adds the observers to this `Nightscout` instance.
@@ -93,7 +83,7 @@ extension Nightscout {
     /// of the order in which they will be notified.
     /// - Parameter observers: The objects to begin observing this `Nightscout` instance.
     public func addObservers(_ observers: [NightscoutObserver]) {
-        _observers.atomically { $0.append(contentsOf: observers.map(NightscoutObserverBox.init)) }
+        observers.forEach(addObserver)
     }
 
     /// Adds the observers to this `Nightscout` instance.
@@ -112,15 +102,18 @@ extension Nightscout {
     /// - Parameter observer: The object to stop observing this `Nightscout` instance.
     public func removeObserver(_ observer: NightscoutObserver) {
         _observers.atomically { observers in
-            if let index = observers.index(where: { $0.observer === observer }) {
-                observers.remove(at: index)
-            }
+            let id = ObjectIdentifier(observer)
+            observers.removeValue(forKey: id)
         }
     }
 
     /// Removes all observers from this `Nightscout` instance.
     public func removeAllObservers() {
         _observers.atomically { $0.removeAll() }
+    }
+
+    internal var observers: [NightscoutObserver] {
+        return _observers.value.values.compactMap { $0.observer }
     }
 }
 
@@ -820,14 +813,12 @@ extension Nightscout {
     private func post<Payload: JSONRepresentable & JSONParseable>(_ items: [Payload], to endpoint: APIEndpoint,
                                                                   completion: @escaping (PostResponse<Payload>) -> Void) {
         upload(items, to: endpoint, httpMethod: .post) { (result: NightscoutResult<[Payload]>) in
-            switch result {
-            case .success(let uploadedItems):
+            let postResponse: PostResponse<Payload> = result.map { uploadedItems in
                 let uploadedItems = Set(uploadedItems)
                 let rejectedItems = Set(items).subtracting(uploadedItems)
-                completion(.success((uploadedItems: uploadedItems, rejectedItems: rejectedItems)))
-            case .failure(let error):
-                completion(.failure(error))
+                return (uploadedItems: uploadedItems, rejectedItems: rejectedItems)
             }
+            completion(postResponse)
         }
     }
 

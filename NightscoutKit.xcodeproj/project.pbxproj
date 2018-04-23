@@ -200,6 +200,10 @@
 		89AFA452206563E20013C5FB /* NightscoutLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFA450206563E20013C5FB /* NightscoutLogger.swift */; };
 		89AFA453206563E20013C5FB /* NightscoutLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFA450206563E20013C5FB /* NightscoutLogger.swift */; };
 		89AFA454206563E20013C5FB /* NightscoutLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89AFA450206563E20013C5FB /* NightscoutLogger.swift */; };
+		89CD6856208D5C50007EE41D /* BloodGlucoseEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CD6855208D5C50007EE41D /* BloodGlucoseEntry.swift */; };
+		89CD6857208D5C50007EE41D /* BloodGlucoseEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CD6855208D5C50007EE41D /* BloodGlucoseEntry.swift */; };
+		89CD6858208D5C50007EE41D /* BloodGlucoseEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CD6855208D5C50007EE41D /* BloodGlucoseEntry.swift */; };
+		89CD6859208D5C50007EE41D /* BloodGlucoseEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CD6855208D5C50007EE41D /* BloodGlucoseEntry.swift */; };
 		89D48E36204FA3980066B293 /* DataConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E34204FA3310066B293 /* DataConvertible.swift */; };
 		89D48E39204FAC6A0066B293 /* AnyJSON.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D48E37204FAC0E0066B293 /* AnyJSON.swift */; };
 		89D8F933206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89D8F932206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift */; };
@@ -296,6 +300,7 @@
 		89AFA446206558A00013C5FB /* NightscoutResult.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutResult.swift; sourceTree = "<group>"; };
 		89AFA44B20655F520013C5FB /* NightscoutObserver.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutObserver.swift; sourceTree = "<group>"; };
 		89AFA450206563E20013C5FB /* NightscoutLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutLogger.swift; sourceTree = "<group>"; };
+		89CD6855208D5C50007EE41D /* BloodGlucoseEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodGlucoseEntry.swift; sourceTree = "<group>"; };
 		89D48E31204BBE200066B293 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		89D48E34204FA3310066B293 /* DataConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConvertible.swift; sourceTree = "<group>"; };
 		89D48E37204FAC0E0066B293 /* AnyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSON.swift; sourceTree = "<group>"; };
@@ -382,7 +387,6 @@
 				897162222058A21E005D5030 /* LoopDeviceStatus.swift */,
 				896FB4602050CEA90021107F /* NightscoutDeviceStatus.swift */,
 				896FB46C20520F240021107F /* OpenAPSDeviceStatus.swift */,
-				892FBE762059F069003D74F8 /* PredictedBloodGlucoseValue.swift */,
 				892FBE702059EA35003D74F8 /* PumpStatusProtocol.swift */,
 				892FBE78205A0286003D74F8 /* TemporaryBasalProtocol.swift */,
 				892FBE742059EC7D003D74F8 /* UploaderStatusProtocol.swift */,
@@ -503,6 +507,7 @@
 		89AE56182065A59300AEA1CB /* Public */ = {
 			isa = PBXGroup;
 			children = (
+				89CD6855208D5C50007EE41D /* BloodGlucoseEntry.swift */,
 				896FF5A52048C77B0054198A /* BloodGlucoseTrend.swift */,
 				896FF5A02048C77B0054198A /* BloodGlucoseUnit.swift */,
 				89D8F932206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift */,
@@ -523,6 +528,7 @@
 				896FF5CA2048C9DC0054198A /* NightscoutSnapshot.swift */,
 				896FB45E2050BBFC0021107F /* NightscoutStatus.swift */,
 				896FF59E2048C77B0054198A /* NightscoutTreatment.swift */,
+				892FBE762059F069003D74F8 /* PredictedBloodGlucoseValue.swift */,
 				89D8F93C2066EA9800E8A13B /* TimelineValue.swift */,
 				896FF5BA2048C7A30054198A /* UniquelyIdentifiable.swift */,
 				892FBE6B2059E6C2003D74F8 /* Device Status */,
@@ -785,6 +791,7 @@
 				892BE6D3205CEE11009493EE /* TemporaryBasalProtocol.swift in Sources */,
 				892BE6DA205CEE11009493EE /* AnyJSON.swift in Sources */,
 				892BE6CD205CEE11009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */,
+				89CD6859208D5C50007EE41D /* BloodGlucoseEntry.swift in Sources */,
 				892BE6D5205CEE11009493EE /* Array.swift in Sources */,
 				892BE6C3205CEE11009493EE /* NightscoutSnapshot.swift in Sources */,
 				892BE729205F8BA2009493EE /* NightscoutEntryProtocol.swift in Sources */,
@@ -843,6 +850,7 @@
 				892BE68B205CEE10009493EE /* TemporaryBasalProtocol.swift in Sources */,
 				892BE692205CEE10009493EE /* AnyJSON.swift in Sources */,
 				892BE685205CEE10009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */,
+				89CD6857208D5C50007EE41D /* BloodGlucoseEntry.swift in Sources */,
 				892BE68D205CEE10009493EE /* Array.swift in Sources */,
 				892BE67B205CEE10009493EE /* NightscoutSnapshot.swift in Sources */,
 				892BE727205F8BA2009493EE /* NightscoutEntryProtocol.swift in Sources */,
@@ -901,6 +909,7 @@
 				896FB45D20507EB10021107F /* JSONKey.swift in Sources */,
 				896FF5AF2048C77B0054198A /* BloodGlucoseUnit.swift in Sources */,
 				896FF5AD2048C77B0054198A /* NightscoutTreatment.swift in Sources */,
+				89CD6856208D5C50007EE41D /* BloodGlucoseEntry.swift in Sources */,
 				892FBE81205A1FB0003D74F8 /* IdentifierFactory.swift in Sources */,
 				896FF5BC2048C7A30054198A /* JSONConvertible.swift in Sources */,
 				892BE726205F8BA2009493EE /* NightscoutEntryProtocol.swift in Sources */,
@@ -968,6 +977,7 @@
 				892BE6AF205CEE11009493EE /* TemporaryBasalProtocol.swift in Sources */,
 				892BE6B6205CEE11009493EE /* AnyJSON.swift in Sources */,
 				892BE6A9205CEE11009493EE /* InsulinOnBoardStatusProtocol.swift in Sources */,
+				89CD6858208D5C50007EE41D /* BloodGlucoseEntry.swift in Sources */,
 				892BE6B1205CEE11009493EE /* Array.swift in Sources */,
 				892BE69F205CEE11009493EE /* NightscoutSnapshot.swift in Sources */,
 				892BE728205F8BA2009493EE /* NightscoutEntryProtocol.swift in Sources */,

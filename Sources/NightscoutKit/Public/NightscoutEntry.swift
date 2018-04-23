@@ -63,8 +63,6 @@ public struct NightscoutEntry: NightscoutEntryProtocol {
 // MARK: - JSON
 
 extension NightscoutEntry: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     enum Key {
         static let id: JSONKey<String> = "_id"
         static let typeString: JSONKey<String> = "type"

@@ -13,26 +13,6 @@ public enum NightscoutResult<Value> {
 }
 
 extension NightscoutResult {
-    /// Returns `true` if the result is a success and `false` if the result is a failure.
-    public var isSuccess: Bool {
-        switch self {
-        case .success(_):
-            return true
-        case .failure(_):
-            return false
-        }
-    }
-
-    /// Returns `true` if the result is a failure and `false` if the result is a success.
-    public var isFailure: Bool {
-        switch self {
-        case .success(_):
-            return false
-        case .failure(_):
-            return true
-        }
-    }
-
     /// In the case of success, returns the associated value.
     /// Returns `nil` in the case of failure.
     public var value: Value? {
@@ -53,6 +33,16 @@ extension NightscoutResult {
         case .failure(let error):
             return error
         }
+    }
+
+    /// Returns `true` if the result is a success and `false` if the result is a failure.
+    public var isSuccess: Bool {
+        return value != nil
+    }
+
+    /// Returns `true` if the result is a failure and `false` if the result is a success.
+    public var isFailure: Bool {
+        return error != nil
     }
 
     /// In the case of success, returns the associated value.
@@ -78,10 +68,10 @@ extension NightscoutResult {
     /// - Parameter transform: A closure that takes the success value of the `NightscoutResult` instance.
     /// - Returns: A `NightscoutResult` containing the result of the given closure. If this instance is a failure, returns the
     ///            same failure.
-    public func map<T>(_ transform: (Value) -> T) -> NightscoutResult<T> {
+    public func map<T>(_ transform: (Value) throws -> T) rethrows -> NightscoutResult<T> {
         switch self {
         case .success(let value):
-            return .success(transform(value))
+            return .success(try transform(value))
         case .failure(let error):
             return .failure(error)
         }
@@ -93,8 +83,8 @@ extension NightscoutResult {
     /// - Parameter closure: A closure that takes the success value of this instance.
     /// - Returns: This `NightscoutResult` instance, unmodified.
     @discardableResult
-    public func ifSuccess(_ closure: (Value) -> Void) -> NightscoutResult {
-        value.map(closure)
+    public func ifSuccess(_ closure: (Value) throws -> Void) rethrows -> NightscoutResult {
+        try value.map(closure)
         return self
     }
 
@@ -104,8 +94,8 @@ extension NightscoutResult {
     /// - Parameter closure: A closure that takes a `NightscoutError`.
     /// - Returns: This `NightscoutResult` instance, unmodified.
     @discardableResult
-    public func ifFailure(_ closure: (NightscoutError) -> Void) -> NightscoutResult {
-        error.map(closure)
+    public func ifFailure(_ closure: (NightscoutError) throws -> Void) rethrows -> NightscoutResult {
+        try error.map(closure)
         return self
     }
 }

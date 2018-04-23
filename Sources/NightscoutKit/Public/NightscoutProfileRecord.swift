@@ -61,8 +61,6 @@ public struct NightscoutProfileRecord: UniquelyIdentifiable, TimelineValue {
 // MARK: - JSON
 
 extension NightscoutProfileRecord: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let id: JSONKey<String> = "_id"
         static let defaultProfileName: JSONKey<String> = "defaultProfile"

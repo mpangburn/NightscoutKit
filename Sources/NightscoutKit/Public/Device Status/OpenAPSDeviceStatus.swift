@@ -230,8 +230,6 @@ public struct OpenAPSDeviceStatus {
 // MARK: - JSON
 
 extension OpenAPSDeviceStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let loopStatus: JSONKey<LoopStatus> = "openaps"
         static let pumpStatus: JSONKey<PumpStatus> = "pump"
@@ -252,8 +250,6 @@ extension OpenAPSDeviceStatus: JSONParseable {
 }
 
 extension OpenAPSDeviceStatus.LoopStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let insulinOnBoardStatus: JSONKey<InsulinOnBoardStatus> = "iob"
         static let suggested: JSONKey<Context> = "suggested"
@@ -277,8 +273,6 @@ extension OpenAPSDeviceStatus.LoopStatus: JSONParseable {
 }
 
 extension OpenAPSDeviceStatus.LoopStatus.InsulinOnBoardStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let insulinOnBoard: JSONKey<Double> = "iob"
         static let recentInsulinActivity: JSONKey<Double> = "activity"
@@ -311,8 +305,6 @@ extension OpenAPSDeviceStatus.LoopStatus.InsulinOnBoardStatus: JSONParseable {
 }
 
 extension OpenAPSDeviceStatus.LoopStatus.Bolus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let amount: JSONKey<Double> = "bolusinsulin"
         static let date: JSONKey<Int> = "lastBolusTime"
@@ -331,8 +323,6 @@ extension OpenAPSDeviceStatus.LoopStatus.Bolus: JSONParseable {
 }
 
 extension OpenAPSDeviceStatus.LoopStatus.TemporaryBasal: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let startDateString: JSONKey<String> = "started_at"
         static let rate: JSONKey<Double> = "rate"
@@ -357,8 +347,6 @@ extension OpenAPSDeviceStatus.LoopStatus.TemporaryBasal: JSONParseable {
 }
 
 extension OpenAPSDeviceStatus.LoopStatus.Context: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let reason: JSONKey<String> = "reason"
         static let timestampString: JSONKey<String> = "timestamp"
@@ -381,8 +369,6 @@ extension OpenAPSDeviceStatus.LoopStatus.Context: JSONParseable {
 }
 
 extension OpenAPSDeviceStatus.LoopStatus.Context.State: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let bloodGlucoseValue: JSONKey<Int> = "bg"
         static let deltaFromLastBloodGlucoseValue: JSONKey<Int> = "tick"
@@ -434,8 +420,6 @@ extension OpenAPSDeviceStatus.LoopStatus.Context.State: JSONParseable {
 }
 
 extension OpenAPSDeviceStatus.LoopStatus.Context.State.PredictedBloodGlucoseCurves: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let basedOnInsulinOnBoard: JSONKey<[Int]> = "IOB"
         static let withZeroBasal: JSONKey<[Int]> = "ZT"
@@ -461,8 +445,6 @@ extension OpenAPSDeviceStatus.LoopStatus.Context.State.PredictedBloodGlucoseCurv
 }
 
 extension OpenAPSDeviceStatus.PumpStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let clockDateString: JSONKey<String> = "clock"
         static let batteryStatus: JSONKey<BatteryStatus> = "battery"
@@ -494,8 +476,6 @@ extension OpenAPSDeviceStatus.PumpStatus: JSONParseable {
 }
 
 extension OpenAPSDeviceStatus.PumpStatus.BatteryStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let status: JSONKey<BatteryIndicator> = "status"
         static let voltage: JSONKey<Double> = "voltage"
@@ -510,8 +490,6 @@ extension OpenAPSDeviceStatus.PumpStatus.BatteryStatus: JSONParseable {
 }
 
 extension OpenAPSDeviceStatus.UploaderStatus: JSONParseable {
-    typealias JSONParseType = JSONDictionary
-
     private enum Key {
         static let batteryVoltage: JSONKey<Int> = "batteryVoltage"
         static let batteryPercentage: JSONKey<Int> = "battery"

@@ -242,7 +242,7 @@ extension NightscoutObserver {
     }
 }
 
-extension Array where Element == NightscoutObserver {
+extension RandomAccessCollection where Element == NightscoutObserver {
     func notify<T>(for result: NightscoutResult<T>, from nightscout: Nightscout,
                    ifSuccess update: NightscoutObserverAction<T>,
                    ifError errorWork: ((NightscoutObserver) -> Void)? = nil) {
