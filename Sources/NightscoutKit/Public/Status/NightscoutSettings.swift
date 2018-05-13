@@ -8,7 +8,7 @@
 
 /// Nightscout settings. This type stores data such as the title of the user's Nightscout site,
 /// their preferred blood glucose units, and their target blood glucose range as displayed in the Nightscout graph.
-public struct NightscoutSettings {
+public struct NightscoutSettings: Equatable {
     /// The title of the user's Nightscout site.
     public let title: String
 

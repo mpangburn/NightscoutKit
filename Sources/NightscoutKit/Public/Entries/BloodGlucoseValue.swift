@@ -6,8 +6,11 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// Describes a blood glucose value and the units in which it is measured.
-public struct BloodGlucoseValue: BloodGlucoseUnitConvertible {
+public struct BloodGlucoseValue: BloodGlucoseUnitConvertible, Hashable {
     /// The recorded glucose value.
     public let value: Double
 
@@ -47,12 +50,15 @@ public struct BloodGlucoseValue: BloodGlucoseUnitConvertible {
     }
 }
 
-// MARK: - Equatable
+// MARK: - CustomStringConvertible
 
-extension BloodGlucoseValue: Equatable {
-    public static func == (lhs: BloodGlucoseValue, rhs: BloodGlucoseValue) -> Bool {
-        return lhs.value == rhs.value && lhs.units == rhs.units
+extension BloodGlucoseValue: CustomStringConvertible {
+    public var description: String {
+        let format = NSLocalizedString(
+            "QUANTITY_VALUE_AND_UNIT",
+            value: "%1$@ %2$@",
+            comment: "Format string for combining localized numeric value and unit. (1: numeric value)(2: unit)"
+        )
+        return String(format: format, valueString, units.description)
     }
 }
-
-

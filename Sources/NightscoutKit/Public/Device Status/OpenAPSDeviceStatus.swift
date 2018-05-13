@@ -23,7 +23,7 @@ public struct OpenAPSDeviceStatus {
         }
 
         /// Describes a temporary basal.
-        public struct TemporaryBasal: TemporaryBasalProtocol {
+        public struct TemporaryBasal: AbsoluteTemporaryBasalProtocol {
             /// The start date of the temporary basal.
             public let startDate: Date
 

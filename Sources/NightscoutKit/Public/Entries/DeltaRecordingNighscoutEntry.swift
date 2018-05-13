@@ -13,7 +13,7 @@ import Foundation
 /// such as the change in glucose value, time elapsed, and glucose rate of change.
 public struct DeltaRecordingNightscoutEntry: NightscoutEntryProtocol {
     /// The entry's unique, internally assigned identifier.
-    public let id: String
+    public let id: NightscoutIdentifier
 
     /// The blood glucose value and the units in which it is measured.
     public let glucoseValue: BloodGlucoseValue
@@ -41,7 +41,7 @@ public struct DeltaRecordingNightscoutEntry: NightscoutEntryProtocol {
     }
 
     /// The rate of change of the glucose value since the previous entry.
-    /// Units are in `units` blood glucose units per minute (<blood glucose unit>/min).
+    /// Units are in `units` blood glucose units per minute (blood glucose units/min).
     public var glucoseRateOfChange: Double {
         return glucoseDeltaFromPreviousEntry / timeIntervalSincePreviousEntry.minutes
     }
@@ -58,6 +58,22 @@ public struct DeltaRecordingNightscoutEntry: NightscoutEntryProtocol {
         return String(format: format, glucoseDeltaFromPreviousEntry)
     }
 
+    /// Returns an entry converted to the specified blood glucose units.
+    /// - Parameter units: The blood glucose units to which to convert.
+    /// - Returns: An entry converted to the specified blood glucose units.
+    public func converted(to units: BloodGlucoseUnit) -> DeltaRecordingNightscoutEntry {
+        return .init(
+            id: id,
+            glucoseValue: glucoseValue.converted(to: units),
+            source: source,
+            date: date,
+            device: device,
+            previousEntry: previousEntry.converted(to: units)
+        )
+    }
+}
+
+extension DeltaRecordingNightscoutEntry {
     /// Creates a new blood glucose entry recording data in relation to the previous entry.
     /// - Parameter entry: The entry to recreate.
     /// - Parameter previousEntry: The entry occurring prior to this entry.
@@ -71,29 +87,6 @@ public struct DeltaRecordingNightscoutEntry: NightscoutEntryProtocol {
             date: entry.date,
             device: entry.device,
             previousEntry: previousEntry
-        )
-    }
-
-    init(id: String, glucoseValue: BloodGlucoseValue, source: NightscoutEntrySource, date: Date, device: String?, previousEntry: NightscoutEntry) {
-        self.id = id
-        self.glucoseValue = glucoseValue
-        self.source = source
-        self.date = date
-        self.device = device
-        self.previousEntry = previousEntry
-    }
-
-    /// Returns an entry converted to the specified blood glucose units.
-    /// - Parameter units: The blood glucose units to which to convert.
-    /// - Returns: An entry converted to the specified blood glucose units.
-    public func converted(to units: BloodGlucoseUnit) -> DeltaRecordingNightscoutEntry {
-        return .init(
-            id: id,
-            glucoseValue: glucoseValue.converted(to: units),
-            source: source,
-            date: date,
-            device: device,
-            previousEntry: previousEntry.converted(to: units)
         )
     }
 }

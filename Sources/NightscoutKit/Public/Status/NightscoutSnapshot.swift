@@ -12,7 +12,7 @@ import Foundation
 /// A snapshot of a user's Nightscout data.
 /// This type stores data such as recent blood glucose entries, treatments, profile records, and device statuses,
 /// as well as the status of Nightscout site.
-public struct NightscoutSnapshot {
+public struct NightscoutSnapshot: Equatable {
     /// The date at which the snapshot was taken.
     public let timestamp: Date
 
