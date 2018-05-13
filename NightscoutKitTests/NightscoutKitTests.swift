@@ -26,7 +26,7 @@ class NightscoutKitTests: XCTestCase {
         let entry = NightscoutEntry(rawValue: entryJSON)!
 
         let expectedEntry = NightscoutEntry(
-            id: "5a8a0764dc13514404097ed7",
+            id: .init("5a8a0764dc13514404097ed7"),
             glucoseValue: BloodGlucoseValue(value: 145, units: .milligramsPerDeciliter),
             source: .sensor(trend: .flat),
             date: TimeFormatter.date(from: "2018-02-18T23:06:17.000Z")!,
@@ -61,33 +61,27 @@ class NightscoutKitTests: XCTestCase {
             "created_at": "2018-02-18T22:25:01Z",
             "enteredBy": "loop://Michael's iPhone",
             "eventType": "Meal Bolus",
-            "insulin": "",
+            "insulin": 3.5,
             "timestamp": "2018-02-18T22:25:01Z"
         ]
 
         let treatment = NightscoutTreatment(rawValue: treatmentJSON)!
 
+        let date = TimeFormatter.date(from: "2018-02-18T22:25:01Z")!
+        let insulinGiven = 3.5
         let expectedTreatment = NightscoutTreatment(
-            id: "5a89f9fcdc13514404093e3f",
-            eventType: .bolus(type: .meal),
-            date: TimeFormatter.date(from: "2018-02-18T22:25:01Z")!,
-            duration: nil,
+            id: .init("5a89f9fcdc13514404093e3f"),
+            eventType: .bolus(.standard(Bolus(date: date, amount: insulinGiven, context: .meal))),
+            date: date,
             glucose: nil,
-            insulinGiven: nil,
+            insulinGiven: insulinGiven,
             carbsConsumed: 25,
             recorder: "loop://Michael's iPhone",
             notes: nil
         )
 
         XCTAssert(treatment.id == expectedTreatment.id)
-        XCTAssert({
-            switch (treatment.eventType, expectedTreatment.eventType) {
-            case (.bolus(type: .meal), .bolus(type: .meal)):
-                return true
-            default:
-                return false
-            }
-        }())
+        XCTAssert(treatment.eventType == expectedTreatment.eventType)
         XCTAssert(treatment.date == expectedTreatment.date)
         XCTAssert(treatment.duration == expectedTreatment.duration)
         XCTAssert(treatment.glucose?.glucoseValue == expectedTreatment.glucose?.glucoseValue
@@ -101,8 +95,9 @@ class NightscoutKitTests: XCTestCase {
     func testParseTreatmentJSON() {
         let treatmentsJSON: [JSONDictionary] = loadFixture("treatments")
         let treatments = treatmentsJSON.compactMap(NightscoutTreatment.init(rawValue:))
-        XCTAssert(treatments.count == treatmentsJSON.count)
-
+        // Count difference:
+        // -1: Sample blood glucose entry with no glucose value
+        XCTAssert(treatments.count == treatmentsJSON.count - 1)
         for treatment in treatments {
             if case .unknown(let description) = treatment.eventType {
                 XCTFail("Unknown event type \"\(description)\" found in well-formed data")

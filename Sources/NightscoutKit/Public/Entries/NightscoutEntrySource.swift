@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Describes the source of a blood glucose entry.
-public enum NightscoutEntrySource {
+public enum NightscoutEntrySource: Hashable {
     /// A continuous glucose monitor (CGM) reading. The associated value contains the blood glucose trend.
     case sensor(trend: BloodGlucoseTrend)
 

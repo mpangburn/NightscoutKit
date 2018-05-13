@@ -10,10 +10,10 @@ import Foundation
 
 
 /// A Nightscout blood glucose entry.
-/// This type stores data such as the glucose value (in mg/dL), its source (sensor or meter), the date at which the data was recorded, and the device from which the data was obtained.
+/// This type stores data such as the glucose value, its source (sensor or meter), the date at which the data was recorded, and the device from which the data was obtained.
 public struct NightscoutEntry: NightscoutEntryProtocol {
     /// The entry's unique, internally assigned identifier.
-    public let id: String
+    public let id: NightscoutIdentifier
 
     /// The blood glucose value and the units in which it is measured.
     public let glucoseValue: BloodGlucoseValue
@@ -28,17 +28,14 @@ public struct NightscoutEntry: NightscoutEntryProtocol {
     public let device: String?
 
     /// Creates a new blood glucose entry.
+    /// - Parameter id: The entry identifier. By default, a new identifier is generated.
     /// - Parameter glucoseValue: The blood glucose value.
-    /// - Parameter units: The blood glucose units in which the glucose vlaue is measured.
+    /// - Parameter units: The blood glucose units in which the glucose value is measured.
     /// - Parameter source: The source of the blood glucose entry.
     /// - Parameter date: The date at which the entry was recorded.
     /// - Parameter device: The device from which the entry data was obtained.
     /// - Returns: A new blood glucose entry.
-    public init(glucoseValue: BloodGlucoseValue, source: NightscoutEntrySource, date: Date, device: String?) {
-        self.init(id: IdentifierFactory.makeID(), glucoseValue: glucoseValue, source: source, date: date, device: device)
-    }
-
-    init(id: String, glucoseValue: BloodGlucoseValue, source: NightscoutEntrySource, date: Date, device: String?) {
+    public init(id: NightscoutIdentifier = .init(), glucoseValue: BloodGlucoseValue, source: NightscoutEntrySource, date: Date, device: String?) {
         self.id = id
         self.glucoseValue = glucoseValue
         self.source = source
@@ -64,7 +61,6 @@ public struct NightscoutEntry: NightscoutEntryProtocol {
 
 extension NightscoutEntry: JSONParseable {
     enum Key {
-        static let id: JSONKey<String> = "_id"
         static let typeString: JSONKey<String> = "type"
         static let millisecondsSince1970: JSONKey<Int> = "date"
         static let dateString: JSONKey<String> = "dateString"
@@ -73,7 +69,7 @@ extension NightscoutEntry: JSONParseable {
 
     static func parse(fromJSON entryJSON: JSONDictionary) -> NightscoutEntry? {
         guard
-            let id = entryJSON[Key.id],
+            let id = NightscoutIdentifier.parse(fromJSON: entryJSON),
             let millisecondsSince1970 = entryJSON[Key.millisecondsSince1970],
             let typeString = entryJSON[Key.typeString],
             let glucoseValue = entryJSON[typeString] as? Int, // Nightscout stores glucose values internally in mg/dL
@@ -95,7 +91,7 @@ extension NightscoutEntry: JSONParseable {
 extension NightscoutEntry: JSONConvertible {
     var jsonRepresentation: JSONDictionary {
         var json: JSONDictionary = [:]
-        json[Key.id] = id
+        json[NightscoutIdentifier.Key.id] = id.value
         json[Key.millisecondsSince1970] = Int(date.timeIntervalSince1970.milliseconds)
         json[convertingDateFrom: Key.dateString] = date
         json[Key.typeString] = source.simpleRawValue

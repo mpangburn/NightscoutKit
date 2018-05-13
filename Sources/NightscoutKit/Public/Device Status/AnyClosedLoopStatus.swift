@@ -17,7 +17,7 @@ public struct AnyClosedLoopStatus: ClosedLoopStatusProtocol {
         public let basalInsulinOnBoard: Double?
     }
 
-    public struct TemporaryBasal: TemporaryBasalProtocol {
+    public struct TemporaryBasal: AbsoluteTemporaryBasalProtocol {
         public let startDate: Date
         public let rate: Double
         public let duration: TimeInterval

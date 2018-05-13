@@ -10,7 +10,7 @@ import Foundation
 
 
 // Describes a predicted blood glucose value.
-public struct PredictedBloodGlucoseValue: BloodGlucoseEntry {
+public struct PredictedBloodGlucoseValue: BloodGlucoseEntry, Hashable {
     /// The predicted glucose value.
     public let glucoseValue: BloodGlucoseValue
 

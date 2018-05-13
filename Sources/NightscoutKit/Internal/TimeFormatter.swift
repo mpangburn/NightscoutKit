@@ -49,17 +49,6 @@ fileprivate extension DateFormatter {
     }()
 }
 
-fileprivate extension Date {
-    var midnight: Date {
-        let calendar = Calendar.current
-        return calendar.startOfDay(for: self)
-    }
-
-    var timeIntervalSinceMidnight: TimeInterval {
-        return timeIntervalSince(midnight)
-    }
-}
-
 // TODO: ISO8601 is the bottleneck for NightscoutKit to support older firmware versions.
 // This requires iOS 10.0+, macOS 10.12+, tvOS 10.0+, watchOS 3.0+.
 

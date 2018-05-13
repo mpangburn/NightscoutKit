@@ -15,7 +15,7 @@ public protocol ClosedLoopStatusProtocol {
     associatedtype InsulinOnBoardStatus: InsulinOnBoardStatusProtocol
 
     /// Describes the temporary basals enacted by the closed loop.
-    associatedtype TemporaryBasal: TemporaryBasalProtocol
+    associatedtype TemporaryBasal: AbsoluteTemporaryBasalProtocol
 
     /// The date at which the status was recorded.
     var timestamp: Date { get }

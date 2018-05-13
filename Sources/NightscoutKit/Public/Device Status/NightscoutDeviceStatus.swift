@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Describes the status of a device in communication with Nightscout.
-public struct NightscoutDeviceStatus: UniquelyIdentifiable, TimelineValue {
+public struct NightscoutDeviceStatus: NightscoutIdentifiable, TimelineValue {
     /// Describes a closed loop system uploading data to Nightscout.
     public enum ClosedLoopSystem {
         case loop(status: LoopDeviceStatus)
@@ -48,7 +48,7 @@ public struct NightscoutDeviceStatus: UniquelyIdentifiable, TimelineValue {
     }
 
     /// The device status's unique, internally assigned identifier.
-    public let id: String
+    public let id: NightscoutIdentifier
 
     /// The device in communication with Nightscout.
     public let device: String
@@ -64,14 +64,13 @@ public struct NightscoutDeviceStatus: UniquelyIdentifiable, TimelineValue {
 
 extension NightscoutDeviceStatus: JSONParseable {
     enum Key {
-        static let id: JSONKey<String> = "_id"
         static let device: JSONKey<String> = "device"
         static let dateString: JSONKey<String> = "created_at"
     }
 
     static func parse(fromJSON deviceStatusJSON: JSONDictionary) -> NightscoutDeviceStatus? {
         guard
-            let id = deviceStatusJSON[Key.id],
+            let id = NightscoutIdentifier.parse(fromJSON: deviceStatusJSON),
             let device = deviceStatusJSON[Key.device],
             let date = deviceStatusJSON[convertingDateFrom: Key.dateString]
         else {

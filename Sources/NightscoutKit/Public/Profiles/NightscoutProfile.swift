@@ -14,14 +14,22 @@ import Foundation
 
 /// A Nightscout profile.
 /// This type stores data such as a user's carb ratio, basal rate, insulin sensitivity, and blood glucose target schedules; duration of active insulin (DIA); and carb absorption rate during activity.
-public struct NightscoutProfile {
+public struct NightscoutProfile: Equatable {
     /// A generic daily schedule item.
     public struct ScheduleItem<Value> {
         /// The time interval since midnight at which the item is scheduled.
-        let startTime: TimeInterval
+        public let startTime: TimeInterval
 
         /// The value of the schedule item.
-        let value: Value
+        public let value: Value
+
+        /// Creates a new schedule item.
+        /// - Parameter startTime: The time interval since midnight at which the item is scheduled.
+        /// - Parameter value: The value of the schedule item.
+        public init(startTime: TimeInterval, value: Value) {
+            self.startTime = startTime
+            self.value = value
+        }
     }
 
     /// A carb ratio schedule.
@@ -33,12 +41,12 @@ public struct NightscoutProfile {
     public typealias BasalRateSchedule = [ScheduleItem<Double>]
 
     /// An insulin sensitivity schedule.
-    /// Schedule items are specified in <blood glucose unit> per unit of insulin.
+    /// Schedule items are specified in blood glucose units per unit of insulin.
     /// Blood glucose units are contextualized by the `NightscoutProfileRecord` containing the profile.
     public typealias InsulinSensitivitySchedule = [ScheduleItem<Double>]
 
     /// A blood glucose target schedule.
-    /// Schedule items are specified in <blood glucose unit>...<blood glucose unit>.
+    /// Schedule items are specified in blood glucose units...blood glucose units.
     /// Blood glucose units are contextualized by the `NightscoutProfileRecord` containing the profile.
     public typealias BloodGlucoseTargetSchedule = [ScheduleItem<ClosedRange<Double>>]
 
@@ -51,12 +59,12 @@ public struct NightscoutProfile {
     public let basalRateSchedule: BasalRateSchedule
 
     /// The profile's insulin sensitivity schedule.
-    /// Schedule items are specified in <blood glucose unit> per unit of insulin.
+    /// Schedule items are specified in blood glucose units per unit of insulin.
     /// Blood glucose units are contextualized by the `NightscoutProfileRecord` containing this profile.
     public let sensitivitySchedule: InsulinSensitivitySchedule
 
     /// The profile's blood glucose target schedule.
-    /// Schedule items are specified in <blood glucose unit>...<blood glucose unit>.
+    /// Schedule items are specified in blood glucose units...blood glucose units.
     /// Blood glucose units are contextualized by the `NightscoutProfileRecord` containing this profile.
     public let bloodGlucoseTargetSchedule: BloodGlucoseTargetSchedule
 
@@ -72,14 +80,22 @@ public struct NightscoutProfile {
 
     /// Creates a new profile.
     /// - Parameter carbRatioSchedule: The carb ratio schedule, with schedule items specified in grams per unit of insulin (g/U).
+    ///                                This array must contain at least one value.
     /// - Parameter basalRateSchedule: The basal rate schedule, with schedule items specified in units of insulin per hour (U/hr).
-    /// - Parameter sensitivitySchedule: The insulin sensitivity schedule, with schedule items specified in <blood glucose unit> per unit of insulin.
-    /// - Parameter bloodGlucoseTargetSchedule: The blood glucose target schedule, with schedule items specified in <blood glucose unit>...<blood glucose unit>.
+    ///                                This array must contain at least one value.
+    /// - Parameter sensitivitySchedule: The insulin sensitivity schedule, with schedule items specified in blood glucose units per unit of insulin.
+    ///                                  This array must contain at least one value.
+    /// - Parameter bloodGlucoseTargetSchedule: The blood glucose target schedule, with schedule items specified in blood glucose units...blood glucose units.
+    ///                                         This array must contain at least one value.
     /// - Parameter activeInsulinDuration: The length of time for which insulin is active after entering the body; also known as the duration of active insulin (DIA).
     /// - Parameter carbAbsorptionRateDuringActivity: The rate at which carbs are absorped during activity in grams per hour (g/hr).
     /// - Parameter timeZone: A string representing the time zone for which the profile was designed.
     public init(carbRatioSchedule: CarbRatioSchedule, basalRateSchedule: BasalRateSchedule, sensitivitySchedule: InsulinSensitivitySchedule,
                 bloodGlucoseTargetSchedule: BloodGlucoseTargetSchedule, activeInsulinDuration: TimeInterval, carbAbsorptionRateDuringActivity: Int, timeZone: String) {
+        precondition(!carbRatioSchedule.isEmpty, "A carb ratio schedule must have at least one carb ratio.")
+        precondition(!basalRateSchedule.isEmpty, "A basal rate schedule must have at least one basal rate.")
+        precondition(!sensitivitySchedule.isEmpty, "An insulin sensitivity schedule must have at least one sensitivity.")
+        precondition(!bloodGlucoseTargetSchedule.isEmpty, "A blood glucose target schedule must have at least one blood glucose target range.")
         self.carbRatioSchedule = carbRatioSchedule
         self.basalRateSchedule = basalRateSchedule
         self.sensitivitySchedule = sensitivitySchedule
@@ -87,6 +103,55 @@ public struct NightscoutProfile {
         self.activeInsulinDuration = activeInsulinDuration
         self.carbAbsorptionRateDuringActivity = carbAbsorptionRateDuringActivity
         self.timeZone = timeZone
+    }
+
+    /// Returns the active carb ratio in grams per unit of insulin (g/U) at the given date.
+    /// - Parameter date: The date at which to determine the active carb ratio. Defaults to the current date.
+    /// - Returns: The active carb ratio at the given date.
+    public func activeCarbRatio(at date: Date = Date()) -> Int {
+        precondition(!carbRatioSchedule.isEmpty, "A carb ratio schedule must have at least one carb ratio.")
+        let activeScheduleItem = carbRatioSchedule.activeScheduleItem(at: date) ?? carbRatioSchedule.first!
+        return activeScheduleItem.value
+    }
+
+    /// Returns the active basal rate in units of insulin per hour (U/hr) at the given date.
+    /// - Parameter date: The date at which to determine the active basal rate. Defaults to the current date.
+    /// - Returns: The active basal rate at the given date.
+    public func activeBasalRate(at date: Date = Date()) -> Double {
+        precondition(!basalRateSchedule.isEmpty, "A basal rate schedule must have at least one basal rate.")
+        let activeScheduleItem = basalRateSchedule.activeScheduleItem(at: date) ?? basalRateSchedule.first!
+        return activeScheduleItem.value
+    }
+
+    /// Returns the current insulin sensitivity in blood glucose units per unit of insulin at the given date.
+    /// - Parameter date: The date at which to determine the active sensitivity. Defaults to the current date.
+    /// - Returns: The active sensitivity at the given date.
+    public func activeSensitivity(at date: Date = Date()) -> Double {
+        precondition(!sensitivitySchedule.isEmpty, "An insulin sensitivity schedule must have at least one sensitivity.")
+        let activeScheduleItem = sensitivitySchedule.activeScheduleItem(at: date) ?? sensitivitySchedule.first!
+        return activeScheduleItem.value
+    }
+
+    /// Returns the current blood glucose target as a range of blood glucose units...blood glucose units at the given date.
+    /// - Parameter date: The date at which to determine the active blood glucose target. Defaults to the current date.
+    /// - Returns: The active blood glucose target range at the given date.
+    public func activeBloodGlucoseTarget(at date: Date = Date()) -> ClosedRange<Double> {
+        precondition(!bloodGlucoseTargetSchedule.isEmpty, "A blood glucose target schedule must have at least one blood glucose target range.")
+        let activeScheduleItem = bloodGlucoseTargetSchedule.activeScheduleItem(at: date) ?? bloodGlucoseTargetSchedule.first!
+        return activeScheduleItem.value
+    }
+}
+
+extension NightscoutProfile.ScheduleItem: Equatable where Value: Equatable {
+    public static func == (lhs: NightscoutProfile.ScheduleItem<Value>, rhs: NightscoutProfile.ScheduleItem<Value>) -> Bool {
+        return lhs.startTime == rhs.startTime && lhs.value == rhs.value
+    }
+}
+
+extension NightscoutProfile.ScheduleItem: Hashable where Value: Hashable {
+    public var hashValue: Int {
+        // TODO: better hashing here
+        return startTime.hashValue ^ value.hashValue
     }
 }
 
@@ -201,5 +266,16 @@ extension NightscoutProfile.ScheduleItem where Value == ClosedRange<Double> {
 extension NightscoutProfile.ScheduleItem: CustomStringConvertible {
     public var description: String {
         return "ScheduleItem(startTime: \(TimeFormatter.prettyString(from: startTime)), value: \(value))"
+    }
+}
+
+// MARK: - Utilities
+
+fileprivate extension Sequence {
+    func activeScheduleItem<T>(at date: Date) -> NightscoutProfile.ScheduleItem<T>? where Element == NightscoutProfile.ScheduleItem<T> {
+        return adjacentPairs().first(where: { earlier, later in
+            let interval = earlier.startTime..<later.startTime
+            return interval.contains(date.timeIntervalSinceMidnight)
+        })?.0
     }
 }

@@ -6,6 +6,8 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
 /// Represents a unit of concentration for measuring blood glucose.
 public enum BloodGlucoseUnit: String {
     case milligramsPerDeciliter = "mg/dl"
@@ -22,7 +24,7 @@ public enum BloodGlucoseUnit: String {
     }
 
     /// The preferred number of fraction digits for displaying a glucose value with these units.
-    var preferredFractionDigits: Int {
+    public var preferredFractionDigits: Int {
         switch self {
         case .milligramsPerDeciliter:
             return 0
@@ -40,5 +42,19 @@ extension BloodGlucoseUnit: CustomStringConvertible {
         case .millimolesPerLiter:
             return "mmol/L"
         }
+    }
+}
+
+extension NumberFormatter {
+    /// Returns a NumberFormatter for formatting blood glucose values using the given unit.
+    /// - Parameter unit: The unit for which glucose values should be formatted.
+    /// - Returns: A formatter for formatting blood glucose values using the given unit.
+    public static func glucoseFormatter(for unit: BloodGlucoseUnit) -> NumberFormatter {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.minimumIntegerDigits = 1
+        formatter.minimumFractionDigits = unit.preferredFractionDigits
+        formatter.maximumFractionDigits = unit.preferredFractionDigits
+        return formatter
     }
 }

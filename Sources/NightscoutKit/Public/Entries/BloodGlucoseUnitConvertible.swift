@@ -14,8 +14,11 @@ public protocol BloodGlucoseUnitConvertible {
     func converted(to units: BloodGlucoseUnit) -> Self
 
     /// Converts this instance to the specified blood glucose units.
+    /// - Parameter units: The blood glucose units to which to convert.
     mutating func convert(to units: BloodGlucoseUnit)
 }
+
+// MARK: - Default Implementations
 
 extension BloodGlucoseUnitConvertible {
     public mutating func convert(to units: BloodGlucoseUnit) {

@@ -8,7 +8,7 @@
 
 /// The status of a Nightscout site.
 /// This type stores data such as the Nightscout version and the user's settings.
-public struct NightscoutStatus {
+public struct NightscoutStatus: Equatable {
     /// The version of Nightscout in use.
     public let version: String
 

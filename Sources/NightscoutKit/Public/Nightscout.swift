@@ -83,7 +83,12 @@ extension Nightscout {
     /// of the order in which they will be notified.
     /// - Parameter observers: The objects to begin observing this `Nightscout` instance.
     public func addObservers(_ observers: [NightscoutObserver]) {
-        observers.forEach(addObserver)
+        _observers.atomically { observersDictionary in
+            for observer in observers {
+                let id = ObjectIdentifier(observer)
+                observersDictionary[id] = NightscoutObserverBox(observer)
+            }
+        }
     }
 
     /// Adds the observers to this `Nightscout` instance.
@@ -212,8 +217,8 @@ extension Nightscout {
             return [.entryDate(.greaterThanOrEqualTo, dateInterval.start), .entryDate(.lessThanOrEqualTo, dateInterval.end)]
         }
 
-        static func treatmentEventType(matching eventType: NightscoutTreatment.EventType) -> QueryItem {
-            return .find(property: NightscoutTreatment.Key.eventTypeString.key, .equalTo, value: eventType.simpleRawValue)
+        static func treatmentEventType(matching eventKind: NightscoutTreatment.EventType.Kind) -> QueryItem {
+            return .find(property: NightscoutTreatment.Key.eventTypeString.key, .equalTo, value: eventKind.rawValue)
         }
 
         static func treatmentDate(_ operator: ComparativeOperator, _ date: Date) -> QueryItem {
@@ -388,7 +393,7 @@ extension Nightscout {
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
-    public func fetchEntries(from interval: DateInterval, maxCount: Int = 2 << 31,
+    public func fetchEntries(fromInterval interval: DateInterval, maxCount: Int = 2 << 31,
                              completion: ((_ result: NightscoutResult<[NightscoutEntry]>) -> Void)? = nil) {
         let queryItems = QueryItem.entryDates(from: interval).appending(.count(maxCount))
         fetch(from: .entries, queryItems: queryItems) { (result: NightscoutResult<[NightscoutEntry]>) in
@@ -401,13 +406,15 @@ extension Nightscout {
     }
 
     /// Fetches the most recent treatments.
+    /// - Parameter eventKind: The event kind to match. If this argument is `nil`, all event kinds are included. Defaults to `nil`.
     /// - Parameter count: The number of recent treatments to fetch. Defaults to 10.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
-    public func fetchMostRecentTreatments(count: Int = 10,
+    public func fetchMostRecentTreatments(matching eventKind: NightscoutTreatment.EventType.Kind? = nil, count: Int = 10,
                                           completion: ((_ result: NightscoutResult<[NightscoutTreatment]>) -> Void)? = nil) {
-        let queryItems: [QueryItem] = [.count(count)]
+        var queryItems: [QueryItem] = [.count(count)]
+        eventKind.map(QueryItem.treatmentEventType(matching:)).map { queryItems.append($0) }
         fetch(from: .treatments, queryItems: queryItems) { (result: NightscoutResult<[NightscoutTreatment]>) in
             self.observers.notify(
                 for: result, from: self,
@@ -417,15 +424,17 @@ extension Nightscout {
         }
     }
 
-    /// Fetches the treatments from within the specified `DateInterval`.
+    /// Fetches the treatments meeting the given specifications.
+    /// - Parameter eventKind: The event kind to match. If this argument is `nil`, all event kinds are included. Defaults to `nil`.
     /// - Parameter interval: The interval from which treatments should be fetched.
     /// - Parameter maxCount: The maximum number of treatments to fetch. Defaults to `2 ** 31`, where `**` is exponentiation.
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
-    public func fetchTreatments(from interval: DateInterval, maxCount: Int = 2 << 31,
+    public func fetchTreatments(matching eventKind: NightscoutTreatment.EventType.Kind? = nil, fromInterval interval: DateInterval, maxCount: Int = 2 << 31,
                                 completion: ((_ result: NightscoutResult<[NightscoutTreatment]>) -> Void)? = nil) {
-        let queryItems = QueryItem.treatmentDates(from: interval).appending(.count(maxCount))
+        var queryItems = QueryItem.treatmentDates(from: interval).appending(.count(maxCount))
+        eventKind.map(QueryItem.treatmentEventType(matching:)).map { queryItems.append($0) }
         fetch(from: .treatments, queryItems: queryItems) { (result: NightscoutResult<[NightscoutTreatment]>) in
             self.observers.notify(
                 for: result, from: self,
@@ -472,7 +481,7 @@ extension Nightscout {
     /// - Parameter completion: The completion handler to be called upon completing the operation.
     ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter result: The result of the operation.
-    public func fetchDeviceStatuses(from interval: DateInterval, maxCount: Int = 2 << 31,
+    public func fetchDeviceStatuses(fromInterval interval: DateInterval, maxCount: Int = 2 << 31,
                                     completion: ((_ result: NightscoutResult<[NightscoutDeviceStatus]>) -> Void)? = nil) {
         let queryItems = QueryItem.deviceStatusDates(from: interval) + [.count(maxCount)]
         fetch(from: .deviceStatus, queryItems: queryItems) { (result: NightscoutResult<[NightscoutDeviceStatus]>) in
@@ -834,12 +843,12 @@ extension Nightscout {
         }
     }
 
-    private func delete<Payload: UniquelyIdentifiable>(_ items: [Payload], from endpoint: APIEndpoint,
+    private func delete<Payload: NightscoutIdentifiable>(_ items: [Payload], from endpoint: APIEndpoint,
                                                        completion: @escaping (OperationResult<Payload>) -> Void) {
         concurrentPerform(_delete, items: items, endpoint: endpoint, completion: completion)
     }
 
-    private func _delete<Payload: UniquelyIdentifiable>(_ item: Payload, from endpoint: APIEndpoint,
+    private func _delete<Payload: NightscoutIdentifiable>(_ item: Payload, from endpoint: APIEndpoint,
                                                         completion: @escaping (NightscoutError?) -> Void) {
         guard apiSecret != nil else {
             completion(.missingAPISecret)
@@ -851,7 +860,7 @@ extension Nightscout {
             return
         }
 
-        request.url?.appendPathComponent(item.id)
+        request.url?.appendPathComponent(item.id.value)
         fetchData(from: endpoint, with: request) { result in
             completion(result.error)
         }
