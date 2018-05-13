@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// Describes a blood glucose value and the units in which it is measured.
 public struct BloodGlucoseValue: BloodGlucoseUnitConvertible, Hashable {
     /// The recorded glucose value.
