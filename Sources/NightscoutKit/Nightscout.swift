@@ -17,13 +17,8 @@ import Foundation
 /// - fetching device statuses
 /// - fetching the site status and settings
 public final class Nightscout {
-    /// The base URL for the Nightscout site.
-    /// This is the URL the user would visit to view their Nightscout home page.
-    public var baseURL: URL
-
-    /// The API secret for the base URL.
-    /// If this property is `nil`, upload, update, and delete operations will produce `NightscoutError.missingAPISecret`.
-    public var apiSecret: String?
+    /// The router for configuring URL requests.
+    private let router: NightscoutRouter
 
     /// The observers responding to operations performed by this `Nightscout` instance,
     /// boxed to hold references weakly.
@@ -35,28 +30,20 @@ public final class Nightscout {
     /// The queues for asynchronously performing concurrent operations for this `Nightscout` instance.
     private let queues: Queues
 
-    /// Initializes a Nightscout instance from the base URL and (optionally) the API secret.
-    /// - Parameter baseURL: The base URL for the Nightscout site.
-    /// - Parameter apiSecret: The API secret for the Nightscout site. Defaults to `nil`.
-    /// - Returns: A Nightscout instance from the base URL and API secret.
-    public init(baseURL: URL, apiSecret: String? = nil) {
-        self.baseURL = baseURL
-        self.apiSecret = apiSecret
+    /// The credentials for accessing Nightscout, including the site URL and API secret.
+    public var credentials: NightscoutCredentials {
+        return router.credentials
+    }
+
+    /// Creates a new `Nightscout` instance for interacting with a Nightscout site.
+    /// - Parameter credentials: The verified credentials for accessing the Nightscout site.
+    ///                          If `credentials.apiSecret` is `nil`, upload, update, and delete operations will fail.
+    /// - Returns: A new `Nightscout` instance for interacting with a Nightscout site.
+    public init(credentials: NightscoutCredentials) {
+        self.router = NightscoutRouter(credentials: credentials)
         self._observers = ThreadSafe([:])
         self.sessions = Sessions()
         self.queues = Queues()
-    }
-
-    /// Attempts to initialize a Nightscout instance from the base URL string and (optionally) the API secret.
-    /// - Parameter baseURLString: The base URL string from which the base URL should attempt to be created.
-    /// - Parameter apiSecret: The API secret for the Nightscout site. Defaults to `nil`.
-    /// - Throws: `NightscoutError.invalidURL` if `baseURLString` cannot be used to create a valid URL.
-    /// - Returns: A Nightscout instance from the base URL and API secret.
-    public convenience init(baseURLString: String, apiSecret: String? = nil) throws {
-        guard let baseURL = URL(string: baseURLString) else {
-            throw NightscoutError.invalidURL
-        }
-        self.init(baseURL: baseURL, apiSecret: apiSecret)
     }
 }
 
@@ -124,22 +111,9 @@ extension Nightscout {
 
 // MARK: - API Access
 
-private enum HTTPMethod: String {
-    case get = "GET"
-    case put = "PUT"
-    case post = "POST"
-    case delete = "DELETE"
-}
-
 extension Nightscout {
-    private enum APIEndpoint: String {
-        case entries = "entries"
-        case treatments = "treatments"
-        case profiles = "profile"
-        case status = "status"
-        case deviceStatus = "devicestatus"
-        case authorization = "experiments/test"
-    }
+    private typealias QueryItem = NightscoutQueryItem
+    private typealias APIEndpoint = NightscoutAPIEndpoint
 
     private struct Sessions {
         let settingsSession = URLSession(configuration: .default)
@@ -184,85 +158,6 @@ extension Nightscout {
                                     // which is where this method is used
             }
         }
-    }
-
-    private enum QueryItem {
-        case count(Int)
-        case find(property: String, ComparativeOperator, value: String)
-
-        enum ComparativeOperator: String {
-            case lessThan = "lt"
-            case lessThanOrEqualTo = "lte"
-            case equalTo
-            case greaterThanOrEqualTo = "gte"
-            case greaterThan = "gt"
-        }
-
-        var urlQueryItem: URLQueryItem {
-            switch self {
-            case .count(let count):
-                return URLQueryItem(name: "count", value: String(count))
-            case .find(property: let property, let `operator`, value: let value):
-                let operatorString = (`operator` == .equalTo) ? "" : "[$\(`operator`.rawValue)]"
-                return URLQueryItem(name: "find[\(property)]\(operatorString)", value: value)
-            }
-        }
-
-        static func entryDate(_ operator: ComparativeOperator, _ date: Date) -> QueryItem {
-            let millisecondsSince1970 = Int(date.timeIntervalSince1970.milliseconds)
-            return .find(property: NightscoutEntry.Key.millisecondsSince1970.key, `operator`, value: String(millisecondsSince1970))
-        }
-
-        static func entryDates(from dateInterval: DateInterval) -> [QueryItem] {
-            return [.entryDate(.greaterThanOrEqualTo, dateInterval.start), .entryDate(.lessThanOrEqualTo, dateInterval.end)]
-        }
-
-        static func treatmentEventType(matching eventKind: NightscoutTreatment.EventType.Kind) -> QueryItem {
-            return .find(property: NightscoutTreatment.Key.eventTypeString.key, .equalTo, value: eventKind.rawValue)
-        }
-
-        static func treatmentDate(_ operator: ComparativeOperator, _ date: Date) -> QueryItem {
-            let dateString = "\(TimeFormatter.string(from: date)).000Z"
-            return .find(property: NightscoutTreatment.Key.dateString.key, `operator`, value: dateString)
-        }
-
-        static func treatmentDates(from dateInterval: DateInterval) -> [QueryItem] {
-            return [.treatmentDate(.greaterThanOrEqualTo, dateInterval.start), .treatmentDate(.lessThanOrEqualTo, dateInterval.end)]
-        }
-
-        static func deviceStatusDate(_ operator: ComparativeOperator, _ date: Date) -> QueryItem {
-            let dateString = "\(TimeFormatter.string(from: date))Z"
-            return .find(property: NightscoutDeviceStatus.Key.dateString.key, `operator`, value: dateString)
-        }
-
-        static func deviceStatusDates(from dateInterval: DateInterval) -> [QueryItem] {
-            return [.deviceStatusDate(.greaterThanOrEqualTo, dateInterval.start), .deviceStatusDate(.lessThanOrEqualTo, dateInterval.end)]
-        }
-    }
-
-    private static let apiVersion = "v1"
-
-    private func route(to endpoint: APIEndpoint, queryItems: [QueryItem] = []) -> URL? {
-        let base = baseURL.appendingPathComponents("api", Nightscout.apiVersion, endpoint.rawValue)
-        let urlQueryItems = queryItems.map { $0.urlQueryItem }
-        return base.components?.addingQueryItems(urlQueryItems).url
-    }
-
-    private func configureURLRequest(for endpoint: APIEndpoint, queryItems: [QueryItem] = [], httpMethod: HTTPMethod? = nil) -> URLRequest? {
-        guard let url = route(to: endpoint, queryItems: queryItems) else {
-            return nil
-        }
-
-        var request = URLRequest(url: url)
-        var headers = [
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-        ]
-        apiSecret.map { headers["api-secret"] = $0.sha1() }
-        headers.forEach { header, value in request.setValue(value, forHTTPHeaderField: header) }
-        request.httpMethod = httpMethod?.rawValue
-
-        return request
     }
 }
 
@@ -532,7 +427,7 @@ extension Nightscout {
 
     private func fetchData(from endpoint: APIEndpoint, queryItems: [QueryItem],
                            completion: @escaping (NightscoutResult<Data>) -> Void) {
-        guard let request = configureURLRequest(for: endpoint, queryItems: queryItems, httpMethod: .get) else {
+        guard let request = router.configureURLRequest(for: endpoint, queryItems: queryItems, httpMethod: .get) else {
             completion(.failure(.invalidURL))
             return
         }
@@ -592,12 +487,12 @@ extension Nightscout {
     ///                         Observers will be notified of the result of this operation before `completion` is invoked.
     /// - Parameter error: The error that occurred in verifying authorization. `nil` indicates success.
     public func verifyAuthorization(completion: ((_ error: NightscoutError?) -> Void)? = nil) {
-        guard apiSecret != nil else {
+        guard credentials.apiSecret != nil else {
             completion?(.missingAPISecret)
             return
         }
 
-        guard let request = configureURLRequest(for: .authorization) else {
+        guard let request = router.configureURLRequest(for: .authorization) else {
             completion?(.invalidURL)
             return
         }
@@ -783,12 +678,12 @@ extension Nightscout {
 
     private func upload<Payload: JSONRepresentable, Response: JSONParseable>(_ item: Payload, to endpoint: APIEndpoint, httpMethod: HTTPMethod,
                                                                              completion: @escaping (NightscoutResult<Response>) -> Void) {
-        guard apiSecret != nil else {
+        guard credentials.apiSecret != nil else {
             completion(.failure(.missingAPISecret))
             return
         }
 
-        guard let request = configureURLRequest(for: endpoint, httpMethod: httpMethod) else {
+        guard let request = router.configureURLRequest(for: endpoint, httpMethod: httpMethod) else {
             completion(.failure(.invalidURL))
             return
         }
@@ -850,12 +745,12 @@ extension Nightscout {
 
     private func _delete<Payload: NightscoutIdentifiable>(_ item: Payload, from endpoint: APIEndpoint,
                                                         completion: @escaping (NightscoutError?) -> Void) {
-        guard apiSecret != nil else {
+        guard credentials.apiSecret != nil else {
             completion(.missingAPISecret)
             return
         }
 
-        guard var request = configureURLRequest(for: endpoint, httpMethod: .delete) else {
+        guard var request = router.configureURLRequest(for: endpoint, httpMethod: .delete) else {
             completion(.invalidURL)
             return
         }
