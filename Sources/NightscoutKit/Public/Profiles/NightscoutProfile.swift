@@ -34,7 +34,7 @@ public struct NightscoutProfile: Equatable {
 
     /// A carb ratio schedule.
     /// Schedule item are specified in grams per unit of insulin (g/U).
-    public typealias CarbRatioSchedule = [ScheduleItem<Int>]
+    public typealias CarbRatioSchedule = [ScheduleItem<Double>]
 
     /// A basal rate schedule.
     /// Schedule items are specified in units of insulin per hour (U/hr).
@@ -108,7 +108,7 @@ public struct NightscoutProfile: Equatable {
     /// Returns the active carb ratio in grams per unit of insulin (g/U) at the given date.
     /// - Parameter date: The date at which to determine the active carb ratio. Defaults to the current date.
     /// - Returns: The active carb ratio at the given date.
-    public func activeCarbRatio(at date: Date = Date()) -> Int {
+    public func activeCarbRatio(at date: Date = Date()) -> Double {
         precondition(!carbRatioSchedule.isEmpty, "A carb ratio schedule must have at least one carb ratio.")
         let activeScheduleItem = carbRatioSchedule.activeScheduleItem(at: date) ?? carbRatioSchedule.first!
         return activeScheduleItem.value
