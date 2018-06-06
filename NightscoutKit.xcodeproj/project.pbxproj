@@ -6,6 +6,20 @@
 	objectVersion = 48;
 	objects = {
 
+/* Begin PBXAggregateTarget section */
+		89CF410720C87969007CA233 /* CCommonCryptoModuleMap */ = {
+			isa = PBXAggregateTarget;
+			buildConfigurationList = 89CF410820C87969007CA233 /* Build configuration list for PBXAggregateTarget "CCommonCryptoModuleMap" */;
+			buildPhases = (
+				89CF410B20C8796E007CA233 /* ShellScript */,
+			);
+			dependencies = (
+			);
+			name = CCommonCryptoModuleMap;
+			productName = CCommonCryptoModuleMap;
+		};
+/* End PBXAggregateTarget section */
+
 /* Begin PBXBuildFile section */
 		891D3C3A20A3BCA50024978F /* TimelinePeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891D3C3920A3BCA50024978F /* TimelinePeriod.swift */; };
 		891D3C3B20A3BCA50024978F /* TimelinePeriod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 891D3C3920A3BCA50024978F /* TimelinePeriod.swift */; };
@@ -301,6 +315,34 @@
 			remoteGlobalIDString = 896FF57B2048C7510054198A;
 			remoteInfo = NightscoutKit;
 		};
+		89CF410C20C87A45007CA233 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 896FF5732048C7510054198A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 89CF410720C87969007CA233;
+			remoteInfo = CCommonCryptoModuleMap;
+		};
+		89CF410E20C87A50007CA233 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 896FF5732048C7510054198A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 89CF410720C87969007CA233;
+			remoteInfo = CCommonCryptoModuleMap;
+		};
+		89CF411020C87A54007CA233 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 896FF5732048C7510054198A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 89CF410720C87969007CA233;
+			remoteInfo = CCommonCryptoModuleMap;
+		};
+		89CF411220C87A59007CA233 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 896FF5732048C7510054198A /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 89CF410720C87969007CA233;
+			remoteInfo = CCommonCryptoModuleMap;
+		};
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
@@ -377,7 +419,6 @@
 		89CE6754209D7FBF007F019A /* Bolus.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bolus.swift; sourceTree = "<group>"; };
 		89CE675E209E1BA3007F019A /* TemporaryBasal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryBasal.swift; sourceTree = "<group>"; };
 		89CE6763209E1BDC007F019A /* TemporaryBasalType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryBasalType.swift; sourceTree = "<group>"; };
-		89D48E31204BBE200066B293 /* module.modulemap */ = {isa = PBXFileReference; lastKnownFileType = "sourcecode.module-map"; path = module.modulemap; sourceTree = "<group>"; };
 		89D48E34204FA3310066B293 /* DataConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConvertible.swift; sourceTree = "<group>"; };
 		89D48E37204FAC0E0066B293 /* AnyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSON.swift; sourceTree = "<group>"; };
 		89D8F932206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodGlucoseUnitConvertible.swift; sourceTree = "<group>"; };
@@ -570,7 +611,6 @@
 			isa = PBXGroup;
 			children = (
 				896FF5962048C7640054198A /* Sources */,
-				89D48E30204BBDFA0066B293 /* CCommonCrypto */,
 				896FF57E2048C7510054198A /* NightscoutKit */,
 				896FF5892048C7510054198A /* NightscoutKitTests */,
 				896FF57D2048C7510054198A /* Products */,
@@ -656,14 +696,6 @@
 			path = Extensions;
 			sourceTree = "<group>";
 		};
-		89D48E30204BBDFA0066B293 /* CCommonCrypto */ = {
-			isa = PBXGroup;
-			children = (
-				89D48E31204BBE200066B293 /* module.modulemap */,
-			);
-			path = CCommonCrypto;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXHeadersBuildPhase section */
@@ -714,6 +746,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				89CF411320C87A59007CA233 /* PBXTargetDependency */,
 			);
 			name = "NightscoutKit-tvOS";
 			productName = "NightscoutKit-tvOS";
@@ -732,6 +765,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				89CF410F20C87A50007CA233 /* PBXTargetDependency */,
 			);
 			name = "NightscoutKit-macOS";
 			productName = "NightscoutKit-macOS";
@@ -750,6 +784,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				89CF410D20C87A45007CA233 /* PBXTargetDependency */,
 			);
 			name = "NightscoutKit-iOS";
 			productName = NightscoutKit;
@@ -786,6 +821,7 @@
 			buildRules = (
 			);
 			dependencies = (
+				89CF411120C87A54007CA233 /* PBXTargetDependency */,
 			);
 			name = "NightscoutKit-watchOS";
 			productName = "NightscoutKit-watchOS";
@@ -818,6 +854,10 @@
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
 					};
+					89CF410720C87969007CA233 = {
+						CreatedOnToolsVersion = 9.4;
+						ProvisioningStyle = Automatic;
+					};
 					89E63F34205CE9B600C458AA = {
 						CreatedOnToolsVersion = 9.2;
 						ProvisioningStyle = Automatic;
@@ -841,6 +881,7 @@
 				89E63F34205CE9B600C458AA /* NightscoutKit-watchOS */,
 				892BE65B205CED57009493EE /* NightscoutKit-tvOS */,
 				896FF5842048C7510054198A /* NightscoutKitTests */,
+				89CF410720C87969007CA233 /* CCommonCryptoModuleMap */,
 			);
 		};
 /* End PBXProject section */
@@ -887,6 +928,22 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		89CF410B20C8796E007CA233 /* ShellScript */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "# c.f. https://stackoverflow.com/questions/25248598/importing-commoncrypto-in-a-swift-framework\n# This if-statement means we'll only run the main script if the CommonCryptoModuleMap directory doesn't exist\n# Because otherwise the rest of the script causes a full recompile for anything where CommonCrypto is a dependency\n# Do a \"Clean Build Folder\" to remove this directory and trigger the rest of the script to run\nif [ -d \"${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap\" ]; then\necho \"${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap directory already exists, so skipping the rest of the script.\"\nexit 0\nfi\n\nmkdir -p \"${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap\"\ncat <<EOF > \"${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap/module.modulemap\"\nmodule CCommonCrypto [system] {\n    header \"${SDKROOT}/usr/include/CommonCrypto/CommonCrypto.h\"\n    export *\n}\nEOF";
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		892BE657205CED57009493EE /* Sources */ = {
@@ -1206,6 +1263,26 @@
 			target = 896FF57B2048C7510054198A /* NightscoutKit-iOS */;
 			targetProxy = 896FF5872048C7510054198A /* PBXContainerItemProxy */;
 		};
+		89CF410D20C87A45007CA233 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 89CF410720C87969007CA233 /* CCommonCryptoModuleMap */;
+			targetProxy = 89CF410C20C87A45007CA233 /* PBXContainerItemProxy */;
+		};
+		89CF410F20C87A50007CA233 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 89CF410720C87969007CA233 /* CCommonCryptoModuleMap */;
+			targetProxy = 89CF410E20C87A50007CA233 /* PBXContainerItemProxy */;
+		};
+		89CF411120C87A54007CA233 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 89CF410720C87969007CA233 /* CCommonCryptoModuleMap */;
+			targetProxy = 89CF411020C87A54007CA233 /* PBXContainerItemProxy */;
+		};
+		89CF411320C87A59007CA233 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 89CF410720C87969007CA233 /* CCommonCryptoModuleMap */;
+			targetProxy = 89CF411220C87A59007CA233 /* PBXContainerItemProxy */;
+		};
 /* End PBXTargetDependency section */
 
 /* Begin XCBuildConfiguration section */
@@ -1225,7 +1302,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mpangburn.$(PROJECT_NAME)";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_INCLUDE_PATHS = "${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
@@ -1248,7 +1325,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mpangburn.$(PROJECT_NAME)";
 				SDKROOT = appletvos;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_INCLUDE_PATHS = "${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 10.0;
@@ -1274,7 +1351,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mpangburn.$(PROJECT_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_INCLUDE_PATHS = "${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -1298,7 +1375,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "com.mpangburn.$(PROJECT_NAME)";
 				SDKROOT = macosx;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_INCLUDE_PATHS = "${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Release;
@@ -1443,7 +1520,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKit;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = " ${SRCROOT}/CCommonCrypto";
+				SWIFT_INCLUDE_PATHS = "${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1467,7 +1544,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKit;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = " ${SRCROOT}/CCommonCrypto";
+				SWIFT_INCLUDE_PATHS = "${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -1504,6 +1581,26 @@
 			};
 			name = Release;
 		};
+		89CF410920C87969007CA233 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx appletvsimulator appletvos watchos watchsimulator";
+			};
+			name = Debug;
+		};
+		89CF410A20C87969007CA233 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos macosx appletvsimulator appletvos watchos watchsimulator";
+			};
+			name = Release;
+		};
 		89E63F3A205CE9B600C458AA /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
@@ -1522,7 +1619,7 @@
 				PRODUCT_NAME = "$(PROJECT_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_INCLUDE_PATHS = "${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 3.0;
@@ -1547,7 +1644,7 @@
 				PRODUCT_NAME = "$(PROJECT_NAME)";
 				SDKROOT = watchos;
 				SKIP_INSTALL = YES;
-				SWIFT_INCLUDE_PATHS = "${SRCROOT}/CCommonCrypto";
+				SWIFT_INCLUDE_PATHS = "${BUILT_PRODUCTS_DIR}/CCommonCryptoModuleMap";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = 4;
 				WATCHOS_DEPLOYMENT_TARGET = 3.0;
@@ -1598,6 +1695,15 @@
 			buildConfigurations = (
 				896FF5942048C7510054198A /* Debug */,
 				896FF5952048C7510054198A /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		89CF410820C87969007CA233 /* Build configuration list for PBXAggregateTarget "CCommonCryptoModuleMap" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				89CF410920C87969007CA233 /* Debug */,
+				89CF410A20C87969007CA233 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
