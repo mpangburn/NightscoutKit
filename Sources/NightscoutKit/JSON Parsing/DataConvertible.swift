@@ -10,14 +10,14 @@ import Foundation
 
 
 /// A type that can be parsed from data.
-protocol DataParseable {
+internal protocol DataParseable {
     static func parse(fromData data: Data) throws -> Self?
 }
 
 /// A type that can be represented as data.
-protocol DataRepresentable {
+internal protocol DataRepresentable {
     func data() throws -> Data
 }
 
 /// A type that can be converted to and from data.
-typealias DataConvertible = DataParseable & DataRepresentable
+internal typealias DataConvertible = DataParseable & DataRepresentable

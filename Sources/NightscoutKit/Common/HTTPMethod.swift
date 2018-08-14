@@ -6,7 +6,7 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-enum HTTPMethod: String {
+internal enum HTTPMethod: String {
     case get = "GET"
     case put = "PUT"
     case post = "POST"

@@ -10,7 +10,7 @@ import Foundation
 
 
 /// A type that can be parsed from JSON data.
-protocol JSONParseable: DataParseable {
+internal protocol JSONParseable: DataParseable {
     associatedtype JSONParseType = JSONDictionary
     static func parse(fromJSON json: JSONParseType) -> Self?
 }
@@ -25,7 +25,7 @@ extension JSONParseable {
 }
 
 /// A type that can be represented as JSON.
-protocol JSONRepresentable: DataRepresentable {
+internal protocol JSONRepresentable: DataRepresentable {
     associatedtype JSONRepresentation = JSONDictionary
     var jsonRepresentation: JSONRepresentation { get }
 }
@@ -37,7 +37,7 @@ extension JSONRepresentable {
 }
 
 /// A type that can be converted to and from JSON.
-protocol JSONConvertible: JSONParseable, JSONRepresentable, RawRepresentable where JSONParseType == JSONRepresentation, RawValue == JSONRepresentation { }
+internal protocol JSONConvertible: JSONParseable, JSONRepresentable, RawRepresentable where JSONParseType == JSONRepresentation, RawValue == JSONRepresentation { }
 
 extension JSONConvertible {
     public init?(rawValue: RawValue) {

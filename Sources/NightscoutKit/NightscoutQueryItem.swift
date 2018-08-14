@@ -9,7 +9,7 @@
 import Foundation
 
 
-enum NightscoutQueryItem {
+internal enum NightscoutQueryItem {
     case count(Int)
     case find(property: String, ComparativeOperator, value: String)
 

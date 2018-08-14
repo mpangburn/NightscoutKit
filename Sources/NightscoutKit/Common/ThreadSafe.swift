@@ -11,7 +11,7 @@ import Foundation
 
 // c.f. https://talk.objc.io/episodes/S01E90-concurrent-map
 /// A class for ensuring safety in concurrently reading from or writing to a value.
-final class ThreadSafe<Value> {
+internal final class ThreadSafe<Value> {
     private var _value: Value
     private let accessQueue = DispatchQueue(label: "com.mpangburn.nightscoutkit.threadsafe")
 

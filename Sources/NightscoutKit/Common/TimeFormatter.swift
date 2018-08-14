@@ -9,7 +9,7 @@
 import Foundation
 
 
-enum TimeFormatter {
+internal enum TimeFormatter {
     static func time(from string: String) -> TimeInterval? {
         let date = DateFormatter.hourAndMinuteFormatter.date(from: string)
         return date?.timeIntervalSinceMidnight

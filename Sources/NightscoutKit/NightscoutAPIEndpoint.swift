@@ -6,10 +6,7 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import Foundation
-
-
-enum NightscoutAPIEndpoint: String {
+internal enum NightscoutAPIEndpoint: String {
     case entries = "entries"
     case treatments = "treatments"
     case profiles = "profile"
