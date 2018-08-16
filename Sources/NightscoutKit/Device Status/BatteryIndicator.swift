@@ -7,7 +7,7 @@
 //
 
 /// Indicates the status of a battery.
-public enum BatteryIndicator: String {
+public enum BatteryIndicator: String, Codable {
     case low = "low"
     case normal = "normal"
 }

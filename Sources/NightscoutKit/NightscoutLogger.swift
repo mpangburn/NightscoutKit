@@ -13,21 +13,21 @@ import Foundation
 /// instance, including failed uploads, updates, deletions, and errors encountered.
 open class NightscoutFailureLogger: _NightscoutObserver {
     /// The function used to write logs.
-    public let write: (String) -> Void
+    public let log: (String) -> Void
 
     /// Creates a new logger with the given writing function.
-    /// - Parameter write: The function used to log the events of the observed `NightscoutDownloader`
-    ///                    or `NightscoutUploader` instance.
+    /// - Parameter log: The function used to log the events of the observed `NightscoutDownloader`
+    ///                  or `NightscoutUploader` instance.
     /// - Parameter synchronizingWrites: Determines whether a DispatchQueue should be used to synchronize
     ///                                  writes to the output stream. The default value is `true`.
     /// - Returns: A new logger that logs the operations of the observed `NightscoutDownloader`
     ///            or `NightscoutUploader` instance using the given function.
-    public init(write: @escaping (String) -> Void, synchronizingWrites: Bool = true) {
+    public required init(log: @escaping (String) -> Void, synchronizingWrites: Bool = true) {
         if synchronizingWrites {
             let writingQueue = DispatchQueue(label: "com.mpangburn.nightscoutkit.loggingqueue")
-            self.write = { log in writingQueue.sync { write(log) } }
+            self.log = { string in writingQueue.sync { log(string) } }
         } else {
-            self.write = write
+            self.log = log
         }
     }
 
@@ -38,20 +38,20 @@ open class NightscoutFailureLogger: _NightscoutObserver {
     /// - Returns: A new logger targeting the given output stream.
     public convenience init(outputStream: TextOutputStream, synchronizingWrites: Bool = true) {
         var outputStream = outputStream
-        self.init(write: { outputStream.write($0) }, synchronizingWrites: synchronizingWrites)
+        self.init(log: { outputStream.write($0) }, synchronizingWrites: synchronizingWrites)
     }
 
     /// Creates a new logger targeting the given file handle.
     /// - Parameter fileHandle: The file handle to which to direct logs.
     /// - Returns: A new logger targeting the given file handle.
     public init(fileHandle: FileHandle) {
-        self.write = { fileHandle.write(Data($0.utf8)) }
+        self.log = { fileHandle.write(Data($0.utf8)) }
     }
 
     /// Creates a new logger utilizing `NSLog`.
     /// - Returns: A new logger utilizing `NSLog`.
     public class func nsLogger() -> Self {
-        return self.init(write: { NSLog($0) })
+        return self.init(log: { NSLog($0) })
     }
 
     // MARK: - NightscoutDownloaderObserver
@@ -99,11 +99,11 @@ open class NightscoutFailureLogger: _NightscoutObserver {
 
 extension NightscoutFailureLogger {
     fileprivate func logInvocation(of function: StaticString = #function, downloader: NightscoutDownloader, additionalInfo: String?) {
-        write("\(function) @ \(downloader.credentials.url)\(additionalInfo.map { ": \($0)" } ?? "")")
+        log("\(function) @ \(downloader.credentials.url)\(additionalInfo.map { ": \($0)" } ?? "")")
     }
 
     fileprivate func logInvocation(of function: StaticString = #function, uploader: NightscoutUploader, additionalInfo: String?) {
-        write("\(function) @ \(uploader.credentials.url)\(additionalInfo.map { ": \($0)" } ?? "")")
+        log("\(function) @ \(uploader.credentials.url)\(additionalInfo.map { ": \($0)" } ?? "")")
     }
 
     fileprivate func newlineSeparatedDescriptions<S: Sequence>(of elements: S, includingLeadingNewline: Bool = true) -> String {

@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Represents a unit of concentration for measuring blood glucose.
-public enum BloodGlucoseUnit: String {
+public enum BloodGlucoseUnit: String, Codable {
     case milligramsPerDeciliter = "mg/dl"
     case millimolesPerLiter = "mmol"
 

@@ -7,7 +7,7 @@
 //
 
 /// Represents the rate of change of a blood glucose value.
-public enum BloodGlucoseTrend: String {
+public enum BloodGlucoseTrend: String, Codable {
     case doubleUp = "DoubleUp"
     case singleUp = "SingleUp"
     case fortyFiveUp = "FortyFiveUp"

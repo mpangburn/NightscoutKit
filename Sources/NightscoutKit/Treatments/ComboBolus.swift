@@ -11,7 +11,7 @@ import Foundation
 
 /// A dual-wave bolus in which some insulin is delivered immediately,
 /// and some is delivered over the course of some time interval.
-public struct ComboBolus: TimelinePeriod, Hashable {
+public struct ComboBolus: TimelinePeriod, Hashable, Codable {
     /// The delivery date of the bolus.
     public let startDate: Date
 

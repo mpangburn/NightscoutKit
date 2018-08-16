@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Describes an exercise event.
-public struct ExerciseEvent: TimelinePeriod, Hashable {
+public struct ExerciseEvent: TimelinePeriod, Hashable, Codable {
     /// The date at which the exercise began.
     public let startDate: Date
 

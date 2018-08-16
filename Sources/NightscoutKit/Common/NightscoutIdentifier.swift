@@ -10,7 +10,7 @@ import Foundation
 
 
 /// A type used to identify Nightscout entries, treatments, profile records, and device statuses.
-public struct NightscoutIdentifier: Hashable {
+public struct NightscoutIdentifier: Hashable, Codable {
     internal let value: String
 
     private static let idLength = 24

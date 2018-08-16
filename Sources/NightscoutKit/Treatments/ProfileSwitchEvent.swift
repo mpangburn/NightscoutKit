@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Describes a profile switch event.
-public struct ProfileSwitchEvent: TimelinePeriod, Hashable {
+public struct ProfileSwitchEvent: TimelinePeriod, Hashable, Codable {
     /// The date of the profile switch event.
     public let startDate: Date
 

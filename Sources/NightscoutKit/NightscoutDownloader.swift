@@ -172,7 +172,7 @@ extension NightscoutDownloader {
         maxCount: Int = 2 << 31,
         completion: ((_ result: NightscoutResult<[NightscoutEntry]>) -> Void)? = nil
     ) {
-        let queryItems = QueryItem.entryDates(from: interval).appending(.count(maxCount))
+        let queryItems = QueryItem.entryDates(from: interval) + [.count(maxCount)]
         fetch(from: .entries, queryItems: queryItems) { (result: NightscoutResult<[NightscoutEntry]>) in
             self.observers.concurrentlyNotify(for: result, from: self, ifSuccess: { observer, entries in
                 observer.downloader(self, didFetchEntries: entries)
@@ -217,7 +217,7 @@ extension NightscoutDownloader {
         maxCount: Int = 2 << 31,
         completion: ((_ result: NightscoutResult<[NightscoutTreatment]>) -> Void)? = nil
     ) {
-        var queryItems = QueryItem.treatmentDates(from: interval).appending(.count(maxCount))
+        var queryItems = QueryItem.treatmentDates(from: interval) + [.count(maxCount)]
         eventKind.map(QueryItem.treatmentEventType(matching:)).map { queryItems.append($0) }
         fetch(from: .treatments, queryItems: queryItems) { (result: NightscoutResult<[NightscoutTreatment]>) in
             self.observers.concurrentlyNotify(for: result, from: self, ifSuccess: { observer, treatments in

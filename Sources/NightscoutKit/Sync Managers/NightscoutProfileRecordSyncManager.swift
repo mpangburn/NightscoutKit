@@ -9,12 +9,13 @@
 internal final class NightscoutProfileRecordSyncManager: _NightscoutObserver, SyncManager {
     typealias Object = NightscoutProfileRecord
 
-    var _recentlyUploaded: ThreadSafe<SortedArray<OperationCompletion<NightscoutProfileRecord>>> = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
-    var _recentlyUpdated: ThreadSafe<SortedArray<OperationCompletion<NightscoutProfileRecord>>> = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
-    var _recentlyDeleted: ThreadSafe<SortedArray<OperationCompletion<NightscoutProfileRecord>>> = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
+    var _recentlyUploaded = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
+    var _recentlyUpdated = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
+    var _recentlyDeleted = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
 
     override func downloader(_ downloader: NightscoutDownloader, didFetchProfileRecords records: [NightscoutProfileRecord]) {
         updateWithFetchedObjects(records)
+        clearOldOperations()
     }
 
     override func uploader(_ uploader: NightscoutUploader, didUploadProfileRecords records: Set<NightscoutProfileRecord>) {

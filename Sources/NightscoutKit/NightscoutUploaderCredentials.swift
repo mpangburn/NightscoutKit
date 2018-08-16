@@ -17,6 +17,11 @@ public struct NightscoutUploaderCredentials: Hashable, Codable {
     /// The Nightscout site API secret.
     public let apiSecret: String
 
+    /// Returns a `NightscoutDownloaderCredentials` instance using the validated URL.
+    public var withoutUploadPermissions: NightscoutDownloaderCredentials {
+        return NightscoutDownloaderCredentials(url: url)
+    }
+
     /// Validates a given API secret using the already-verified downloader credentials.
     /// - Parameter downloaderCredentials: Validated credentials for a Nightscout site URL.
     /// - Parameter apiSecret: The API secret to validate.
