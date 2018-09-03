@@ -8,7 +8,7 @@ env:
   - ACTION=build  PLATFORM=tvOS    DESTINATION='platform=tvOS Simulator,name=Apple TV 1080p'
 
 install:
-  - test -f Cartfile* && carthage bootstrap --platform $PLATFORM
+  - test -f Cartfile && carthage bootstrap --platform $PLATFORM
 
 script:
   - set -o pipefail && xcodebuild -scheme NightscoutKit -destination "$DESTINATION" $ACTION | xcpretty
