@@ -20,11 +20,11 @@ public final class NightscoutUploader: AtomicObservable {
 
     private let router: NightscoutRouter
 
-    private let sessions = URLSessionProvider()
+    private var sessions = URLSessionProvider()
 
     private let queues = QueueProvider()
 
-    internal var _observers: Atomic<[ObjectIdentifier: WeakBox<NightscoutUploaderObserver>]> = Atomic([:])
+    internal var _observers: Atomic<[ObjectIdentifier: Weak<NightscoutUploaderObserver>]> = Atomic([:])
 
     /// Creates a new uploader instance using the given credentials.
     /// - Parameter credentials: The validated credentials to use in accessing the Nightscout site.
@@ -95,7 +95,7 @@ extension NightscoutUploader {
             return
         }
 
-        NightscoutDownloader.fetchData(from: .authorization, with: request, sessions: sessions) { result in
+        NightscoutDownloader.fetchData(from: .authorization, with: request, sessions: &sessions) { result in
             self.observers.concurrentlyNotify(
                 for: result, from: self,
                 ifSuccess: { observer, _ in observer.uploaderDidVerifyAuthorization(self) }
@@ -261,7 +261,7 @@ extension NightscoutUploader {
         with request: URLRequest,
         completion: @escaping (NightscoutResult<Data>) -> Void
     ) {
-        let session = sessions.urlSession(for: endpoint)
+        let session = sessions[endpoint]
         let task = session.uploadTask(with: request, from: data) { data, response, error in
             guard error == nil else {
                 completion(.failure(.uploadError(error!)))
@@ -383,7 +383,7 @@ extension NightscoutUploader {
         }
 
         request.url?.appendPathComponent(item.id.value)
-        NightscoutDownloader.fetchData(from: endpoint, with: request, sessions: sessions) { result in
+        NightscoutDownloader.fetchData(from: endpoint, with: request, sessions: &sessions) { result in
             completion(result.error)
         }
     }

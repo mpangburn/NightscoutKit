@@ -7,18 +7,13 @@
 //
 
 import Foundation
+import Oxygen
 
 
-internal final class URLSessionProvider {
-    private var sessions: [NightscoutAPIEndpoint: URLSession] = [:]
+internal typealias URLSessionProvider = CacheMap<NightscoutAPIEndpoint, URLSession>
 
-    func urlSession(for endpoint: NightscoutAPIEndpoint) -> URLSession {
-        if let session = sessions[endpoint] {
-            return session
-        } else {
-            let session = URLSession(configuration: .default)
-            sessions[endpoint] = session
-            return session
-        }
+extension /* URLSessionProvider */ CacheMap where Input == NightscoutAPIEndpoint, Output == URLSession {
+    internal init() {
+        self.init { _ in URLSession(configuration: .default) }
     }
 }

@@ -58,7 +58,7 @@ extension Observable {
 // MARK: - AtomicObservable
 
 internal protocol AtomicObservable: Observable {
-    var _observers: Atomic<[ObjectIdentifier: WeakBox<Observer>]> { get set }
+    var _observers: Atomic<[ObjectIdentifier: Weak<Observer>]> { get set }
 }
 
 // MARK: - Default Implementations
@@ -67,7 +67,7 @@ extension AtomicObservable {
     public func addObserver(_ observer: Observer) {
         _observers.modify { observersDictionary in
             let id = ObjectIdentifier(observer as AnyObject)
-            observersDictionary[id] = WeakBox(observer)
+            observersDictionary[id] = Weak(observer)
         }
     }
 
@@ -75,7 +75,7 @@ extension AtomicObservable {
         _observers.modify { observersDictionary in
             for observer in observers {
                 let id = ObjectIdentifier(observer as AnyObject)
-                observersDictionary[id] = WeakBox(observer)
+                observersDictionary[id] = Weak(observer)
             }
         }
     }

@@ -21,12 +21,12 @@ public final class NightscoutDownloader: AtomicObservable {
 
     private let router: NightscoutRouter
 
-    private let sessions = URLSessionProvider()
+    private var sessions = URLSessionProvider()
 
     /// The queue on which to perform the completion of a snapshot call.
     private let snapshotQueue = DispatchQueue(label: "com.mpangburn.nightscoutkit.snapshotqueue")
 
-    internal var _observers: Atomic<[ObjectIdentifier: WeakBox<NightscoutDownloaderObserver>]> = Atomic([:])
+    internal var _observers: Atomic<[ObjectIdentifier: Weak<NightscoutDownloaderObserver>]> = Atomic([:])
 
     /// Creates a new downloader instance using the given credentials.
     /// - Parameter credentials: The validated credentials to use in accessing the Nightscout site.
@@ -289,10 +289,10 @@ extension NightscoutDownloader {
     internal static func fetchData(
         from endpoint: APIEndpoint,
         with request: URLRequest,
-        sessions: URLSessionProvider,
+        sessions: inout URLSessionProvider,
         completion: @escaping (NightscoutResult<Data>) -> Void
     ) {
-        let session = sessions.urlSession(for: endpoint)
+        let session = sessions[endpoint]
         let task = session.dataTask(with: request) { data, response, error in
             guard error == nil else {
                 completion(.failure(.fetchError(error!)))
@@ -330,7 +330,7 @@ extension NightscoutDownloader {
         with request: URLRequest,
         completion: @escaping (NightscoutResult<Data>) -> Void
     ) {
-        NightscoutDownloader.fetchData(from: endpoint, with: request, sessions: sessions, completion: completion)
+        NightscoutDownloader.fetchData(from: endpoint, with: request, sessions: &sessions, completion: completion)
     }
 
     private func fetchData(
