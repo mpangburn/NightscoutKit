@@ -7,12 +7,13 @@
 //
 
 import Foundation
+import Oxygen
 
 
 /// Retrieves data from a user-hosted Nightscout server.
 /// Provides API for fetching blood gluocse entries, treatments, profile records,
 /// device statuses, and the site status and settings.
-public final class NightscoutDownloader: ThreadSafeObservable {
+public final class NightscoutDownloader: AtomicObservable {
     public typealias Observer = NightscoutDownloaderObserver
 
     /// The credentials used in accessing the Nightscout site.
@@ -25,7 +26,7 @@ public final class NightscoutDownloader: ThreadSafeObservable {
     /// The queue on which to perform the completion of a snapshot call.
     private let snapshotQueue = DispatchQueue(label: "com.mpangburn.nightscoutkit.snapshotqueue")
 
-    internal var _observers: ThreadSafe<[ObjectIdentifier: WeakBox<NightscoutDownloaderObserver>]> = ThreadSafe([:])
+    internal var _observers: Atomic<[ObjectIdentifier: WeakBox<NightscoutDownloaderObserver>]> = Atomic([:])
 
     /// Creates a new downloader instance using the given credentials.
     /// - Parameter credentials: The validated credentials to use in accessing the Nightscout site.
@@ -58,7 +59,7 @@ extension NightscoutDownloader {
         var entries: [NightscoutEntry] = []
         var treatments: [NightscoutTreatment] = []
         var profileRecords: [NightscoutProfileRecord] = []
-        let error: ThreadSafe<NightscoutError?> = ThreadSafe(nil)
+        let error: Atomic<NightscoutError?> = Atomic(nil)
 
         let snapshotGroup = DispatchGroup()
 
@@ -68,7 +69,7 @@ extension NightscoutDownloader {
             case .success(let fetchedStatus):
                 status = fetchedStatus
             case .failure(let err):
-                error.atomicallyAssign(to: err)
+                error.assign(to: err)
             }
             snapshotGroup.leave()
         }
@@ -79,7 +80,7 @@ extension NightscoutDownloader {
             case .success(let fetchedDeviceStatuses):
                 deviceStatuses = fetchedDeviceStatuses
             case .failure(let err):
-                error.atomicallyAssign(to: err)
+                error.assign(to: err)
             }
             snapshotGroup.leave()
         }
@@ -90,7 +91,7 @@ extension NightscoutDownloader {
             case .success(let fetchedProfileRecords):
                 profileRecords = fetchedProfileRecords
             case .failure(let err):
-                error.atomicallyAssign(to: err)
+                error.assign(to: err)
             }
             snapshotGroup.leave()
         }
@@ -101,7 +102,7 @@ extension NightscoutDownloader {
             case .success(let fetchedBloodGlucoseEntries):
                 entries = fetchedBloodGlucoseEntries
             case .failure(let err):
-                error.atomicallyAssign(to: err)
+                error.assign(to: err)
             }
             snapshotGroup.leave()
         }
@@ -112,7 +113,7 @@ extension NightscoutDownloader {
             case .success(let fetchedTreatments):
                 treatments = fetchedTreatments
             case .failure(let err):
-                error.atomicallyAssign(to: err)
+                error.assign(to: err)
             }
             snapshotGroup.leave()
         }

@@ -7,11 +7,12 @@
 //
 
 import Foundation
+import Oxygen
 
 
 /// Uploads, updates, and deletes data from a user-hosted Nightscout server.
 /// Provides API for manipulating entries, treatments, and profile records.
-public final class NightscoutUploader: ThreadSafeObservable {
+public final class NightscoutUploader: AtomicObservable {
     public typealias Observer = NightscoutUploaderObserver
 
     /// The credentials used in accessing the Nightscout site.
@@ -23,7 +24,7 @@ public final class NightscoutUploader: ThreadSafeObservable {
 
     private let queues = QueueProvider()
 
-    internal var _observers: ThreadSafe<[ObjectIdentifier: WeakBox<NightscoutUploaderObserver>]> = ThreadSafe([:])
+    internal var _observers: Atomic<[ObjectIdentifier: WeakBox<NightscoutUploaderObserver>]> = Atomic([:])
 
     /// Creates a new uploader instance using the given credentials.
     /// - Parameter credentials: The validated credentials to use in accessing the Nightscout site.
@@ -399,14 +400,14 @@ extension NightscoutUploader {
         endpoint: APIEndpoint,
         completion: @escaping (OperationResult<T>) -> Void
     ) {
-        let rejections: ThreadSafe<Set<Rejection<T>>> = ThreadSafe([])
+        let rejections: Atomic<Set<Rejection<T>>> = Atomic([])
         let operationGroup = DispatchGroup()
 
         for item in items {
             operationGroup.enter()
             operation(item, endpoint) { error in
                 if let error = error {
-                    rejections.atomically { rejections in
+                    rejections.modify { rejections in
                         let rejection = Rejection(item: item, error: error)
                         rejections.insert(rejection)
                     }

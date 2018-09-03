@@ -6,12 +6,15 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Oxygen
+
+
 internal final class NightscoutTreatmentSyncManager: _NightscoutObserver, SyncManager {
     typealias Object = NightscoutTreatment
 
-    var _recentlyUploaded = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutTreatmentSyncManager.mostRecentObjectsFirst))
-    var _recentlyUpdated = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutTreatmentSyncManager.mostRecentObjectsFirst))
-    var _recentlyDeleted = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutTreatmentSyncManager.mostRecentObjectsFirst))
+    var _recentlyUploaded = Atomic(SortedArray(areInIncreasingOrder: NightscoutTreatmentSyncManager.mostRecentObjectsFirst))
+    var _recentlyUpdated = Atomic(SortedArray(areInIncreasingOrder: NightscoutTreatmentSyncManager.mostRecentObjectsFirst))
+    var _recentlyDeleted = Atomic(SortedArray(areInIncreasingOrder: NightscoutTreatmentSyncManager.mostRecentObjectsFirst))
 
     override func downloader(_ downloader: NightscoutDownloader, didFetchTreatments treatments: [NightscoutTreatment]) {
         updateWithFetchedObjects(treatments)

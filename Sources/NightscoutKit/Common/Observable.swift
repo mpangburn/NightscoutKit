@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Oxygen
+
+
 /// A type whose events can be observed.
 public protocol Observable: AnyObject {
     /// A type that can respond to events from an instance of the observed class.
@@ -52,24 +55,24 @@ extension Observable {
 }
 
 
-// MARK: - ThreadSafeObservable
+// MARK: - AtomicObservable
 
-internal protocol ThreadSafeObservable: Observable {
-    var _observers: ThreadSafe<[ObjectIdentifier: WeakBox<Observer>]> { get set }
+internal protocol AtomicObservable: Observable {
+    var _observers: Atomic<[ObjectIdentifier: WeakBox<Observer>]> { get set }
 }
 
 // MARK: - Default Implementations
 
-extension ThreadSafeObservable {
+extension AtomicObservable {
     public func addObserver(_ observer: Observer) {
-        _observers.atomically { observersDictionary in
+        _observers.modify { observersDictionary in
             let id = ObjectIdentifier(observer as AnyObject)
             observersDictionary[id] = WeakBox(observer)
         }
     }
 
     public func addObservers(_ observers: [Observer]) {
-        _observers.atomically { observersDictionary in
+        _observers.modify { observersDictionary in
             for observer in observers {
                 let id = ObjectIdentifier(observer as AnyObject)
                 observersDictionary[id] = WeakBox(observer)
@@ -78,20 +81,20 @@ extension ThreadSafeObservable {
     }
 
     public func removeObserver(_ observer: Observer) {
-        _observers.atomically { observers in
+        _observers.modify { observers in
             let id = ObjectIdentifier(observer as AnyObject)
             observers.removeValue(forKey: id)
         }
     }
 
     public func removeAllObservers() {
-        _observers.atomically { $0.removeAll() }
+        _observers.modify { $0.removeAll() }
     }
 }
 
 // MARK: - Utilities
 
-extension ThreadSafeObservable {
+extension AtomicObservable {
     internal var observers: [Observer] {
         return _observers.value.values.compactMap { $0.value }
     }

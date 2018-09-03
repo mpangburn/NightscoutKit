@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Oxygen
 
 
 /// A highly configurable class that stores data fetched or received
@@ -137,36 +138,36 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     // MARK: - Private properties
 
-    private let _lastUpdated: ThreadSafe<Date?> = ThreadSafe(nil)
+    private let _lastUpdated: Atomic<Date?> = Atomic(nil)
 
-    private let _options: ThreadSafe<Options>
+    private let _options: Atomic<Options>
 
-    private let _fetchedStatus: ThreadSafe<NightscoutStatus?> = ThreadSafe(nil)
+    private let _fetchedStatus: Atomic<NightscoutStatus?> = Atomic(nil)
 
-    private let _fetchedEntries: ThreadSafe<[NightscoutEntry]> = ThreadSafe([])
-    private let _uploadedEntries: ThreadSafe<Set<NightscoutEntry>> = ThreadSafe([])
-    private let _failedUploadEntries: ThreadSafe<Set<NightscoutEntry>> = ThreadSafe([])
+    private let _fetchedEntries: Atomic<[NightscoutEntry]> = Atomic([])
+    private let _uploadedEntries: Atomic<Set<NightscoutEntry>> = Atomic([])
+    private let _failedUploadEntries: Atomic<Set<NightscoutEntry>> = Atomic([])
 
-    private let _fetchedTreatments: ThreadSafe<[NightscoutTreatment]> = ThreadSafe([])
-    private let _uploadedTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
-    private let _failedUploadTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
-    private let _updatedTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
-    private let _failedUpdateTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
-    private let _deletedTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
-    private let _failedDeleteTreatments: ThreadSafe<Set<NightscoutTreatment>> = ThreadSafe([])
+    private let _fetchedTreatments: Atomic<[NightscoutTreatment]> = Atomic([])
+    private let _uploadedTreatments: Atomic<Set<NightscoutTreatment>> = Atomic([])
+    private let _failedUploadTreatments: Atomic<Set<NightscoutTreatment>> = Atomic([])
+    private let _updatedTreatments: Atomic<Set<NightscoutTreatment>> = Atomic([])
+    private let _failedUpdateTreatments: Atomic<Set<NightscoutTreatment>> = Atomic([])
+    private let _deletedTreatments: Atomic<Set<NightscoutTreatment>> = Atomic([])
+    private let _failedDeleteTreatments: Atomic<Set<NightscoutTreatment>> = Atomic([])
 
-    private let _fetchedRecords: ThreadSafe<[NightscoutProfileRecord]> = ThreadSafe([])
-    private let _uploadedRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
-    private let _failedUploadRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
-    private let _updatedRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
-    private let _failedUpdateRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
-    private let _deletedRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
-    private let _failedDeleteRecords: ThreadSafe<Set<NightscoutProfileRecord>> = ThreadSafe([])
+    private let _fetchedRecords: Atomic<[NightscoutProfileRecord]> = Atomic([])
+    private let _uploadedRecords: Atomic<Set<NightscoutProfileRecord>> = Atomic([])
+    private let _failedUploadRecords: Atomic<Set<NightscoutProfileRecord>> = Atomic([])
+    private let _updatedRecords: Atomic<Set<NightscoutProfileRecord>> = Atomic([])
+    private let _failedUpdateRecords: Atomic<Set<NightscoutProfileRecord>> = Atomic([])
+    private let _deletedRecords: Atomic<Set<NightscoutProfileRecord>> = Atomic([])
+    private let _failedDeleteRecords: Atomic<Set<NightscoutProfileRecord>> = Atomic([])
 
-    private let _fetchedDeviceStatuses: ThreadSafe<[NightscoutDeviceStatus]> = ThreadSafe([])
+    private let _fetchedDeviceStatuses: Atomic<[NightscoutDeviceStatus]> = Atomic([])
 
-    private let _lastDownloaderError: ThreadSafe<NightscoutError?> = ThreadSafe(nil)
-    private let _lastUploaderError: ThreadSafe<NightscoutError?> = ThreadSafe(nil)
+    private let _lastDownloaderError: Atomic<NightscoutError?> = Atomic(nil)
+    private let _lastUploaderError: Atomic<NightscoutError?> = Atomic(nil)
 
     // MARK: - Public properties
 
@@ -356,7 +357,7 @@ open class NightscoutDataStore: _NightscoutObserver {
         if ignoringOlderFetchedData {
             options.insert(.ignoreOlderFetchedData)
         }
-        self._options = ThreadSafe(options)
+        self._options = Atomic(options)
     }
 
     /// Creates a new data store that stores only the fetched site status,
@@ -544,7 +545,7 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     /// Clears the cached fetched site status.
     public func clearFetchedStatusCache() {
-        _fetchedStatus.atomicallyAssign(to: nil)
+        _fetchedStatus.assign(to: nil)
     }
 
     /// Clears the cached fetched entries.
@@ -639,8 +640,8 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     /// Clears the cached errors.
     public func clearErrorCache() {
-        _lastDownloaderError.atomicallyAssign(to: nil)
-        _lastUploaderError.atomicallyAssign(to: nil)
+        _lastDownloaderError.assign(to: nil)
+        _lastUploaderError.assign(to: nil)
     }
 
     /// Clears all cached entry data.
@@ -740,8 +741,8 @@ open class NightscoutDataStore: _NightscoutObserver {
         clearFailureDataCache()
     }
 
-    private func clearCache<C: ElementRemovableCollection>(_ keyPath: KeyPath<NightscoutDataStore, ThreadSafe<C>>) {
-        self[keyPath: keyPath].atomically { (values: inout C) in
+    private func clearCache<C: ElementRemovableCollection>(_ keyPath: KeyPath<NightscoutDataStore, Atomic<C>>) {
+        self[keyPath: keyPath].modify { (values: inout C) in
             values.removeAll(keepingCapacity: false)
         }
     }
@@ -749,139 +750,139 @@ open class NightscoutDataStore: _NightscoutObserver {
     // MARK: - NightscoutDownloaderObserver
 
     open override func downloader(_ downloader: NightscoutDownloader, didFetchStatus status: NightscoutStatus) {
-        _fetchedStatus.atomicallyAssign(to: status)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _fetchedStatus.assign(to: status)
+        _lastUpdated.assign(to: Date())
     }
 
     open override func downloader(_ downloader: NightscoutDownloader, didFetchEntries entries: [NightscoutEntry]) {
         guard options.contains(.storeFetchedEntries) else { return }
         prependOrReplace(entries, keyPath: \._fetchedEntries)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func downloader(_ downloader: NightscoutDownloader, didFetchTreatments treatments: [NightscoutTreatment]) {
         guard options.contains(.storeFetchedTreatments) else { return }
         prependOrReplace(treatments, keyPath: \._fetchedTreatments)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func downloader(_ downloader: NightscoutDownloader, didFetchProfileRecords records: [NightscoutProfileRecord]) {
         guard options.contains(.storeFetchedRecords) else { return }
         prependOrReplace(records, keyPath: \._fetchedRecords)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func downloader(_ downloader: NightscoutDownloader, didFetchDeviceStatuses deviceStatuses: [NightscoutDeviceStatus]) {
         guard options.contains(.storeFetchedDeviceStatuses) else { return }
         prependOrReplace(deviceStatuses, keyPath: \._fetchedDeviceStatuses)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func downloader(_ downloader: NightscoutDownloader, didErrorWith error: NightscoutError) {
-        _lastDownloaderError.atomicallyAssign(to: error)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastDownloaderError.assign(to: error)
+        _lastUpdated.assign(to: Date())
     }
 
     // MARK: - NightscoutUploaderObserver
 
     open override func uploaderDidVerifyAuthorization(_ uploader: NightscoutUploader) {
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didUploadEntries entries: Set<NightscoutEntry>) {
         guard options.contains(.storeUploadedEntries) else { return }
         formUnionOrReplace(entries, keyPath: \._uploadedEntries)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didFailToUploadEntries entries: Set<NightscoutEntry>) {
         guard options.contains(.storeFailedUploadEntries) else { return }
         formUnionOrReplace(entries, keyPath: \._failedUploadEntries)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didUploadTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeUploadedTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._uploadedTreatments)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didFailToUploadTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedUploadTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._failedUploadTreatments)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didUpdateTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeUpdatedTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._updatedTreatments)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didFailToUpdateTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedUpdateTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._failedUpdateTreatments)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didDeleteTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeDeletedTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._deletedTreatments)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didFailToDeleteTreatments treatments: Set<NightscoutTreatment>) {
         guard options.contains(.storeFailedDeleteTreatments) else { return }
         formUnionOrReplace(treatments, keyPath: \._failedDeleteTreatments)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didUploadProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeUploadedRecords) else { return }
         formUnionOrReplace(records, keyPath: \._uploadedRecords)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didFailToUploadProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedUploadRecords) else { return }
         formUnionOrReplace(records, keyPath: \._failedUploadRecords)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeUpdatedRecords) else { return }
         formUnionOrReplace(records, keyPath: \._updatedRecords)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didFailToUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedUpdateRecords) else { return }
         formUnionOrReplace(records, keyPath: \._failedUpdateRecords)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeDeletedRecords) else { return }
         formUnionOrReplace(records, keyPath: \._deletedRecords)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didFailToDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
         guard options.contains(.storeFailedDeleteRecords) else { return }
         formUnionOrReplace(records, keyPath: \._failedDeleteRecords)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUpdated.assign(to: Date())
     }
 
     open override func uploader(_ uploader: NightscoutUploader, didErrorWith error: NightscoutError) {
-        _lastUploaderError.atomicallyAssign(to: error)
-        _lastUpdated.atomicallyAssign(to: Date())
+        _lastUploaderError.assign(to: error)
+        _lastUpdated.assign(to: Date())
     }
 
     // MARK: - Utilities
 
-    private func prependOrReplace<T: TimelineValue>(_ newValues: [T], keyPath: KeyPath<NightscoutDataStore, ThreadSafe<[T]>>) {
+    private func prependOrReplace<T: TimelineValue>(_ newValues: [T], keyPath: KeyPath<NightscoutDataStore, Atomic<[T]>>) {
         if options.contains(.cacheReceivedData) {
-            self[keyPath: keyPath].atomically { (storedValues: inout [T]) in
+            self[keyPath: keyPath].modify { (storedValues: inout [T]) in
                 if options.contains(.ignoreOlderFetchedData),
                     let mostRecentStoredValue = storedValues.first,
                     let overlappingValue = newValues.index(where: { $0.date <= mostRecentStoredValue.date }) {
@@ -892,17 +893,17 @@ open class NightscoutDataStore: _NightscoutObserver {
                 }
             }
         } else {
-            self[keyPath: keyPath].atomicallyAssign(to: newValues)
+            self[keyPath: keyPath].assign(to: newValues)
         }
     }
 
-    private func formUnionOrReplace<T>(_ newValues: Set<T>, keyPath: KeyPath<NightscoutDataStore, ThreadSafe<Set<T>>>) {
+    private func formUnionOrReplace<T>(_ newValues: Set<T>, keyPath: KeyPath<NightscoutDataStore, Atomic<Set<T>>>) {
         if options.contains(.cacheReceivedData) {
-            self[keyPath: keyPath].atomically { (storedValues: inout Set<T>) in
+            self[keyPath: keyPath].modify { (storedValues: inout Set<T>) in
                 storedValues.formUnion(newValues)
             }
         } else {
-            self[keyPath: keyPath].atomicallyAssign(to: newValues)
+            self[keyPath: keyPath].assign(to: newValues)
         }
     }
 }

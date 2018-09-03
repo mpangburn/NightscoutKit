@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Oxygen
 
 
 /// Denotes the completion of a PUT/POST/DELETE operation and its associated value.
@@ -20,9 +21,9 @@ internal struct OperationCompletion<Object: TimelineValue> {
 internal protocol SyncManager {
     associatedtype Object: TimelineValue & NightscoutIdentifiable
 
-    var _recentlyUploaded: ThreadSafe<SortedArray<OperationCompletion<Object>>> { get }
-    var _recentlyUpdated: ThreadSafe<SortedArray<OperationCompletion<Object>>> { get }
-    var _recentlyDeleted: ThreadSafe<SortedArray<OperationCompletion<Object>>> { get }
+    var _recentlyUploaded: Atomic<SortedArray<OperationCompletion<Object>>> { get }
+    var _recentlyUpdated: Atomic<SortedArray<OperationCompletion<Object>>> { get }
+    var _recentlyDeleted: Atomic<SortedArray<OperationCompletion<Object>>> { get }
 }
 
 extension SyncManager {
@@ -85,7 +86,7 @@ extension SyncManager {
     /// Note: `objects` must be sorted in descending order by date.
     func updateWithFetchedObjects(_ objects: [Object]) {
         let sortedObjects = SortedArray(sorted: objects, areInIncreasingOrder: { $0.date > $1.date })
-        _recentlyUploaded.atomically { recentlyUploaded in
+        _recentlyUploaded.modify { recentlyUploaded in
             // If we find a recently uploaded treatment in the fetched treatments, remove it from the cache.
             guard let spannedDateInterval = recentlyUploaded.spannedValueInterval() else {
                 return
@@ -99,7 +100,7 @@ extension SyncManager {
             }
         }
 
-        _recentlyUpdated.atomically { recentlyUpdated in
+        _recentlyUpdated.modify { recentlyUpdated in
             // If we find a recently updated treatment in the fetched treatments and it's updated already, remove it from the cache.
             // TODO: This may not even been possible here because we'd need to differentiate between the fetched treatment and updated one,
             // which is challenging because the server may add some fields that make it subtlely different;
@@ -109,21 +110,21 @@ extension SyncManager {
     }
 
     func updateWithUploadedObjects(_ objects: Set<Object>) {
-        _recentlyUploaded.atomically { recentlyUploaded in
+        _recentlyUploaded.modify { recentlyUploaded in
             let now = Date()
             objects.forEach { recentlyUploaded.insert(.init(operationDate: now, object: $0)) }
         }
     }
 
     func updateWithUpdatedObjects(_ objects: Set<Object>) {
-        _recentlyUpdated.atomically { recentlyUpdated in
+        _recentlyUpdated.modify { recentlyUpdated in
             let now = Date()
             objects.forEach { recentlyUpdated.insert(.init(operationDate: now, object: $0)) }
         }
     }
 
     func updateWithDeletedObjects(_ objects: Set<Object>) {
-        _recentlyDeleted.atomically { recentlyDeleted in
+        _recentlyDeleted.modify { recentlyDeleted in
             let now = Date()
             objects.forEach { recentlyDeleted.insert(.init(operationDate: now, object: $0)) }
         }
@@ -137,15 +138,15 @@ extension SyncManager {
         let removeOldOperations: (inout SortedArray<OperationCompletion<Object>>) -> Void = { operations in
             operations = operations.sortedFilter { $0.operationDate > oldestDateToKeep }
         }
-        _recentlyUploaded.atomically(removeOldOperations)
-        _recentlyUpdated.atomically(removeOldOperations)
-        _recentlyDeleted.atomically(removeOldOperations)
+        _recentlyUploaded.modify(with: removeOldOperations)
+        _recentlyUpdated.modify(with: removeOldOperations)
+        _recentlyDeleted.modify(with: removeOldOperations)
     }
 
     func clearCache() {
-        _recentlyUploaded.atomically { $0.removeAll() }
-        _recentlyUpdated.atomically { $0.removeAll() }
-        _recentlyDeleted.atomically { $0.removeAll() }
+        _recentlyUploaded.modify { $0.removeAll() }
+        _recentlyUpdated.modify { $0.removeAll() }
+        _recentlyDeleted.modify { $0.removeAll() }
     }
 }
 

@@ -6,12 +6,15 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Oxygen
+
+
 internal final class NightscoutProfileRecordSyncManager: _NightscoutObserver, SyncManager {
     typealias Object = NightscoutProfileRecord
 
-    var _recentlyUploaded = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
-    var _recentlyUpdated = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
-    var _recentlyDeleted = ThreadSafe(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
+    var _recentlyUploaded = Atomic(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
+    var _recentlyUpdated = Atomic(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
+    var _recentlyDeleted = Atomic(SortedArray(areInIncreasingOrder: NightscoutProfileRecordSyncManager.mostRecentObjectsFirst))
 
     override func downloader(_ downloader: NightscoutDownloader, didFetchProfileRecords records: [NightscoutProfileRecord]) {
         updateWithFetchedObjects(records)
