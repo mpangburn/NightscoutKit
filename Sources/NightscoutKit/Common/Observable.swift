@@ -54,14 +54,43 @@ extension Observable {
     }
 }
 
+// MARK: - NonatomicObservable
+
+internal protocol NonatomicObservable: Observable {
+    var _observers: [ObjectIdentifier: Weak<Observer>] { get set }
+}
+
+extension NonatomicObservable {
+    public func addObserver(_ observer: Observer) {
+        let id = ObjectIdentifier(observer as AnyObject)
+        _observers[id] = Weak(observer)
+    }
+
+    public func addObservers(_ observers: [Observer]) {
+        observers.forEach(addObserver)
+    }
+
+    public func removeObserver(_ observer: Observer) {
+        let id = ObjectIdentifier(observer as AnyObject)
+        _observers.removeValue(forKey: id)
+    }
+
+    public func removeAllObservers() {
+        _observers.removeAll()
+    }
+}
+
+extension NonatomicObservable {
+    internal var observers: [Observer] {
+        return _observers.values.compactMap { $0.value }
+    }
+}
 
 // MARK: - AtomicObservable
 
 internal protocol AtomicObservable: Observable {
     var _observers: Atomic<[ObjectIdentifier: Weak<Observer>]> { get set }
 }
-
-// MARK: - Default Implementations
 
 extension AtomicObservable {
     public func addObserver(_ observer: Observer) {
@@ -91,8 +120,6 @@ extension AtomicObservable {
         _observers.modify { $0.removeAll() }
     }
 }
-
-// MARK: - Utilities
 
 extension AtomicObservable {
     internal var observers: [Observer] {

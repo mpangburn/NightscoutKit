@@ -9,8 +9,15 @@
 import Oxygen
 
 
+/// A type that observes the operations of a `NightscoutDataManager` instance.
+public protocol NightscoutDataManagerObserver: AnyObject {
+    func nightscoutDataManagerDidUpdateCredentials(_ manager: NightscoutDataManager)
+}
+
 /// Manages a `NightscoutDownloader` and optionally a `NightscoutUploader` along with their observers.
-open class NightscoutDataManager {
+open class NightscoutDataManager: NonatomicObservable {
+    public typealias Observer = NightscoutDataManagerObserver
+
     /// Options for `NightscoutDataManager` configuration.
     public struct Options: OptionSet {
         /// Account for the delay between the success of a POST/PUT/DELETE treatment request and its reflection in a corresponding GET request
@@ -33,11 +40,11 @@ open class NightscoutDataManager {
     }
 
     /// The managed data downloader.
-    public let downloader: NightscoutDownloader
+    public private(set) var downloader: NightscoutDownloader
 
     /// The managed data uploader.
     /// This property is `nil` if no uploader or credentials are provided upon initialization.
-    public let uploader: NightscoutUploader?
+    public private(set) var uploader: NightscoutUploader?
 
     /// The data store observing the operations of the managed downloader and uploader.
     public let dataStore: NightscoutDataStore
@@ -48,8 +55,46 @@ open class NightscoutDataManager {
     /// The options used in configuring this instance.
     public let options: Options
 
+    /// The credentials used to create the managed `NightscoutUploader` and/or `NightscoutDownloader`.
+    ///
+    /// Setting this property clears cached data.
+    public var credentials: NightscoutCredentials {
+        get {
+            if let uploader = uploader {
+                return .uploader(uploader.credentials)
+            } else {
+                return .downloader(downloader.credentials)
+            }
+        }
+        set {
+            switch credentials {
+            case .downloader(let credentials):
+                downloader.credentials = credentials
+                uploader = nil
+            case .uploader(let credentials):
+                downloader.credentials = credentials.withoutUploadPermissions
+                if let uploader = uploader {
+                    uploader.credentials = credentials
+                } else {
+                    uploader = NightscoutUploader(credentials: credentials)
+                    uploader?.addObservers(nightscoutObservers)
+                }
+            }
+            dataStore.clearAllDataCache()
+            treatmentSyncManager?.clearCache()
+            profileRecordSyncManager?.clearCache()
+            self.observers.forEach { $0.nightscoutDataManagerDidUpdateCredentials(self) }
+        }
+    }
+
     private let treatmentSyncManager: NightscoutTreatmentSyncManager?
     private let profileRecordSyncManager: NightscoutProfileRecordSyncManager?
+
+    private var nightscoutObservers: [NightscoutObserver] {
+        return [dataStore, logger, treatmentSyncManager, profileRecordSyncManager].compactMap(identity)
+    }
+
+    internal var _observers: [ObjectIdentifier: Weak<NightscoutDataManagerObserver>] = [:]
 
     /// Creates a new data manager.
     /// - Parameter downloader: The downloader to manage.
@@ -58,7 +103,7 @@ open class NightscoutDataManager {
     /// - Parameter logger: The logger used to record the operations of the downloader and uploader. The default value is `nil`.
     /// - Parameter options: The options used in configuring this instance. The default value is `.syncOperations`.
     /// - Returns: A new data manager.
-    public init(downloader: NightscoutDownloader, uploader: NightscoutUploader?, dataStore: NightscoutDataStore, logger: NightscoutLogger? = nil, options: Options = .syncOperations) {
+    internal init(downloader: NightscoutDownloader, uploader: NightscoutUploader?, dataStore: NightscoutDataStore, logger: NightscoutLogger? = nil, options: Options = .syncOperations) {
         self.downloader = downloader
         self.uploader = uploader
         self.dataStore = dataStore
@@ -67,9 +112,9 @@ open class NightscoutDataManager {
         self.treatmentSyncManager = options.contains(.syncTreatmentOperations) ? NightscoutTreatmentSyncManager() : nil
         self.profileRecordSyncManager = options.contains(.syncProfileRecordOperations) ? NightscoutProfileRecordSyncManager() : nil
 
-        let observers = [dataStore, logger, treatmentSyncManager, profileRecordSyncManager].compactMap(identity)
-        downloader.addObservers(observers)
-        uploader?.addObservers(observers)
+        let nightscoutObservers = self.nightscoutObservers
+        downloader.addObservers(nightscoutObservers)
+        uploader?.addObservers(nightscoutObservers)
     }
 
     /// Creates a new data manager.
@@ -93,6 +138,21 @@ open class NightscoutDataManager {
         let downloader = NightscoutDownloader(credentials: uploaderCredentials.withoutUploadPermissions)
         let uploader = NightscoutUploader(credentials: uploaderCredentials)
         self.init(downloader: downloader, uploader: uploader, dataStore: dataStore, logger: logger, options: options)
+    }
+
+    /// Creates a new data manager.
+    /// - Parameter credentials: The credentials used to initialize the new `NightscoutUploader` and/or `NightscoutDownloader` instances to manage.
+    /// - Parameter dataStore: The data store used to observe the operations of the downloader and uploader.
+    /// - Parameter logger: The logger used to record the operations of the downloader and uploader. The default value is `nil`.
+    /// - Parameter options: The options used in configuring this instance. The default value is `.syncOperations`.
+    /// - Returns: A new data manager.
+    public convenience init(credentials: NightscoutCredentials, dataStore: NightscoutDataStore, logger: NightscoutLogger? = nil, options: Options = .syncOperations) {
+        switch credentials {
+        case .downloader(let credentials):
+            self.init(downloaderCredentials: credentials, dataStore: dataStore, logger: logger, options: options)
+        case .uploader(let credentials):
+            self.init(uploaderCredentials: credentials, dataStore: dataStore, logger: logger, options: options)
+        }
     }
 
     /// Returns `true` if this instance manages a `NightscoutUploader`.

@@ -16,7 +16,7 @@ public final class NightscoutUploader: AtomicObservable {
     public typealias Observer = NightscoutUploaderObserver
 
     /// The credentials used in accessing the Nightscout site.
-    public let credentials: NightscoutUploaderCredentials
+    public internal(set) var credentials: NightscoutUploaderCredentials
 
     private let router: NightscoutRouter
 
