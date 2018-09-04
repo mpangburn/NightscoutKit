@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Foundation
+
+
 /// Describes the validated Nightscout credentials—either download or both upload and download.
 public enum NightscoutCredentials: Hashable {
     case downloader(NightscoutDownloaderCredentials)
