@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Oxygen
+
+
 /// Manages a `NightscoutDownloader` and optionally a `NightscoutUploader` along with their observers.
 open class NightscoutDataManager {
     /// Options for `NightscoutDataManager` configuration.
@@ -64,7 +67,7 @@ open class NightscoutDataManager {
         self.treatmentSyncManager = options.contains(.syncTreatmentOperations) ? NightscoutTreatmentSyncManager() : nil
         self.profileRecordSyncManager = options.contains(.syncProfileRecordOperations) ? NightscoutProfileRecordSyncManager() : nil
 
-        let observers = [dataStore, logger, treatmentSyncManager, profileRecordSyncManager].compactMap { $0 }
+        let observers = [dataStore, logger, treatmentSyncManager, profileRecordSyncManager].compactMap(identity)
         downloader.addObservers(observers)
         uploader?.addObservers(observers)
     }
@@ -101,7 +104,7 @@ open class NightscoutDataManager {
     /// If `options` contains `.syncTreatmentOperations`, recent POST/PUT/DELETE successes from the managed uploader will be applied to resulting array.
     /// - Returns: The most up to date treatments from the data store.
     public func mostUpToDateTreatments() -> [NightscoutTreatment] {
-        var treatments = SortedArray(sorted: dataStore.fetchedTreatments, areInIncreasingOrder: { $0.date > $1.date })
+        var treatments = SortedArray(sorted: dataStore.fetchedTreatments, areInIncreasingOrder: their(\.date, >))
         treatmentSyncManager?.applyUpdates(to: &treatments, insertingAllNewerUploads: true)
         return Array(treatments)
     }
@@ -110,7 +113,7 @@ open class NightscoutDataManager {
     /// If `options` contains `.syncProfileRecordOperations`, recent POST/PUT/DELETE successes from the managed uploader will be applied to resulting array.
     /// - Returns: The most up to date profile records from the data store.
     public func mostUpToDateProfileRecords() -> [NightscoutProfileRecord] {
-        var profileRecords = SortedArray(sorted: dataStore.fetchedRecords, areInIncreasingOrder: { $0.date > $1.date })
+        var profileRecords = SortedArray(sorted: dataStore.fetchedRecords, areInIncreasingOrder: their(\.date, >))
         profileRecordSyncManager?.applyUpdates(to: &profileRecords, insertingAllNewerUploads: true)
         return Array(profileRecords)
     }

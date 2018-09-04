@@ -313,6 +313,7 @@ extension NightscoutUploader {
             return
         }
 
+        // TODO: Clean this up with the Oxygen Result API
         uploadData(data, to: endpoint, with: request) { result in
             switch result {
             case .success(let data):
@@ -425,5 +426,3 @@ extension NightscoutUploader {
         }
     }
 }
-
-

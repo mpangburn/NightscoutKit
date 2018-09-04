@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Oxygen
+
+
 /// A type that observes the operations of a `NightscoutDownloader` instance.
 public protocol NightscoutDownloaderObserver: AnyObject {
     /// Called when an observed `NightscoutDownloader` instance successfully fetches the site status.
@@ -55,21 +58,19 @@ extension NightscoutDownloaderObserver {
 internal typealias NightscoutDownloaderObserverAction<Payload> = (NightscoutDownloaderObserver, Payload) -> Void
 
 extension NightscoutDownloaderObserver {
-    typealias Action<Payload> = NightscoutDownloaderObserverAction<Payload>
-
     func notify<T>(
         for result: NightscoutResult<T>,
         from downloader: NightscoutDownloader,
-        ifSuccess update: Action<T>,
-        ifError errorWork: Action<NightscoutError>? = nil
+        ifSuccess update: NightscoutDownloaderObserverAction<T>,
+        ifError errorWork: NightscoutDownloaderObserverAction<NightscoutError>? = nil
     ) {
-        switch result {
-        case .success(let value):
-            update(self, value)
-        case .failure(let error):
-            errorWork?(self, error)
-            self.downloader(downloader, didErrorWith: error)
-        }
+        result.handle(
+            ifSuccess: { update(self, $0) },
+            ifFailure: { error in
+                errorWork?(self, error)
+                self.downloader(downloader, didErrorWith: error)
+            }
+        )
     }
 }
 

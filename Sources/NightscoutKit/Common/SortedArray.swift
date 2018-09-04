@@ -116,6 +116,10 @@ extension SortedArray: RandomAccessCollection {
         let newElements = try _elements.filter(isIncluded)
         return SortedArray(sorted: newElements, areInIncreasingOrder: areInIncreasingOrder)
     }
+
+    mutating func removeAll(where shouldRemove: (Element) throws -> Bool) rethrows {
+        try _elements.removeAll(where: shouldRemove)
+    }
 }
 
 extension SortedArray: CustomStringConvertible, CustomDebugStringConvertible {

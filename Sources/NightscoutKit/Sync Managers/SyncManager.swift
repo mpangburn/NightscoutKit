@@ -29,7 +29,7 @@ internal protocol SyncManager {
 extension SyncManager {
     /// The comparator use for recently uploaded, updated, and deleted objects.
     static var mostRecentObjectsFirst: SortedArray<OperationCompletion<Object>>.Comparator {
-        return { $0.object.date > $1.object.date }
+        return their(\.object.date, >)
     }
 
     /// The estimated amount of time before PUT/POST/DELETE request successes are reflected in GET requests.
@@ -38,15 +38,15 @@ extension SyncManager {
     }
 
     var recentlyUploaded: SortedArray<Object> {
-        return SortedArray(sorted: _recentlyUploaded.value.map { $0.object }, areInIncreasingOrder: { $0.date > $1.date })
+        return SortedArray(sorted: _recentlyUploaded.value.map(get(\.object)), areInIncreasingOrder: their(\.date, >))
     }
 
     var recentlyUpdated: SortedArray<Object> {
-        return SortedArray(sorted: _recentlyUpdated.value.map { $0.object }, areInIncreasingOrder: { $0.date > $1.date })
+        return SortedArray(sorted: _recentlyUpdated.value.map(get(\.object)), areInIncreasingOrder: their(\.date, >))
     }
 
     var recentlyDeleted: SortedArray<Object> {
-        return SortedArray(sorted: _recentlyDeleted.value.map { $0.object }, areInIncreasingOrder: { $0.date > $1.date })
+        return SortedArray(sorted: _recentlyDeleted.value.map(get(\.object)), areInIncreasingOrder: their(\.date, >))
     }
 
     /// Note: `objects` must be sorted in descending order by date.
@@ -85,19 +85,15 @@ extension SyncManager {
 
     /// Note: `objects` must be sorted in descending order by date.
     func updateWithFetchedObjects(_ objects: [Object]) {
-        let sortedObjects = SortedArray(sorted: objects, areInIncreasingOrder: { $0.date > $1.date })
+        let sortedObjects = SortedArray(sorted: objects, areInIncreasingOrder: their(\.date, >))
         _recentlyUploaded.modify { recentlyUploaded in
             // If we find a recently uploaded treatment in the fetched treatments, remove it from the cache.
             guard let spannedDateInterval = recentlyUploaded.spannedValueInterval() else {
                 return
             }
             let relevantObjects = sortedObjects.clamped(to: spannedDateInterval)
-            for object in relevantObjects {
-                // TODO: removeAll(where:) in Swift 4.2
-                if let uploadedIndex = recentlyUploaded.index(where: { $0.object.id == object.id }) {
-                    recentlyUploaded.remove(at: uploadedIndex)
-                }
-            }
+            let relevantObjectIds = relevantObjects.map { $0.id }
+            recentlyUploaded.removeAll(where: { relevantObjectIds.contains($0.object.id) })
         }
 
         _recentlyUpdated.modify { recentlyUpdated in

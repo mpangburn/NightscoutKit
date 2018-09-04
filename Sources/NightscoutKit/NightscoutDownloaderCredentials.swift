@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Oxygen
 
 
 /// Represents validated credentials to download data from a Nightscout site.
@@ -26,7 +27,7 @@ public struct NightscoutDownloaderCredentials: Hashable, Codable {
         let testDownloader = NightscoutDownloader(credentials: credentials)
         // Verify URL by fetching a single entry.
         testDownloader.fetchMostRecentEntries(count: 1) { result in
-            completion(result.map { _ in credentials })
+            completion(result.map(constant(credentials)))
         }
     }
 }

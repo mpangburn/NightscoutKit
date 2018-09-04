@@ -194,9 +194,7 @@ extension NightscoutDownloader {
         completion: ((_ result: NightscoutResult<[NightscoutTreatment]>) -> Void)? = nil
     ) {
         var queryItems: [QueryItem] = [.count(count)]
-        if let eventKindQueryItem = eventKind.map(QueryItem.treatmentEventType(matching:)) {
-            queryItems.append(eventKindQueryItem)
-        }
+        eventKind.map(QueryItem.treatmentEventType(matching:)).ifSome { queryItems.append($0) }
         fetch(from: .treatments, queryItems: queryItems) { (result: NightscoutResult<[NightscoutTreatment]>) in
             self.observers.concurrentlyNotify(for: result, from: self, ifSuccess: { observer, treatments in
                 observer.downloader(self, didFetchTreatments: treatments)
@@ -219,7 +217,7 @@ extension NightscoutDownloader {
         completion: ((_ result: NightscoutResult<[NightscoutTreatment]>) -> Void)? = nil
     ) {
         var queryItems = QueryItem.treatmentDates(from: interval) + [.count(maxCount)]
-        eventKind.map(QueryItem.treatmentEventType(matching:)).map { queryItems.append($0) }
+        eventKind.map(QueryItem.treatmentEventType(matching:)).ifSome { queryItems.append($0) }
         fetch(from: .treatments, queryItems: queryItems) { (result: NightscoutResult<[NightscoutTreatment]>) in
             self.observers.concurrentlyNotify(for: result, from: self, ifSuccess: { observer, treatments in
                 observer.downloader(self, didFetchTreatments: treatments)
@@ -352,6 +350,7 @@ extension NightscoutDownloader {
         completion: @escaping (NightscoutResult<Response>) -> Void
     ) {
         fetchData(from: endpoint, queryItems: queryItems) { result in
+            // TODO: This can be done more cleanly with the Oxygen Result API
             switch result {
             case .success(let data):
                 do {

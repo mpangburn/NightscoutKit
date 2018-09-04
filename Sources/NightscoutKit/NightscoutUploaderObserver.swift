@@ -6,6 +6,9 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
+import Oxygen
+
+
 /// A type that observes the operations of a `NightscoutUploader` instance.
 public protocol NightscoutUploaderObserver: AnyObject {
     /// Called when an observed `NightscoutUploader` instance successfully verifies authorization.
@@ -115,29 +118,27 @@ extension NightscoutUploaderObserver {
 internal typealias NightscoutUploaderObserverAction<Payload> = (NightscoutUploaderObserver, Payload) -> Void
 
 extension NightscoutUploaderObserver {
-    typealias Action<Payload> = NightscoutUploaderObserverAction<Payload>
-
     func notify<T>(
         for result: NightscoutResult<T>,
         from uploader: NightscoutUploader,
-        ifSuccess update: Action<T>,
-        ifError errorWork: Action<NightscoutError>? = nil
+        ifSuccess update: NightscoutUploaderObserverAction<T>,
+        ifError errorWork: NightscoutUploaderObserverAction<NightscoutError>? = nil
     ) {
-        switch result {
-        case .success(let value):
-            update(self, value)
-        case .failure(let error):
-            errorWork?(self, error)
-            self.uploader(uploader, didErrorWith: error)
-        }
+        result.handle(
+            ifSuccess: { update(self, $0) },
+            ifFailure: { error in
+                errorWork?(self, error)
+                self.uploader(uploader, didErrorWith: error)
+            }
+        )
     }
 
     func notify<T>(
         for postResponse: NightscoutUploader.PostResponse<T>,
         from uploader: NightscoutUploader,
-        withSuccesses successUpdate: @escaping Action<Set<T>>,
-        withRejections rejectionUpdate: @escaping Action<Set<T>>,
-        ifError errorWork: Action<NightscoutError>? = nil
+        withSuccesses successUpdate: @escaping NightscoutUploaderObserverAction<Set<T>>,
+        withRejections rejectionUpdate: @escaping NightscoutUploaderObserverAction<Set<T>>,
+        ifError errorWork: NightscoutUploaderObserverAction<NightscoutError>? = nil
     ) {
         notify(
             for: postResponse,
@@ -159,8 +160,8 @@ extension NightscoutUploaderObserver {
     func notify<T>(
         for operationResult: NightscoutUploader.OperationResult<T>,
         from uploader: NightscoutUploader,
-        withSuccesses successUpdate: Action<Set<T>>,
-        withRejections rejectionUpdate: Action<Set<T>>
+        withSuccesses successUpdate: NightscoutUploaderObserverAction<Set<T>>,
+        withRejections rejectionUpdate: NightscoutUploaderObserverAction<Set<T>>
     ) {
         let (processedItems, rejections) = operationResult
         let rejectedItems = Set(rejections.map { $0.item })

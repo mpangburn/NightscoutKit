@@ -882,7 +882,7 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     private func prependOrReplace<T: TimelineValue>(_ newValues: [T], keyPath: KeyPath<NightscoutDataStore, Atomic<[T]>>) {
         if options.contains(.cacheReceivedData) {
-            self[keyPath: keyPath].modify { (storedValues: inout [T]) in
+            self[keyPath: keyPath].modify { storedValues in
                 if options.contains(.ignoreOlderFetchedData),
                     let mostRecentStoredValue = storedValues.first,
                     let overlappingValue = newValues.index(where: { $0.date <= mostRecentStoredValue.date }) {
@@ -899,7 +899,7 @@ open class NightscoutDataStore: _NightscoutObserver {
 
     private func formUnionOrReplace<T>(_ newValues: Set<T>, keyPath: KeyPath<NightscoutDataStore, Atomic<Set<T>>>) {
         if options.contains(.cacheReceivedData) {
-            self[keyPath: keyPath].modify { (storedValues: inout Set<T>) in
+            self[keyPath: keyPath].modify { storedValues in
                 storedValues.formUnion(newValues)
             }
         } else {

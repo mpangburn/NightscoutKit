@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Oxygen
 
 
 /// Represents validated credentials to upload, update, and delete data to/from a Nightscout site.
@@ -35,11 +36,12 @@ public struct NightscoutUploaderCredentials: Hashable, Codable {
         let credentials = NightscoutUploaderCredentials(url: downloaderCredentials.url, apiSecret: apiSecret)
         let testUploader = NightscoutUploader(credentials: credentials)
         testUploader.verifyAuthorization { error in
-            if let error = error {
-                completion(.failure(error))
-            } else {
-                completion(.success(credentials))
-            }
+            completion(
+                error.converge(
+                    ifSome: NightscoutResult.failure,
+                    ifNone: .success(credentials)
+                )
+            )
         }
     }
 
@@ -54,12 +56,10 @@ public struct NightscoutUploaderCredentials: Hashable, Codable {
         completion: @escaping (_ result: NightscoutResult<NightscoutUploaderCredentials>) -> Void
     ) {
         NightscoutDownloaderCredentials.validate(url: url) { result in
-            switch result {
-            case .success(let downloaderCredentials):
-                validate(downloaderCredentials: downloaderCredentials, apiSecret: apiSecret, completion: completion)
-            case .failure(let error):
-                completion(.failure(error))
-            }
+            result.handle(
+                ifSuccess: { validate(downloaderCredentials: $0, apiSecret: apiSecret, completion: completion) },
+                ifFailure: { completion(.failure($0)) }
+            )
         }
     }
 }

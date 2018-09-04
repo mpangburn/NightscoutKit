@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import Oxygen
 
 
 internal struct NightscoutRouter {
@@ -39,9 +40,7 @@ extension NightscoutRouter {
             "Accept": "application/json",
         ]
 
-        if let apiSecret = apiSecret {
-            headers["api-secret"] = apiSecret.sha1()
-        }
+        apiSecret.ifSome { headers["api-secret"] = $0.sha1() }
 
         headers.forEach { header, value in request.setValue(value, forHTTPHeaderField: header) }
         request.httpMethod = httpMethod?.rawValue
