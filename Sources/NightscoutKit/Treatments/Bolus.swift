@@ -10,19 +10,19 @@ import Foundation
 
 
 /// A bolus, i.e. an instance of insulin delivery.
-public struct Bolus: TimelineValue, Hashable {
+public struct Bolus: TimelineValue, Hashable, Codable {
+    /// Describes the context in which a bolus is delivered.
+    public enum Context: String, Codable {
+        case snack = "Snack Bolus"
+        case meal = "Meal Bolus"
+        case correction = "Correction Bolus"
+    }
+    
     /// The delivery date of the bolus.
     public let date: Date
 
     /// The total amount of insulin delivered in units (U).
     public let amount: Double
-
-    /// Describes the context in which a bolus is delivered.
-    public enum Context: String {
-        case snack = "Snack Bolus"
-        case meal = "Meal Bolus"
-        case correction = "Correction Bolus"
-    }
 
     /// The context in which the bolus is delivered.
     public let context: Context

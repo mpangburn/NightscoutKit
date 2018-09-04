@@ -14,9 +14,6 @@ public enum NightscoutError: LocalizedError {
     /// An error that occurs when the Nightscout URL is invalid.
     case invalidURL
 
-    /// An error that occurs when attempting to upload, update, or delete Nightscout entities without providing the API secret.
-    case missingAPISecret
-
     /// An error that occurs when fetching Nightscout data.
     /// The associated value contains the error from the call to `URLSession.dataTask`.
     case fetchError(Error)
@@ -50,8 +47,6 @@ extension NightscoutError {
         switch self {
         case .invalidURL:
             return NSLocalizedString("Invalid Nightscout URL.", comment: "The error description for an invalid Nightscout URL")
-        case .missingAPISecret:
-            return NSLocalizedString("Missing Nightscout API secret.", comment: "The error description for a missing API secret")
         case .fetchError(let error):
             let format = NSLocalizedString("Fetch error: %@", comment: "The error description for a data fetch error")
             return String(format: format, error.localizedDescription)
@@ -78,8 +73,6 @@ extension NightscoutError {
         switch self {
         case .invalidURL:
             return nil
-        case .missingAPISecret:
-            return NSLocalizedString("Attempting to upload, update, or delete Nightscout data without providing the API secret will fail.", comment: "The failure reason for a 'missing API secret' error")
         case .fetchError(let error as NSError):
             return error.localizedFailureReason
         case .uploadError(let error as NSError):
@@ -101,8 +94,6 @@ extension NightscoutError {
         switch self {
         case .invalidURL:
             return NSLocalizedString("Verify that the Nightscout URL is correct.", comment: "The recovery suggestion for an invalid Nightscout URL")
-        case .missingAPISecret:
-            return NSLocalizedString("Verify that the Nightscout API secret has been entered.", comment: "The recovery suggestion for a missing API secret")
         case .fetchError(let error as NSError):
             return error.localizedRecoverySuggestion
         case .uploadError(let error as NSError):
@@ -125,8 +116,6 @@ extension NightscoutError {
     public var helpAnchor: String? {
         switch self {
         case .invalidURL:
-            return nil
-        case .missingAPISecret:
             return nil
         case .fetchError(let error as NSError):
             return error.helpAnchor

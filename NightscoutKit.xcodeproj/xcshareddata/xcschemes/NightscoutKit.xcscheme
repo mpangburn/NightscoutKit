@@ -14,9 +14,9 @@
             buildForAnalyzing = "YES">
             <BuildableReference
                BuildableIdentifier = "primary"
-               BlueprintIdentifier = "89E63F34205CE9B600C458AA"
+               BlueprintIdentifier = "896FF57B2048C7510054198A"
                BuildableName = "NightscoutKit.framework"
-               BlueprintName = "NightscoutKit-watchOS"
+               BlueprintName = "NightscoutKit"
                ReferencedContainer = "container:NightscoutKit.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
@@ -28,13 +28,23 @@
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
       shouldUseLaunchSchemeArgsEnv = "YES">
       <Testables>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "896FF5842048C7510054198A"
+               BuildableName = "NightscoutKitTests.xctest"
+               BlueprintName = "NightscoutKitTests"
+               ReferencedContainer = "container:NightscoutKit.xcodeproj">
+            </BuildableReference>
+         </TestableReference>
       </Testables>
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "89E63F34205CE9B600C458AA"
+            BlueprintIdentifier = "896FF57B2048C7510054198A"
             BuildableName = "NightscoutKit.framework"
-            BlueprintName = "NightscoutKit-watchOS"
+            BlueprintName = "NightscoutKit"
             ReferencedContainer = "container:NightscoutKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -54,9 +64,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "89E63F34205CE9B600C458AA"
+            BlueprintIdentifier = "896FF57B2048C7510054198A"
             BuildableName = "NightscoutKit.framework"
-            BlueprintName = "NightscoutKit-watchOS"
+            BlueprintName = "NightscoutKit"
             ReferencedContainer = "container:NightscoutKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
@@ -72,9 +82,9 @@
       <MacroExpansion>
          <BuildableReference
             BuildableIdentifier = "primary"
-            BlueprintIdentifier = "89E63F34205CE9B600C458AA"
+            BlueprintIdentifier = "896FF57B2048C7510054198A"
             BuildableName = "NightscoutKit.framework"
-            BlueprintName = "NightscoutKit-watchOS"
+            BlueprintName = "NightscoutKit"
             ReferencedContainer = "container:NightscoutKit.xcodeproj">
          </BuildableReference>
       </MacroExpansion>

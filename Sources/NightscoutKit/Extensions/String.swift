@@ -6,7 +6,7 @@
 //  Copyright © 2018 Michael Pangburn. All rights reserved.
 //
 
-import CCommonCrypto
+import CommonCrypto
 
 
 extension String {

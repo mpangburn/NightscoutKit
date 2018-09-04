@@ -7,7 +7,7 @@
 //
 
 /// A "type-erased" JSON wrapper to be used when the details of the response JSON are unknown.
-struct AnyJSON {
+internal struct AnyJSON {
     private let _json: Any
 
     init(_ json: Any) {

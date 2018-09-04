@@ -23,12 +23,8 @@ extension URL {
 
 extension URLComponents {
     func addingQueryItems(_ queryItems: [URLQueryItem]) -> URLComponents {
-        var copy = self
-        queryItems.forEach { copy.addQueryItem($0) }
-        return copy
-    }
-
-    mutating func addQueryItem(_ queryItem: URLQueryItem) {
-        queryItems = (queryItems ?? []).appending(queryItem)
+        var base = self
+        base.queryItems = (base.queryItems ?? []) + queryItems
+        return base
     }
 }

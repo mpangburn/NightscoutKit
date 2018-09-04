@@ -10,7 +10,7 @@ import Foundation
 
 
 /// A type used to identify Nightscout entries, treatments, profile records, and device statuses.
-public struct NightscoutIdentifier: Hashable {
+public struct NightscoutIdentifier: Hashable, Codable {
     internal let value: String
 
     private static let idLength = 24
@@ -46,17 +46,12 @@ extension NightscoutIdentifier: JSONParseable {
 
 // MARK: - Extensions
 
-fileprivate extension String {
-    static func randomString<C: RandomAccessCollection>(ofLength length: Int, consistingOfCharactersIn characters: C) -> String where C.Element == Character, C.Index == Int {
+private extension String {
+    static func randomString<C: RandomAccessCollection>(
+        ofLength length: Int,
+        consistingOfCharactersIn characters: C
+    ) -> String where C.Element == Character {
         precondition(length >= 0 && characters.count > 0)
-        return String((0..<length).map { _ in characters.random()! })
-    }
-}
-
-fileprivate extension RandomAccessCollection where Index == Int {
-    func random() -> Element? {
-        guard !isEmpty else { return nil }
-        let randomIndex = Int(arc4random_uniform(numericCast(count)))
-        return self[randomIndex]
+        return String((0..<length).map { _ in characters.randomElement()! })
     }
 }

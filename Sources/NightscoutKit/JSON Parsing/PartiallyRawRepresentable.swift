@@ -7,7 +7,7 @@
 //
 
 /// A type that can be converted to and from a raw value in simple cases.
-protocol PartiallyRawRepresentable {
+internal protocol PartiallyRawRepresentable {
     associatedtype SimpleRawValue
     static var simpleCases: [Self] { get }
     var simpleRawValue: SimpleRawValue { get }

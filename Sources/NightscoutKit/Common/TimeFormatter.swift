@@ -7,9 +7,10 @@
 //
 
 import Foundation
+import Oxygen
 
 
-enum TimeFormatter {
+internal enum TimeFormatter {
     static func time(from string: String) -> TimeInterval? {
         let date = DateFormatter.hourAndMinuteFormatter.date(from: string)
         return date?.timeIntervalSinceMidnight
@@ -35,28 +36,22 @@ enum TimeFormatter {
 }
 
 fileprivate extension DateFormatter {
-    static let hourAndMinuteFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "HH:mm"
-        return formatter
-    }()
+    static let hourAndMinuteFormatter = with(DateFormatter()) {
+        $0.dateFormat = "HH:mm"
+    }
 
-    static let prettyTimeFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .none
-        formatter.timeStyle = .short
-        return formatter
-    }()
+    static let prettyTimeFormatter = with(DateFormatter()) {
+        $0.dateStyle = .none
+        $0.timeStyle = .short
+    }
 }
 
 // TODO: ISO8601 is the bottleneck for NightscoutKit to support older firmware versions.
 // This requires iOS 10.0+, macOS 10.12+, tvOS 10.0+, watchOS 3.0+.
 
 fileprivate extension ISO8601DateFormatter {
-    static let gmtFormatter: ISO8601DateFormatter = {
-        let formatter = ISO8601DateFormatter()
-        formatter.formatOptions = .withInternetDateTime
-        formatter.formatOptions.subtract(.withTimeZone)
-        return formatter
-    }()
+    static let gmtFormatter = with(ISO8601DateFormatter()) {
+        $0.formatOptions = .withInternetDateTime
+        $0.formatOptions.subtract(.withTimeZone)
+    }
 }

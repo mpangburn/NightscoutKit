@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Describes a treatment event containing a note.
-public struct NoteEvent: TimelinePeriod, Hashable {
+public struct NoteEvent: TimelinePeriod, Hashable, Codable {
     /// The date at which the note was written.
     public let startDate: Date
 

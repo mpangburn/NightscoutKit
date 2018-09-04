@@ -10,7 +10,7 @@ import Foundation
 
 
 /// Describes a blood glucose value and the units in which it is measured.
-public struct BloodGlucoseValue: BloodGlucoseUnitConvertible, Hashable {
+public struct BloodGlucoseValue: BloodGlucoseUnitConvertible, Hashable, Codable {
     /// The recorded glucose value.
     public let value: Double
 

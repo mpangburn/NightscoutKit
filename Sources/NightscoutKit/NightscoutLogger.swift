@@ -9,228 +9,164 @@
 import Foundation
 
 
-private func printNewLine<T: TextOutputStream>(to outputStream: inout T) {
-    print("", to: &outputStream)
-}
+/// A class that logs the failed operations of an observed `NightscoutDownloader` or `NightscoutUploader`
+/// instance, including failed uploads, updates, deletions, and errors encountered.
+open class NightscoutFailureLogger: _NightscoutObserver {
+    /// The function used to write logs.
+    public let log: (String) -> Void
 
-/// A class that logs the failed operations of an observed `Nightscout` instance to an output stream,
-/// including failed uploads, updates, deletions, and errors encountered.
-open class NightscoutFailureLogger<Stream: TextOutputStream>: _NightscoutObserver {
-    fileprivate let _outputStream: ThreadSafe<Stream>
-
-    /// The output stream to which the operations of an observed `Nightscout` instance are logged.
-    public var outputStream: Stream {
-        return _outputStream.value
-    }
-
-    /// Creates a new logger.
-    /// - Parameter outputStream: The output stream to which the operations of an observed `Nightscout` instance are logged.
-    /// - Returns: A new logger that logs the operations of an observed `Nightscout` instance to the output stream.
-    public required init(outputStream: Stream) {
-        self._outputStream = ThreadSafe(outputStream)
-    }
-
-    private let dateFormatter: DateFormatter = {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .short
-        formatter.timeStyle = .short
-        return formatter
-    }()
-
-    fileprivate func currentDateString() -> String {
-        return dateFormatter.string(from: Date())
-    }
-
-    // MARK: - Logging
-
-    open override func nightscout(_ nightscout: Nightscout, didFailToUploadEntries entries: Set<NightscoutEntry>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            entries.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
+    /// Creates a new logger with the given writing function.
+    /// - Parameter log: The function used to log the events of the observed `NightscoutDownloader`
+    ///                  or `NightscoutUploader` instance.
+    /// - Parameter synchronizingWrites: Determines whether a DispatchQueue should be used to synchronize
+    ///                                  writes to the output stream. The default value is `true`.
+    /// - Returns: A new logger that logs the operations of the observed `NightscoutDownloader`
+    ///            or `NightscoutUploader` instance using the given function.
+    public required init(log: @escaping (String) -> Void, synchronizingWrites: Bool = true) {
+        if synchronizingWrites {
+            let writingQueue = DispatchQueue(label: "com.mpangburn.nightscoutkit.loggingqueue")
+            self.log = { string in writingQueue.sync { log(string) } }
+        } else {
+            self.log = log
         }
     }
 
-    open override func nightscout(_ nightscout: Nightscout, didFailToUploadTreatments treatments: Set<NightscoutTreatment>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            treatments.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
+    /// Creates a new logger targeting the given output stream.
+    /// - Parameter outputStream: The output stream to which to direct logs.
+    /// - Parameter synchronizingWrites: Determines whether a DispatchQueue should be used to synchronize
+    ///                                  writes to the output stream. The default value is `true`.
+    /// - Returns: A new logger targeting the given output stream.
+    public convenience init(outputStream: TextOutputStream, synchronizingWrites: Bool = true) {
+        var outputStream = outputStream
+        self.init(log: { outputStream.write($0) }, synchronizingWrites: synchronizingWrites)
     }
 
-    open override func nightscout(_ nightscout: Nightscout, didFailToUpdateTreatments treatments: Set<NightscoutTreatment>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            treatments.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
+    /// Creates a new logger targeting the given file handle.
+    /// - Parameter fileHandle: The file handle to which to direct logs.
+    /// - Returns: A new logger targeting the given file handle.
+    public init(fileHandle: FileHandle) {
+        self.log = { fileHandle.write(Data($0.utf8)) }
     }
 
-    open override func nightscout(_ nightscout: Nightscout, didFailToDeleteTreatments treatments: Set<NightscoutTreatment>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            treatments.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
+    /// Creates a new logger utilizing `NSLog`.
+    /// - Returns: A new logger utilizing `NSLog`.
+    public class func nsLogger() -> Self {
+        return self.init(log: { NSLog($0) })
     }
 
-    open override func nightscout(_ nightscout: Nightscout, didFailToUploadProfileRecords records: Set<NightscoutProfileRecord>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            records.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
+    // MARK: - NightscoutDownloaderObserver
+
+    open override func downloader(_ downloader: NightscoutDownloader, didErrorWith error: NightscoutError) {
+        logInvocation(downloader: downloader, additionalInfo: String(describing: error))
     }
 
-    open override func nightscout(_ nightscout: Nightscout, didFailToUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            records.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
+    // MARK: - NightscoutUploaderObserver
+
+    open override func uploader(_ uploader: NightscoutUploader, didErrorWith error: NightscoutError) {
+        logInvocation(uploader: uploader, additionalInfo: String(describing: error))
     }
 
-    open override func nightscout(_ nightscout: Nightscout, didFailToDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            records.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
+    open override func uploader(_ uploader: NightscoutUploader, didFailToUploadEntries entries: Set<NightscoutEntry>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: entries))
     }
 
-    open override func nightscout(_ nightscout: Nightscout, didErrorWith error: NightscoutError) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            print(error, to: &stream)
-            printNewLine(to: &stream)
-        }
+    open override func uploader(_ uploader: NightscoutUploader, didFailToUploadTreatments treatments: Set<NightscoutTreatment>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: treatments))
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didFailToUpdateTreatments treatments: Set<NightscoutTreatment>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: treatments))
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didFailToDeleteTreatments treatments: Set<NightscoutTreatment>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: treatments))
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didFailToUploadProfileRecords records: Set<NightscoutProfileRecord>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: records))
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didFailToUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: records))
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didFailToDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: records))
     }
 }
 
-/// A class that logs the operations of an observed `Nightscout` instance to an output stream.
-open class NightscoutLogger<Stream: TextOutputStream>: NightscoutFailureLogger<Stream> {
-    open override func nightscoutDidVerifyAuthorization(_ nightscout: Nightscout) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            printNewLine(to: &stream)
-        }
+// MARK: - Logging Utilities
+
+extension NightscoutFailureLogger {
+    fileprivate func logInvocation(of function: StaticString = #function, downloader: NightscoutDownloader, additionalInfo: String?) {
+        log("\(function) @ \(downloader.credentials.url)\(additionalInfo.map { ": \($0)" } ?? "")")
     }
 
-    open override func nightscout(_ nightscout: Nightscout, didFetchStatus status: NightscoutStatus) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            print(status, to: &stream)
-            printNewLine(to: &stream)
-        }
+    fileprivate func logInvocation(of function: StaticString = #function, uploader: NightscoutUploader, additionalInfo: String?) {
+        log("\(function) @ \(uploader.credentials.url)\(additionalInfo.map { ": \($0)" } ?? "")")
     }
 
-    open override func nightscout(_ nightscout: Nightscout, didFetchEntries entries: [NightscoutEntry]) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            entries.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
-    }
-
-    open override func nightscout(_ nightscout: Nightscout, didUploadEntries entries: Set<NightscoutEntry>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            entries.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
-    }
-
-    open override func nightscout(_ nightscout: Nightscout, didFetchTreatments treatments: [NightscoutTreatment]) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            treatments.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
-    }
-
-    open override func nightscout(_ nightscout: Nightscout, didUploadTreatments treatments: Set<NightscoutTreatment>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            treatments.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
-    }
-
-    open override func nightscout(_ nightscout: Nightscout, didUpdateTreatments treatments: Set<NightscoutTreatment>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            treatments.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
-    }
-
-    open override func nightscout(_ nightscout: Nightscout, didDeleteTreatments treatments: Set<NightscoutTreatment>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            treatments.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
-    }
-
-    open override func nightscout(_ nightscout: Nightscout, didFetchProfileRecords records: [NightscoutProfileRecord]) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            records.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
-    }
-
-    open override func nightscout(_ nightscout: Nightscout, didUploadProfileRecords records: Set<NightscoutProfileRecord>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            records.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
-    }
-
-    open override func nightscout(_ nightscout: Nightscout, didUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            records.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
-    }
-
-    open override func nightscout(_ nightscout: Nightscout, didDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            records.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
-    }
-
-    open override func nightscout(_ nightscout: Nightscout, didFetchDeviceStatuses deviceStatuses: [NightscoutDeviceStatus]) {
-        _outputStream.atomically { stream in
-            print("\(currentDateString()): \(#function) @ \(nightscout.credentials.url)", to: &stream)
-            deviceStatuses.forEach { print($0, to: &stream) }
-            printNewLine(to: &stream)
-        }
+    fileprivate func newlineSeparatedDescriptions<S: Sequence>(of elements: S, includingLeadingNewline: Bool = true) -> String {
+        let descriptions = elements.map(String.init(describing:)).joined(separator: "\n")
+        return includingLeadingNewline ? "\n" + descriptions : descriptions
     }
 }
 
-extension NightscoutFailureLogger where Stream == FileHandle {
-    /// Creates a new logger that logs the operations of an observed `Nightscout` instance to standard output.
-    public class func standardOutputLogger() -> Self {
-        return self.init(outputStream: .standardOutput)
-    }
-}
+/// A class that logs the operations of an observed `NightscoutDownloader` or `NighscoutUploader` instance.
+open class NightscoutLogger: NightscoutFailureLogger {
+    // MARK: - NightscoutDownloaderObserver
 
-extension NightscoutFailureLogger where Stream: RangeReplaceableCollection {
-    /// Clears all output written to the stream.
-    public func clearOutputStream() {
-        _outputStream.atomically { $0.removeAll() }
+    open override func downloader(_ downloader: NightscoutDownloader, didFetchStatus status: NightscoutStatus) {
+        logInvocation(downloader: downloader, additionalInfo: String(describing: status))
     }
-}
 
-extension FileHandle: TextOutputStream {
-    public func write(_ string: String) {
-        let data = string.data(using: .utf8)!
-        write(data)
+    open override func downloader(_ downloader: NightscoutDownloader, didFetchEntries entries: [NightscoutEntry]) {
+        logInvocation(downloader: downloader, additionalInfo: newlineSeparatedDescriptions(of: entries))
+    }
+
+    open override func downloader(_ downloader: NightscoutDownloader, didFetchTreatments treatments: [NightscoutTreatment]) {
+        logInvocation(downloader: downloader, additionalInfo: newlineSeparatedDescriptions(of: treatments))
+    }
+
+    open override func downloader(_ downloader: NightscoutDownloader, didFetchProfileRecords records: [NightscoutProfileRecord]) {
+        logInvocation(downloader: downloader, additionalInfo: newlineSeparatedDescriptions(of: records))
+    }
+
+    open override func downloader(_ downloader: NightscoutDownloader, didFetchDeviceStatuses deviceStatuses: [NightscoutDeviceStatus]) {
+        logInvocation(downloader: downloader, additionalInfo: newlineSeparatedDescriptions(of: deviceStatuses))
+    }
+
+    // MARK: - NightscoutUploaderObserver
+
+    open override func uploaderDidVerifyAuthorization(_ uploader: NightscoutUploader) {
+        logInvocation(uploader: uploader, additionalInfo: nil)
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didUploadEntries entries: Set<NightscoutEntry>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: entries))
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didUploadTreatments treatments: Set<NightscoutTreatment>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: treatments))
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didUpdateTreatments treatments: Set<NightscoutTreatment>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: treatments))
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didDeleteTreatments treatments: Set<NightscoutTreatment>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: treatments))
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didUploadProfileRecords records: Set<NightscoutProfileRecord>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: records))
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didUpdateProfileRecords records: Set<NightscoutProfileRecord>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: records))
+    }
+
+    open override func uploader(_ uploader: NightscoutUploader, didDeleteProfileRecords records: Set<NightscoutProfileRecord>) {
+        logInvocation(uploader: uploader, additionalInfo: newlineSeparatedDescriptions(of: records))
     }
 }

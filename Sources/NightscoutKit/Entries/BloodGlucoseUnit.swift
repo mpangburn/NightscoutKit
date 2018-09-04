@@ -7,9 +7,11 @@
 //
 
 import Foundation
+import Oxygen
+
 
 /// Represents a unit of concentration for measuring blood glucose.
-public enum BloodGlucoseUnit: String {
+public enum BloodGlucoseUnit: String, Codable {
     case milligramsPerDeciliter = "mg/dl"
     case millimolesPerLiter = "mmol"
 
@@ -50,11 +52,15 @@ extension NumberFormatter {
     /// - Parameter unit: The unit for which glucose values should be formatted.
     /// - Returns: A formatter for formatting blood glucose values using the given unit.
     public static func glucoseFormatter(for unit: BloodGlucoseUnit) -> NumberFormatter {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .decimal
-        formatter.minimumIntegerDigits = 1
-        formatter.minimumFractionDigits = unit.preferredFractionDigits
-        formatter.maximumFractionDigits = unit.preferredFractionDigits
-        return formatter
+        return glucoseFormatterCache[unit]
+    }
+
+    private static var glucoseFormatterCache = CacheMap<BloodGlucoseUnit, NumberFormatter> { unit in
+        with(NumberFormatter()) {
+            $0.numberStyle = .decimal
+            $0.minimumIntegerDigits = 1
+            $0.minimumFractionDigits = unit.preferredFractionDigits
+            $0.maximumFractionDigits = unit.preferredFractionDigits
+        }
     }
 }

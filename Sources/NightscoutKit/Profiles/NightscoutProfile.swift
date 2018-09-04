@@ -142,18 +142,10 @@ public struct NightscoutProfile: Equatable {
     }
 }
 
-extension NightscoutProfile.ScheduleItem: Equatable where Value: Equatable {
-    public static func == (lhs: NightscoutProfile.ScheduleItem<Value>, rhs: NightscoutProfile.ScheduleItem<Value>) -> Bool {
-        return lhs.startTime == rhs.startTime && lhs.value == rhs.value
-    }
-}
-
-extension NightscoutProfile.ScheduleItem: Hashable where Value: Hashable {
-    public var hashValue: Int {
-        // TODO: better hashing here
-        return startTime.hashValue ^ value.hashValue
-    }
-}
+extension NightscoutProfile.ScheduleItem: Equatable where Value: Equatable { }
+extension NightscoutProfile.ScheduleItem: Hashable where Value: Hashable { }
+extension NightscoutProfile.ScheduleItem: Encodable where Value: Encodable { }
+extension NightscoutProfile.ScheduleItem: Decodable where Value: Decodable { }
 
 // MARK: - JSON
 
