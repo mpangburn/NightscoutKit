@@ -165,7 +165,7 @@ extension NightscoutTreatment.EventType {
     /// The kind of a treatment event type.
     /// This enumeration describes an event type in the general sense,
     /// i.e. without any payload in the form of an associated value.
-    public enum Kind: String {
+    public enum Kind: String, Codable, CaseIterable {
         case bloodGlucoseCheck = "BG Check"
         case snackBolus = "Snack Bolus"
         case mealBolus = "Meal Bolus"
