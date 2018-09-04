@@ -12,3 +12,4 @@ install:
 
 script:
   - set -o pipefail && xcodebuild -scheme NightscoutKit -destination "$DESTINATION" $ACTION | xcpretty
+  - swift build -Xswiftc "-target" -Xswiftc "x86_64-apple-macosx10.12" 
