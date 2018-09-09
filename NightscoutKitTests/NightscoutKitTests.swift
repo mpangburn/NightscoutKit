@@ -35,14 +35,7 @@ class NightscoutKitTests: XCTestCase {
 
         XCTAssert(entry.id == expectedEntry.id)
         XCTAssert(entry.glucoseValue == expectedEntry.glucoseValue)
-        XCTAssert({
-            switch (entry.source, expectedEntry.source) {
-            case (.sensor(trend: .flat), .sensor(trend: .flat)):
-                return true
-            default:
-                return false
-            }
-        }())
+        XCTAssert(entry.source == expectedEntry.source)
         XCTAssert(entry.date == expectedEntry.date)
         XCTAssert(entry.device == expectedEntry.device)
     }
