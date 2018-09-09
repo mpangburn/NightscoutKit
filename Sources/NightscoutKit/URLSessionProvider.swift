@@ -13,7 +13,7 @@ import Oxygen
 internal typealias URLSessionProvider = CacheMap<NightscoutAPIEndpoint, URLSession>
 
 extension /* URLSessionProvider */ CacheMap where Input == NightscoutAPIEndpoint, Output == URLSession {
-    internal init() {
-        self.init { _ in URLSession(configuration: .default) }
+    internal convenience init() {
+        self.init(new(URLSession(configuration: .default)))
     }
 }

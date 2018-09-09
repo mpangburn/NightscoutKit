@@ -95,7 +95,7 @@ extension NightscoutUploader {
             return
         }
 
-        NightscoutDownloader.fetchData(from: .authorization, with: request, sessions: &sessions) { result in
+        NightscoutDownloader.fetchData(from: .authorization, with: request, sessions: sessions) { result in
             self.observers.concurrentlyNotify(
                 for: result, from: self,
                 ifSuccess: { observer, _ in observer.uploaderDidVerifyAuthorization(self) }
@@ -384,7 +384,7 @@ extension NightscoutUploader {
         }
 
         request.url?.appendPathComponent(item.id.value)
-        NightscoutDownloader.fetchData(from: endpoint, with: request, sessions: &sessions) { result in
+        NightscoutDownloader.fetchData(from: endpoint, with: request, sessions: sessions) { result in
             completion(result.error)
         }
     }

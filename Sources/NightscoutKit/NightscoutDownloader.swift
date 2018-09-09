@@ -287,7 +287,7 @@ extension NightscoutDownloader {
     internal static func fetchData(
         from endpoint: APIEndpoint,
         with request: URLRequest,
-        sessions: inout URLSessionProvider,
+        sessions: URLSessionProvider,
         completion: @escaping (NightscoutResult<Data>) -> Void
     ) {
         let session = sessions[endpoint]
@@ -328,7 +328,7 @@ extension NightscoutDownloader {
         with request: URLRequest,
         completion: @escaping (NightscoutResult<Data>) -> Void
     ) {
-        NightscoutDownloader.fetchData(from: endpoint, with: request, sessions: &sessions, completion: completion)
+        NightscoutDownloader.fetchData(from: endpoint, with: request, sessions: sessions, completion: completion)
     }
 
     private func fetchData(
