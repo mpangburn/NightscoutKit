@@ -27,7 +27,7 @@ public struct NightscoutDownloaderCredentials: Hashable, Codable {
         let testDownloader = NightscoutDownloader(credentials: credentials)
         // Verify URL by fetching a single entry.
         testDownloader.fetchMostRecentEntries(count: 1) { result in
-            completion(result.map(constant(credentials)))
+            completion(result.map(always(credentials)))
         }
     }
 }
