@@ -14,6 +14,10 @@ internal typealias URLSessionProvider = CacheMap<NightscoutAPIEndpoint, URLSessi
 
 extension /* URLSessionProvider */ CacheMap where Input == NightscoutAPIEndpoint, Output == URLSession {
     internal convenience init() {
+        #if os(watchOS)
+        self.init(always(.shared))
+        #else
         self.init(new(URLSession(configuration: .default)))
+        #endif
     }
 }
