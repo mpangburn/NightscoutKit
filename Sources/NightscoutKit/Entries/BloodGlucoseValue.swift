@@ -50,6 +50,18 @@ public struct BloodGlucoseValue: BloodGlucoseUnitConvertible, Hashable, Codable 
     }
 }
 
+// MARK: - Comparable
+
+extension BloodGlucoseValue: Comparable {
+    public static func < (lhs: BloodGlucoseValue, rhs: BloodGlucoseValue) -> Bool {
+        func mgdlValue(of glucose: BloodGlucoseValue) -> Double {
+            return glucose.converted(to: .milligramsPerDeciliter).value
+        }
+
+        return mgdlValue(of: lhs) < mgdlValue(of: rhs)
+    }
+}
+
 // MARK: - CustomStringConvertible
 
 extension BloodGlucoseValue: CustomStringConvertible {
