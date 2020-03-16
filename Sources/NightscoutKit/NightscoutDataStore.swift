@@ -885,7 +885,7 @@ open class NightscoutDataStore: _NightscoutObserver {
             self[keyPath: keyPath].modify { storedValues in
                 if options.contains(.ignoreOlderFetchedData),
                     let mostRecentStoredValue = storedValues.first,
-                    let overlappingValue = newValues.index(where: { $0.date <= mostRecentStoredValue.date }) {
+                    let overlappingValue = newValues.firstIndex(where: { $0.date <= mostRecentStoredValue.date }) {
                         let moreRecentValues = newValues[..<overlappingValue]
                         storedValues.insert(contentsOf: moreRecentValues, at: 0)
                 } else {

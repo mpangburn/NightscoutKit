@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 48;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -27,6 +27,7 @@
 		8939D03A20A8E42E009EFFBB /* NightscoutQueryItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8939D03920A8E42E009EFFBB /* NightscoutQueryItem.swift */; };
 		8939D04420A8E635009EFFBB /* NightscoutAPIEndpoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8939D04320A8E635009EFFBB /* NightscoutAPIEndpoint.swift */; };
 		8939D04920A8ECA5009EFFBB /* HTTPMethod.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8939D04820A8ECA5009EFFBB /* HTTPMethod.swift */; };
+		8962A2C1241EF7AF002A1D3D /* Oxygen in Frameworks */ = {isa = PBXBuildFile; productRef = 8962A2C0241EF7AF002A1D3D /* Oxygen */; };
 		896A771920A3C0FA00BFC5FF /* ExerciseEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896A771820A3C0FA00BFC5FF /* ExerciseEvent.swift */; };
 		896A771E20A3C5F000BFC5FF /* NoteEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896A771D20A3C5F000BFC5FF /* NoteEvent.swift */; };
 		896DCAE420A7F2550059AA30 /* BolusEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 896DCAE320A7F2550059AA30 /* BolusEvent.swift */; };
@@ -181,7 +182,6 @@
 		89CE6763209E1BDC007F019A /* TemporaryBasalType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TemporaryBasalType.swift; sourceTree = "<group>"; };
 		89D48E34204FA3310066B293 /* DataConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataConvertible.swift; sourceTree = "<group>"; };
 		89D48E37204FAC0E0066B293 /* AnyJSON.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnyJSON.swift; sourceTree = "<group>"; };
-		89D868A5213DCD5B003582A6 /* Carthage.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Carthage.xcconfig; sourceTree = "<group>"; };
 		89D868AE213F4694003582A6 /* NightscoutCredentials.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutCredentials.swift; sourceTree = "<group>"; };
 		89D8F932206620BE00E8A13B /* BloodGlucoseUnitConvertible.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BloodGlucoseUnitConvertible.swift; sourceTree = "<group>"; };
 		89D8F937206623EE00E8A13B /* NightscoutDataStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NightscoutDataStore.swift; sourceTree = "<group>"; };
@@ -199,6 +199,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				8962A2C1241EF7AF002A1D3D /* Oxygen in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -355,7 +356,6 @@
 		896FF5722048C7510054198A = {
 			isa = PBXGroup;
 			children = (
-				89D868A5213DCD5B003582A6 /* Carthage.xcconfig */,
 				896FF5962048C7640054198A /* Sources */,
 				896FF57E2048C7510054198A /* NightscoutKit */,
 				896FF5892048C7510054198A /* NightscoutKitTests */,
@@ -471,6 +471,9 @@
 			dependencies = (
 			);
 			name = NightscoutKit;
+			packageProductDependencies = (
+				8962A2C0241EF7AF002A1D3D /* Oxygen */,
+			);
 			productName = NightscoutKit;
 			productReference = 896FF57C2048C7510054198A /* NightscoutKit.framework */;
 			productType = "com.apple.product-type.framework";
@@ -482,7 +485,6 @@
 				896FF5812048C7510054198A /* Sources */,
 				896FF5822048C7510054198A /* Frameworks */,
 				896FF5832048C7510054198A /* Resources */,
-				89D868A7213DD013003582A6 /* Copy Carthage Frameworks */,
 			);
 			buildRules = (
 			);
@@ -506,12 +508,12 @@
 				TargetAttributes = {
 					896FF57B2048C7510054198A = {
 						CreatedOnToolsVersion = 9.2;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1130;
 						ProvisioningStyle = Automatic;
 					};
 					896FF5842048C7510054198A = {
 						CreatedOnToolsVersion = 9.2;
-						LastSwiftMigration = 1000;
+						LastSwiftMigration = 1130;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -524,6 +526,9 @@
 				en,
 			);
 			mainGroup = 896FF5722048C7510054198A;
+			packageReferences = (
+				8962A2BF241EF7AE002A1D3D /* XCRemoteSwiftPackageReference "Oxygen" */,
+			);
 			productRefGroup = 896FF57D2048C7510054198A /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
@@ -555,28 +560,6 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
-
-/* Begin PBXShellScriptBuildPhase section */
-		89D868A7213DD013003582A6 /* Copy Carthage Frameworks */ = {
-			isa = PBXShellScriptBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-			);
-			inputFileListPaths = (
-			);
-			inputPaths = (
-				Oxygen,
-			);
-			name = "Copy Carthage Frameworks";
-			outputFileListPaths = (
-			);
-			outputPaths = (
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-			shellPath = /bin/sh;
-			shellScript = "case \"$PLATFORM_NAME\" in\nmacosx) plat=Mac;;\niphone*) plat=iOS;;\nwatch*) plat=watchOS;;\ntv*) plat=tvOS;;\nappletv*) plat=tvOS;;\n*) echo \"error: Unknown PLATFORM_NAME: $PLATFORM_NAME\"; exit 1;;\nesac\nfor (( n = 0; n < SCRIPT_INPUT_FILE_COUNT; n++ )); do\nVAR=SCRIPT_INPUT_FILE_$n\nframework=$(basename \"${!VAR}\")\nexport SCRIPT_INPUT_FILE_$n=\"$SRCROOT\"/Carthage/Build/$plat/\"$framework\".framework\ndone\n\n${CARTHAGE:-/usr/local/bin/carthage} copy-frameworks || exit\n\nfor (( n = 0; n < SCRIPT_INPUT_FILE_COUNT; n++ )); do\nVAR=SCRIPT_INPUT_FILE_$n\nsource=${!VAR}.dSYM\ndest=${BUILT_PRODUCTS_DIR}/$(basename \"$source\")\nditto \"$source\" \"$dest\" || exit\ndone\n";
-		};
-/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		896FF5772048C7510054198A /* Sources */ = {
@@ -683,7 +666,6 @@
 /* Begin XCBuildConfiguration section */
 		896FF58E2048C7510054198A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89D868A5213DCD5B003582A6 /* Carthage.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -752,7 +734,6 @@
 		};
 		896FF58F2048C7510054198A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 89D868A5213DCD5B003582A6 /* Carthage.xcconfig */;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				CLANG_ANALYZER_NONNULL = YES;
@@ -802,7 +783,8 @@
 				PRODUCT_NAME = "$(PROJECT_NAME)";
 				SDKROOT = "";
 				SUPPORTED_PLATFORMS = "macosx watchsimulator watchos iphonesimulator iphoneos appletvsimulator appletvos";
-				SWIFT_OPTIMIZATION_LEVEL = "-Owholemodule";
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
 				SWIFT_VERSION = 4.0;
 				TVOS_DEPLOYMENT_TARGET = 11.0;
 				VALIDATE_PRODUCT = YES;
@@ -827,13 +809,17 @@
 				INFOPLIST_FILE = NightscoutKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKit;
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos watchos macosx appletvsimulator appletvos watchsimulator";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3,4";
 			};
 			name = Debug;
@@ -853,13 +839,17 @@
 				INFOPLIST_FILE = NightscoutKit/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKit;
 				SDKROOT = "";
 				SKIP_INSTALL = YES;
 				SUPPORTED_PLATFORMS = "iphonesimulator iphoneos watchos macosx appletvsimulator appletvos watchsimulator";
 				SWIFT_OBJC_BRIDGING_HEADER = "";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2,3,4";
 			};
 			name = Release;
@@ -871,10 +861,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
 				INFOPLIST_FILE = NightscoutKitTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
@@ -886,10 +880,14 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = 5Q5Q8W9ATZ;
 				INFOPLIST_FILE = NightscoutKitTests/Info.plist;
-				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
 				PRODUCT_BUNDLE_IDENTIFIER = com.mpangburn.NightscoutKitTests;
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.2;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
@@ -925,6 +923,25 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8962A2BF241EF7AE002A1D3D /* XCRemoteSwiftPackageReference "Oxygen" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/mpangburn/Oxygen.git";
+			requirement = {
+				branch = master;
+				kind = branch;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		8962A2C0241EF7AF002A1D3D /* Oxygen */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8962A2BF241EF7AE002A1D3D /* XCRemoteSwiftPackageReference "Oxygen" */;
+			productName = Oxygen;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 896FF5732048C7510054198A /* Project object */;
 }
