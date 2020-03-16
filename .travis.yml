@@ -7,9 +7,6 @@ env:
   - ACTION=build PLATFORM=watchOS DESTINATION='platform=watchOS Simulator,name=Apple Watch - 38mm'
   - ACTION=build  PLATFORM=tvOS    DESTINATION='platform=tvOS Simulator,name=Apple TV 4K'
 
-install:
-  - test -f Cartfile && carthage bootstrap --platform $PLATFORM
-
 script:
   - set -o pipefail && xcodebuild -scheme NightscoutKit -destination "$DESTINATION" $ACTION | xcpretty
   - swift build -Xswiftc "-target" -Xswiftc "x86_64-apple-macosx10.12" 
