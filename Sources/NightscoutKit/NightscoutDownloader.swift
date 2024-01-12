@@ -33,7 +33,7 @@ public final class NightscoutDownloader: AtomicObservable {
     /// - Returns: A new downloader instance using the given credentials.
     public init(credentials: NightscoutDownloaderCredentials) {
         self.credentials = credentials
-        self.router = NightscoutRouter(url: credentials.url)
+        self.router = NightscoutRouter(url: credentials.url, apiSecret: credentials.apiSecret)
     }
 }
 
